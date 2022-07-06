@@ -1,18 +1,15 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:crave/Screens/signIn/codeSignin.dart';
 import 'package:crave/Screens/signIn/genderOption.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 
 class GenderScreen extends StatefulWidget {
-  GenderScreen({Key? key}) : super(key: key);
+  const GenderScreen({Key? key}) : super(key: key);
 
   @override
   State<GenderScreen> createState() => _SigninPhoneValidState();
@@ -21,8 +18,8 @@ class GenderScreen extends StatefulWidget {
 class _SigninPhoneValidState extends State<GenderScreen> {
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
-  Color genderContainerBorderMan = Color(0xffE3E3E3);
-  Color genderContainerMan = Color(0xffF3F3F3);
+  Color genderContainerBorderMan = const Color(0xffE3E3E3);
+  Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
   @override
   void initState() {
@@ -33,6 +30,8 @@ class _SigninPhoneValidState extends State<GenderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 1,
         leading: GestureDetector(
@@ -45,23 +44,12 @@ class _SigninPhoneValidState extends State<GenderScreen> {
           },
         ),
         backgroundColor: AppColors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              logoRed,
-              width: 36.w,
-              height: 18.h,
-            ),
-            // SizedBox(
-            //   width: 5.w,
-            // ),
-            text(context, "  C R A V E             ", 15.sp,
-                color: AppColors.redcolor,
-                boldText: FontWeight.w600,
-                fontFamily: "Roboto-Medium"),
-          ],
+        title:Image.asset(
+          hLogo,
+          width: 105.w,
+          height: 18.h,
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -87,18 +75,19 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                         border: Border.all(
                             color: genderContainerBorderMan, width: 1),
                         color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(8.r)),
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           text(context, "Man", 20.sp,
                               color: AppColors.greyShade,
                               boldText: FontWeight.w600,
                               fontFamily: "Poppins-SemiBold"),
+                          SizedBox(height: 10.h),
                           Image.asset(
                             male,
                             width: 74.w,
-                            height: 121.h,
+                          //  height: 121.h,
                           ),
                         ]),
                   ),
@@ -114,16 +103,17 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                         color: genderContainerMan,
                         borderRadius: BorderRadius.circular(10)),
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           text(context, "Woman", 20.sp,
                               color: AppColors.greyShade,
                               boldText: FontWeight.w600,
                               fontFamily: "Poppins-SemiBold"),
+                          SizedBox(height: 10.h),
                           Image.asset(
                             female,
                             width: 74.w,
-                            height: 121.h,
+                           // height: 121.h,
                           ),
                         ]),
                   ),
@@ -144,23 +134,24 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                         color: genderContainerMan,
                         borderRadius: BorderRadius.circular(10)),
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          text(context, "Others", 20.sp,
+                          text(context, "Other", 20.sp,
                               color: AppColors.greyShade,
                               boldText: FontWeight.w600,
                               fontFamily: "Poppins-SemiBold"),
+                          SizedBox(height: 10.h),
                           Image.asset(
                             other,
                             width: 74.w,
-                            height: 121.h,
+                         //   height: 121.h,
                           ),
                         ]),
                   ),
                 ],
               ),
               SizedBox(
-                height: 20.h,
+                height: 30.h,
               ),
               Align(
                 alignment: Alignment.center,
@@ -168,12 +159,12 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                     text: "NEXT",
                     press: () {
                       AppRoutes.push(
-                          context, PageTransitionType.fade, GenderOption());
+                          context, PageTransitionType.fade, const GenderOption());
                     }),
               ),
-              Spacer(),
+             const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -268,11 +259,4 @@ class _SigninPhoneValidState extends State<GenderScreen> {
     );
   }
 
-  void _onRememberMeChanged(newValue) => setState(() {
-        checkbox = newValue;
-
-        if (checkbox) {
-          checkBoxBorder = AppColors.redcolor;
-        } else {}
-      });
 }

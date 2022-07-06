@@ -23,7 +23,7 @@ class DefaultButton extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(color: AppColors.redcolor, width: 1),
             color: AppColors.redcolor,
-            borderRadius: BorderRadius.circular(10)),
+            borderRadius: BorderRadius.circular(8.r)),
         child: Center(
           child: Text(
             text,

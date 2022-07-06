@@ -1,6 +1,4 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:crave/Screens/signIn/birthday.dart';
-import 'package:crave/Screens/signIn/codeSignin.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
@@ -11,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 
 class FirstName extends StatefulWidget {
-  FirstName({Key? key}) : super(key: key);
+  const FirstName({Key? key}) : super(key: key);
 
   @override
   State<FirstName> createState() => _SigninPhoneValidState();
@@ -19,7 +17,7 @@ class FirstName extends StatefulWidget {
 
 class _SigninPhoneValidState extends State<FirstName> {
   bool checkbox = false;
-  Color checkBoxBorder = AppColors.greyShade;
+ // Color checkBoxBorder = AppColors.greyShade;
   @override
   void initState() {
     // TODO: implement initState
@@ -29,6 +27,7 @@ class _SigninPhoneValidState extends State<FirstName> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 1,
@@ -42,23 +41,12 @@ class _SigninPhoneValidState extends State<FirstName> {
           },
         ),
         backgroundColor: AppColors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              logoRed,
-              width: 36.w,
-              height: 18.h,
-            ),
-            // SizedBox(
-            //   width: 5.w,
-            // ),
-            text(context, "  C R A V E             ", 15.sp,
-                color: AppColors.redcolor,
-                boldText: FontWeight.w600,
-                fontFamily: "Roboto-Medium"),
-          ],
+        title:Image.asset(
+          hLogo,
+          width: 105.w,
+          height: 18.h,
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -72,9 +60,9 @@ class _SigninPhoneValidState extends State<FirstName> {
                   boldText: FontWeight.w600,
                   fontFamily: "Poppins-SemiBold"),
               SizedBox(
-                height: 20.h,
+                height: 10.h,
               ),
-              text(context, "You can only set your name once.", 11.sp,
+              text(context, "You can only set your name once.", 13.sp,
                   color: AppColors.textColor,
                   boldText: FontWeight.w400,
                   fontFamily: "Poppins-Regular"),
@@ -102,7 +90,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                           enabledBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
                           disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
+                          contentPadding:const EdgeInsets.only(
                               left: 10, bottom: 5, top: 5, right: 5),
                           hintText: "Enter your first name",
                           hintStyle: TextStyle(
@@ -113,7 +101,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                     ),
                   )),
               SizedBox(
-                height: 30.h,
+                height: 10.h,
               ),
               Row(
                 children: [
@@ -121,16 +109,13 @@ class _SigninPhoneValidState extends State<FirstName> {
                       checkColor: AppColors.redcolor,
                       focusColor: AppColors.black,
                       hoverColor: AppColors.containerborder,
-                      activeColor: Colors.transparent,
+                      activeColor: Colors.white,
                       side: BorderSide(
-                        color: checkBoxBorder, //your desire colour here
-                        width: 1.5,
+                        color: AppColors.redcolor, //your desire colour here
+                        width: 1.5.w,
                       ),
                       value: checkbox,
                       onChanged: _onRememberMeChanged),
-                  SizedBox(
-                    width: 5.w,
-                  ),
                   text(context, "Show my name on my profile", 13.sp,
                       color: AppColors.textColor,
                       boldText: FontWeight.w400,
@@ -146,12 +131,12 @@ class _SigninPhoneValidState extends State<FirstName> {
                     text: "CONTINUE",
                     press: () {
                       AppRoutes.push(
-                          context, PageTransitionType.fade, BirthdayScreen());
+                          context, PageTransitionType.fade, const BirthdayScreen());
                     }),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -247,10 +232,8 @@ class _SigninPhoneValidState extends State<FirstName> {
   }
 
   void _onRememberMeChanged(newValue) => setState(() {
-        checkbox = newValue;
-
-        if (checkbox) {
-          checkBoxBorder = AppColors.redcolor;
-        } else {}
+    setState((){
+      checkbox = newValue;
+    });
       });
 }

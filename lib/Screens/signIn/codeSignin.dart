@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:country_code_picker/country_code_picker.dart';
+// ignore_for_file: file_names
 import 'package:crave/Screens/signIn/name.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -9,18 +7,19 @@ import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:pinput/pinput.dart';
 
 class CodeSignin extends StatefulWidget {
-  CodeSignin({Key? key}) : super(key: key);
+  const CodeSignin({Key? key}) : super(key: key);
 
   @override
   State<CodeSignin> createState() => _SigninPhoneValidState();
 }
 
 class _SigninPhoneValidState extends State<CodeSignin> {
+  TextEditingController otpController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -29,10 +28,10 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   @override
   Widget build(BuildContext context) {
-    CountryCode countryCode = CountryCode.fromDialCode('+86');
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColors.white,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 1,
@@ -46,23 +45,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             },
           ),
           backgroundColor: AppColors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                logoRed,
-                width: 36.w,
-                height: 18.h,
-              ),
-              // SizedBox(
-              //   width: 5.w,
-              // ),
-              text(context, "  C R A V E             ", 15.sp,
-                  color: AppColors.redcolor,
-                  boldText: FontWeight.w600,
-                  fontFamily: "Roboto-Medium"),
-            ],
+          title:Image.asset(
+            hLogo,
+            width: 105.w,
+            height: 18.h,
           ),
+          centerTitle: true,
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
@@ -75,31 +63,38 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   boldText: FontWeight.w600,
                   fontFamily: "Poppins-SemiBold"),
               SizedBox(
-                height: 40.h,
+                height: 20.h,
               ),
-              PinCodeTextField(
-                appContext: context,
-                length: 5,
-                onChanged: (value) {
-                  print(value);
-                },
-                pinTheme: PinTheme(
-                  shape: PinCodeFieldShape.box,
-                  borderRadius: BorderRadius.circular(5),
-                  fieldHeight: 50,
-                  fieldWidth: 40,
-                  inactiveColor: AppColors.greyLightShade,
-                  activeColor: AppColors.greyLightShade,
-                  selectedColor: AppColors.redcolor,
+              Center(
+                child: Pinput(
+                  length: 5,
+                  defaultPinTheme: PinTheme(
+                    width: 55.w,
+                    height: 55.h,
+                    textStyle: TextStyle(
+                        fontSize: 24.sp,
+                        fontFamily: 'Poppins-SemiBold',
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w500),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      color: AppColors.white,
+                      border: Border.all(color: AppColors.containerborder,width: 2.w),
+                    ),
+                  ),
+                  controller: otpController,
+                  forceErrorState: true,
+                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                  validator: (pin) {
+                  /*  if (pin!.length < 4) {
+                      return "You should enter all SMS code";
+                    } else {
+                      return null;
+                    }*/
+                  },
                 ),
-                onCompleted: (value) {
-                  if (value == "requiredNumber") {
-                    print('valid pin');
-                  } else {
-                    print('invalid pin');
-                  }
-                },
               ),
+
               SizedBox(
                 height: 20.h,
               ),
@@ -111,12 +106,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       boldText: FontWeight.w400,
                       fontFamily: "Poppins-Regular"),
                   SizedBox(
-                    width: 10.w,
+                    width: 5.w,
                   ),
                   text(context, " 401  60X - 5XXX", 11.sp,
                       color: AppColors.textColor,
                       boldText: FontWeight.w400,
-                      fontFamily: "Poppins-Regular"),
+                      fontFamily: "Poppins-SemiBold"),
                 ],
               ),
               SizedBox(
@@ -127,19 +122,25 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                 child: GestureDetector(
                   onTap: () {},
                   child: Container(
-                    width: 110.w,
-                    height: 56.h,
+                    width: 105.w,
+                    height: 40.h,
                     decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 13.r,
+                          offset:const Offset(0,4),
+                          color: AppColors.shahdowColor.withOpacity(0.25)
+                        )
+                      ],
                         border: Border.all(color: AppColors.black, width: 1),
                         color: AppColors.black,
                         borderRadius: BorderRadius.circular(10)),
-                    child: const Center(
+                    child:  Center(
                       child: Text(
                         "Resend",
                         style: TextStyle(
-                            fontFamily: 'Open Sans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Poppins-Medium',
+                            fontSize: 16.sp,
                             color: AppColors.white),
                       ),
                     ),
@@ -152,14 +153,14 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               Align(
                   alignment: Alignment.center,
                   child: DefaultButton(
-                      text: "CONTINUE",
+                      text: "VERIFY",
                       press: () {
                         AppRoutes.push(
-                            context, PageTransitionType.fade, FirstName());
+                            context, PageTransitionType.fade, const FirstName());
                       })),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

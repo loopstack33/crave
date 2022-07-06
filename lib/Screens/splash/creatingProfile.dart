@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
@@ -5,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CreatingProfileScreen extends StatefulWidget {
-  CreatingProfileScreen({Key? key}) : super(key: key);
+  const CreatingProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<CreatingProfileScreen> createState() => _CreatingProfileScreenState();

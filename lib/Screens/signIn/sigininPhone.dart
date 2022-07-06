@@ -1,4 +1,4 @@
-import 'dart:ui';
+// ignore_for_file: file_names
 
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:crave/Screens/signIn/codeSignin.dart';
@@ -9,12 +9,10 @@ import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 class SigninPhoneValid extends StatefulWidget {
-  SigninPhoneValid({Key? key}) : super(key: key);
+  const SigninPhoneValid({Key? key}) : super(key: key);
 
   @override
   State<SigninPhoneValid> createState() => _SigninPhoneValidState();
@@ -32,6 +30,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
     CountryCode countryCode = CountryCode.fromDialCode('+86');
 
     return Scaffold(
+      backgroundColor: AppColors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 1,
@@ -45,23 +44,12 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
           },
         ),
         backgroundColor: AppColors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              logoRed,
-              width: 36.w,
-              height: 18.h,
-            ),
-            // SizedBox(
-            //   width: 5.w,
-            // ),
-            text(context, "  C R A V E             ", 15.sp,
-                color: AppColors.redcolor,
-                boldText: FontWeight.w600,
-                fontFamily: "Roboto-Medium"),
-          ],
+        title:Image.asset(
+          hLogo,
+          width: 105.w,
+          height: 18.h,
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -92,9 +80,10 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           const BorderRadius.all(Radius.circular(8.0)),
                     ),
                     child: CountryCodePicker(
+                      padding:const EdgeInsets.all(2),
+                      textStyle: TextStyle(fontFamily: 'Poppins-Regular',fontSize: 16.sp, color: AppColors.textColor),
                       onChanged: print,
                       initialSelection: countryCode.toString(),
-                      favorite: ['+39', 'FR'],
                       showCountryOnly: false,
                       showOnlyCountryWhenClosed: false,
                       alignLeft: false,
@@ -112,29 +101,24 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           width: 2,
                         ),
                         color: AppColors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8.0)),
+                        borderRadius: BorderRadius.all(Radius.circular(8.r)),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: TextFormField(
-                          cursorColor: Colors.black,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                  left: 10, bottom: 5, top: 5, right: 5),
-                              hintText: "Phone Number",
-                              hintStyle: TextStyle(
-                                  fontFamily: "Poppins-Regular",
-                                  fontSize: 16.sp,
-                                  color: AppColors.textColor,
-                                  fontWeight: FontWeight.w400)),
-                        ),
+                      child: TextFormField(
+                        cursorColor: Colors.black,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder:InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding:const EdgeInsets.only(
+                                left: 10, bottom: 5, top: 5, right: 5),
+                            hintText: "Phone Number",
+                            hintStyle: TextStyle(
+                                fontFamily: "Poppins-Regular",
+                                fontSize: 16.sp,
+                                color: AppColors.textColor)),
                       ))
                 ],
               ),
@@ -157,12 +141,12 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                     text: "CONTINUE",
                     press: () {
                       AppRoutes.push(
-                          context, PageTransitionType.fade, CodeSignin());
+                          context, PageTransitionType.fade, const CodeSignin());
                     }),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

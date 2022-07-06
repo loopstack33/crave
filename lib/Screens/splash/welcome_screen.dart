@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -15,6 +17,7 @@ class Welcome_Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -50,12 +53,12 @@ class Welcome_Screen extends StatelessWidget {
             SizedBox(height: 30.h),
             text(context, "The Ultimate Hookup App", 19.sp, color: const Color(0xffF5F5F5).withOpacity(0.5), boldText: FontWeight.w200, fontFamily: "Roboto-Light"),
             SizedBox(height: 40.h),
-            DefaultIconButton(iconColor: AppColors.redcolor, icon: FontAwesomeIcons.phone, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Phone", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,                 SigninPhoneValid());
+            DefaultIconButton(iconColor: AppColors.redcolor, icon: FontAwesomeIcons.phone, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Phone", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const SigninPhoneValid());
             }, size: 18.sp),
             SizedBox(
               height: 10.h,
             ),
-            DefaultIconButton(iconColor: AppColors.black, icon: FontAwesomeIcons.apple, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Apple", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,                 SigninPhoneValid());
+            DefaultIconButton(iconColor: AppColors.black, icon: FontAwesomeIcons.apple, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Apple", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const SigninPhoneValid());
             }, size: 18.sp),
             SizedBox(height: 30.h),
             Text.rich(

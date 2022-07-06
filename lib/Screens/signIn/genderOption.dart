@@ -1,18 +1,17 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:crave/Screens/signIn/codeSignin.dart';
+// ignore_for_file: file_names
+
 import 'package:crave/Screens/signIn/package.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 
 class GenderOption extends StatefulWidget {
-  GenderOption({Key? key}) : super(key: key);
+  const GenderOption({Key? key}) : super(key: key);
 
   @override
   State<GenderOption> createState() => _SigninPhoneValidState();
@@ -21,8 +20,8 @@ class GenderOption extends StatefulWidget {
 class _SigninPhoneValidState extends State<GenderOption> {
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
-  Color genderContainerBorderMan = Color(0xffE3E3E3);
-  Color genderContainerMan = Color(0xffF3F3F3);
+  Color genderContainerBorderMan = const Color(0xffE3E3E3);
+  Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
   @override
   void initState() {
@@ -33,6 +32,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 1,
         leading: GestureDetector(
@@ -45,23 +46,12 @@ class _SigninPhoneValidState extends State<GenderOption> {
           },
         ),
         backgroundColor: AppColors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              logoRed,
-              width: 36.w,
-              height: 18.h,
-            ),
-            // SizedBox(
-            //   width: 5.w,
-            // ),
-            text(context, "  C R A V E             ", 15.sp,
-                color: AppColors.redcolor,
-                boldText: FontWeight.w600,
-                fontFamily: "Roboto-Medium"),
-          ],
+        title:Image.asset(
+          hLogo,
+          width: 105.w,
+          height: 18.h,
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -93,8 +83,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                         children: [
                           text(context, "Hetero", 20.sp,
                               color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
+                              fontFamily: "Poppins-Medium"),
                           Image.asset(
                             hetero,
                             width: 74.w,
@@ -118,8 +107,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                         children: [
                           text(context, "Lesbian", 20.sp,
                               color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
+                              fontFamily: "Poppins-Medium"),
                           Image.asset(
                             lesbian,
                             width: 74.w,
@@ -148,8 +136,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                         children: [
                           text(context, "Gay", 20.sp,
                               color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
+                              fontFamily: "Poppins-Medium"),
                           Image.asset(
                             gay,
                             width: 74.w,
@@ -173,8 +160,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                         children: [
                           text(context, "Bisexual", 20.sp,
                               color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
+                              fontFamily: "Poppins-Medium"),
                           Image.asset(
                             bisexual,
                             width: 74.w,
@@ -185,7 +171,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                 ],
               ),
               SizedBox(
-                height: 20.h,
+                height: 30.h,
               ),
               Align(
                 alignment: Alignment.center,
@@ -193,12 +179,12 @@ class _SigninPhoneValidState extends State<GenderOption> {
                     text: "NEXT",
                     press: () {
                       AppRoutes.push(
-                          context, PageTransitionType.fade, PackageScreen());
+                          context, PageTransitionType.fade, const PackageScreen());
                     }),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 70),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -293,11 +279,4 @@ class _SigninPhoneValidState extends State<GenderOption> {
     );
   }
 
-  void _onRememberMeChanged(newValue) => setState(() {
-        checkbox = newValue;
-
-        if (checkbox) {
-          checkBoxBorder = AppColors.redcolor;
-        } else {}
-      });
 }

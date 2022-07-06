@@ -1,18 +1,15 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:crave/Screens/signIn/codeSignin.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PackageScreen extends StatefulWidget {
-  PackageScreen({Key? key}) : super(key: key);
+  const PackageScreen({Key? key}) : super(key: key);
 
   @override
   State<PackageScreen> createState() => _SigninPhoneValidState();
@@ -34,6 +31,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColors.white,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 1,
           leading: GestureDetector(
@@ -46,28 +45,17 @@ class _SigninPhoneValidState extends State<PackageScreen> {
             },
           ),
           backgroundColor: AppColors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                logoRed,
-                width: 36.w,
-                height: 18.h,
-              ),
-              // SizedBox(
-              //   width: 5.w,
-              // ),
-              text(context, "  C R A V E             ", 15.sp,
-                  color: AppColors.redcolor,
-                  boldText: FontWeight.w600,
-                  fontFamily: "Roboto-Medium"),
-            ],
+          title:Image.asset(
+            hLogo,
+            width: 105.w,
+            height: 18.h,
           ),
+          centerTitle: true,
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
-            padding: EdgeInsets.only(left: 20.w, right: 20, top: 30.h),
+            padding:const EdgeInsets.only(left: 20, right: 20, top: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,42 +70,44 @@ class _SigninPhoneValidState extends State<PackageScreen> {
 
                 //
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      height: 190.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                              image: AssetImage(week), fit: BoxFit.fill)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(children: [
-                          text(context, "ONE WEEK", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Regular"),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          text(context, "\$9.99", 14.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Bold"),
-                        ]),
+                    GestureDetector(
+                      onTap: ()=> AppRoutes.push(context, PageTransitionType.rightToLeft,
+                        const  CreatingProfileScreen()),
+                      child: Container(
+                        height: 190.h,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: const DecorationImage(
+                                image: AssetImage(week), fit: BoxFit.fill)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(children: [
+                            text(context, "ONE WEEK", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Regular"),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            text(context, "\$9.99", 14.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Bold"),
+                          ]),
+                        ),
                       ),
                     ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
+
                     Container(
                       height: 190.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
-                              image: const AssetImage(month),
+                              image:  AssetImage(month),
                               fit: BoxFit.cover)),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -143,9 +133,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         ]),
                       ),
                     ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
+
                     Container(
                       height: 190.h,
                       width: 100.w,
@@ -221,17 +209,37 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     boldText: FontWeight.w400,
                     fontFamily: "Poppins-Regular"),
 
-                SizedBox(
-                  height: 20.h,
-                ),
                 Align(
-                  alignment: Alignment.center,
-                  child: DefaultButton(
-                      text: "AGREE AND CONTINUE",
-                      press: () {
-                        AppRoutes.push(context, PageTransitionType.leftToRight,
-                            CreatingProfileScreen());
-                      }),
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        text(
+                            context,
+                            "Privacy Policy ",
+                            12.sp,
+                            color: const Color(0xffAAAAAA),
+                            boldText: FontWeight.w400,
+                            fontFamily: "Poppins-Medium"),
+                        SizedBox(width: 5.w),
+                        Container(
+                          height: 12.h,
+                          width: 2.w,
+                          color: const Color(0xFF565656),
+                        ),
+                        SizedBox(width: 5.w),
+                        text(
+                            context,
+                            "Terms of Service",
+                            12.sp,
+                            color: const Color(0xffAAAAAA),
+                            boldText: FontWeight.w400,
+                            fontFamily: "Poppins-Medium"),
+                      ],
+                    ),
+                  )
                 ),
                 SizedBox(
                   height: 20.h,
@@ -244,11 +252,4 @@ class _SigninPhoneValidState extends State<PackageScreen> {
     );
   }
 
-  void _onRememberMeChanged(newValue) => setState(() {
-        checkbox = newValue;
-
-        if (checkbox) {
-          checkBoxBorder = AppColors.redcolor;
-        } else {}
-      });
 }

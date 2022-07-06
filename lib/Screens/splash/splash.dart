@@ -22,7 +22,7 @@ class _SplashState extends State<Splash> {
     Future.delayed(
         const Duration(seconds: 3),
         () => AppRoutes.pushAndRemoveUntil(
-            context, PageTransitionType.topToBottom, Welcome_Screen()));
+            context, PageTransitionType.topToBottom, const Welcome_Screen()));
   }
 
   @override

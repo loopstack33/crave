@@ -41,8 +41,8 @@ dependencies:
   firebase_storage: ^10.2.18
   font_awesome_flutter: ^10.1.0
   cloud_firestore: ^3.1.18
-  pin_code_fields: ^7.4.0
   country_code_picker: ^2.0.2
+  pinput: ^2.2.11
 
 dev_dependencies:
   flutter_test:

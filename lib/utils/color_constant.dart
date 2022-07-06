@@ -11,12 +11,14 @@ class AppColors {
   static const black = Colors.black;
   static const redcolor = Color(0xffC70606);
   static const textcolor = Color(0xff2A2E32);
+  static const shahdowColor = Color(0xFFAEAEAE);
 
   static const grey1 = Color(0xffE5E5E5);
 
 //// EXTRA COLORS ////
   static const containerborder = Color(0xFFE4DFDF);
   static const textColor = Color(0xFF636363);
+  static const textColor2= Color(0xFFBDBDBD);
   static const blueShade = Color(0xFF1C609E);
   static const purpleShade = Color(0xFFBD80E1);
   static const orangeShade = Color(0xFFEB7A12);

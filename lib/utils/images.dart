@@ -7,6 +7,7 @@ const String lesbian = "assets/images/lesbian.png";
 const String logo = "assets/images/logo.png";
 const String logo2 = "assets/images/logo2.png";
 const String other = "assets/images/other.png";
+const String hLogo = "assets/images/hLogo.png";
 const String logoRed = "assets/images/logoRed.png";
 const String craveLogo = "assets/images/craveLogo.png";
 const String background = "assets/images/background.png";
