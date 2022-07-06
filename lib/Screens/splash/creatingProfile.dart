@@ -1,0 +1,41 @@
+import 'package:crave/utils/color_constant.dart';
+import 'package:crave/utils/images.dart';
+import 'package:crave/widgets/custom_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class CreatingProfileScreen extends StatefulWidget {
+  CreatingProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CreatingProfileScreen> createState() => _CreatingProfileScreenState();
+}
+
+class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: text(context, "Creating your profile...", 24.sp,
+                color: AppColors.black,
+                boldText: FontWeight.w600,
+                fontFamily: "Poppins-SemiBold"),
+          ),
+          SizedBox(
+            height: 50.h,
+          ),
+          Image.asset(
+            logo,
+            width: 100.w,
+            height: 100.h,
+            color: AppColors.grey1,
+          ),
+        ],
+      ),
+    );
+  }
+}
