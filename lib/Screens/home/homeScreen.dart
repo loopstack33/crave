@@ -1,4 +1,6 @@
 
+// ignore_for_file: file_names
+
 import 'package:crave/Screens/home/screens/chatScreen.dart';
 import 'package:crave/Screens/home/screens/dashboardScreen.dart';
 import 'package:crave/Screens/home/screens/matchScreen.dart';
@@ -39,9 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          // sets the background color of the `BottomNavigationBar`
             canvasColor: AppColors.white,
-            // sets the active color of the `BottomNavigationBar` if `Brightness` is light
             primaryColor: AppColors.white,
           ),
         child: BottomNavigationBar(

@@ -14,6 +14,9 @@ const String background = "assets/images/background.png";
 const String week = "assets/images/week.png";
 const String month = "assets/images/month.png";
 const String year = "assets/images/year.png";
+const String bell = "assets/images/bell.png";
+const String menu = "assets/images/menu.png";
+const String location = "assets/images/location.png";
 
 const String i1 = "assets/images/i1(2).png";
 const String i_1 = "assets/images/i1.png";
