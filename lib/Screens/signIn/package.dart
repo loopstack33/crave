@@ -35,6 +35,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          elevation: 1,
           leading: GestureDetector(
             child: const Icon(
               Icons.arrow_back_ios,
@@ -56,10 +57,10 @@ class _SigninPhoneValidState extends State<PackageScreen> {
               // SizedBox(
               //   width: 5.w,
               // ),
-              text(context, "  C R A V E        ", 24.sp,
+              text(context, "  C R A V E             ", 15.sp,
                   color: AppColors.redcolor,
                   boldText: FontWeight.w600,
-                  fontFamily: "Poppins-Semi-Bold"),
+                  fontFamily: "Roboto-Medium"),
             ],
           ),
         ),
@@ -95,8 +96,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         child: Column(children: [
                           text(context, "ONE WEEK", 12.sp,
                               color: AppColors.white,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Roboto-Light"),
+                              boldText: FontWeight.w400,
+                              fontFamily: "Roboto-Regular"),
                           SizedBox(
                             height: 10.h,
                           ),
@@ -123,8 +124,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         child: Column(children: [
                           text(context, "ONE MONTH", 12.sp,
                               color: AppColors.white,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Roboto-Light"),
+                              boldText: FontWeight.w400,
+                              fontFamily: "Roboto-Regular"),
                           SizedBox(
                             height: 10.h,
                           ),
@@ -138,7 +139,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                           text(context, "SAVE  \$10", 12.sp,
                               color: AppColors.white,
                               boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Bold"),
+                              fontFamily: "Roboto-Regular"),
                         ]),
                       ),
                     ),
@@ -157,8 +158,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         child: Column(children: [
                           text(context, "ONE YEAR", 12.sp,
                               color: AppColors.white,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Roboto-Light"),
+                              boldText: FontWeight.w400,
+                              fontFamily: "Roboto-Regular"),
                           SizedBox(
                             height: 10.h,
                           ),
@@ -172,7 +173,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                           text(context, "SAVE  \$20", 12.sp,
                               color: AppColors.white,
                               boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Bold"),
+                              fontFamily: "Roboto-Regular"),
                         ]),
                       ),
                     ),
@@ -183,15 +184,38 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                 ),
                 text(
                     context,
-                    "After purchasing the subscription, your post will appear to the public. You can also see posts from other people. Find someone you like and Have fun!\n\nYou can like anyone around the world. CRAVE has no borders! Tap on the ♥ icon, go chatting and have fun!",
+                    "After purchasing the subscription, your post will appear to the public. You can also see posts from other people. Find someone you like and Have fun!",
                     14.sp,
                     color: const Color(0xff9C9C9C),
                     boldText: FontWeight.w400,
                     fontFamily: "Poppins-Regular"),
+                SizedBox(
+                  height: 10.h,
+                ),
 
                 text(
                     context,
-                    "\n\nTry Video Chatting with someone new, tap the 🎥 icon in Chat and get to know someone through the lens of your camera! ",
+                    "You can like anyone around the world. CRAVE has no borders! Tap on the ♥ icon, go chatting and have fun!",
+                    14.sp,
+                    color: const Color(0xff9C9C9C),
+                    boldText: FontWeight.w400,
+                    fontFamily: "Poppins-Regular"),
+                SizedBox(
+                  height: 10.h,
+                ),
+                text(
+                    context,
+                    "All chats self-destruct in 24 hours.If you want to add more time to the chat timer, it's only \$1.99",
+                    14.sp,
+                    color: const Color(0xff9C9C9C),
+                    boldText: FontWeight.w400,
+                    fontFamily: "Poppins-Regular"),
+                SizedBox(
+                  height: 10.h,
+                ),
+                text(
+                    context,
+                    "Try Video Chatting with someone new, tap the 🎥 icon in Chat and get to know someone through the lens of your camera! ",
                     14.sp,
                     color: const Color(0xff9C9C9C),
                     boldText: FontWeight.w400,

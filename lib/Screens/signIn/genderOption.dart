@@ -34,6 +34,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         leading: GestureDetector(
           child: const Icon(
             Icons.arrow_back_ios,
@@ -55,10 +56,10 @@ class _SigninPhoneValidState extends State<GenderOption> {
             // SizedBox(
             //   width: 5.w,
             // ),
-            text(context, "  C R A V E        ", 24.sp,
+            text(context, "  C R A V E             ", 15.sp,
                 color: AppColors.redcolor,
                 boldText: FontWeight.w600,
-                fontFamily: "Poppins-Semi-Bold"),
+                fontFamily: "Roboto-Medium"),
           ],
         ),
       ),
@@ -191,8 +192,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                 child: DefaultButton(
                     text: "NEXT",
                     press: () {
-                      AppRoutes.push(context, PageTransitionType.leftToRight,
-                          PackageScreen());
+                      AppRoutes.push(
+                          context, PageTransitionType.fade, PackageScreen());
                     }),
               ),
               Spacer(),
@@ -202,8 +203,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -216,8 +217,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -230,8 +231,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -244,8 +245,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -258,8 +259,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -272,8 +273,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.redcolor,
                         border: Border.all(

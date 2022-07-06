@@ -31,38 +31,40 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   Widget build(BuildContext context) {
     CountryCode countryCode = CountryCode.fromDialCode('+86');
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.redcolor,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: AppColors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              logoRed,
-              width: 36.w,
-              height: 18.h,
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          elevation: 1,
+          leading: GestureDetector(
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.redcolor,
             ),
-            // SizedBox(
-            //   width: 5.w,
-            // ),
-            text(context, "  C R A V E        ", 24.sp,
-                color: AppColors.redcolor,
-                boldText: FontWeight.w600,
-                fontFamily: "Poppins-Semi-Bold"),
-          ],
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: AppColors.white,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                logoRed,
+                width: 36.w,
+                height: 18.h,
+              ),
+              // SizedBox(
+              //   width: 5.w,
+              // ),
+              text(context, "  C R A V E             ", 15.sp,
+                  color: AppColors.redcolor,
+                  boldText: FontWeight.w600,
+                  fontFamily: "Roboto-Medium"),
+            ],
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: Padding(
+        body: Padding(
           padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -152,8 +154,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   child: DefaultButton(
                       text: "CONTINUE",
                       press: () {
-                        AppRoutes.push(context, PageTransitionType.leftToRight,
-                            FirstName());
+                        AppRoutes.push(
+                            context, PageTransitionType.fade, FirstName());
                       })),
               const Spacer(),
               Padding(
@@ -162,8 +164,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -176,8 +178,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.redcolor,
                         border: Border.all(
@@ -190,8 +192,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -204,8 +206,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -218,8 +220,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -232,8 +234,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
