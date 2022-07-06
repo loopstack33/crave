@@ -1,3 +1,4 @@
+import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -74,7 +75,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                   children: [
                     GestureDetector(
                       onTap: ()=> AppRoutes.push(context, PageTransitionType.rightToLeft,
-                        const  CreatingProfileScreen()),
+                        const  HomeScreen()),
                       child: Container(
                         height: 190.h,
                         width: 100.w,

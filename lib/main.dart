@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
-
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -28,13 +28,10 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (BuildContext context, _) {
-          return MaterialApp(
+          return const MaterialApp(
             title: 'Flutter Demo',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
             debugShowCheckedModeBanner: false,
-            home: const Splash(),
+            home:  Splash(),
           );
         });
   }

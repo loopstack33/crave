@@ -14,3 +14,12 @@ const String background = "assets/images/background.png";
 const String week = "assets/images/week.png";
 const String month = "assets/images/month.png";
 const String year = "assets/images/year.png";
+
+const String i1 = "assets/images/i1(2).png";
+const String i_1 = "assets/images/i1.png";
+const String i2 = "assets/images/i2.png";
+const String i_2 = "assets/images/i2(2).png";
+const String i3 = "assets/images/i3.png";
+const String i_3 = "assets/images/i3(2).png";
+const String i4 = "assets/images/i4(4).png";
+const String i_4 = "assets/images/i4.png";
