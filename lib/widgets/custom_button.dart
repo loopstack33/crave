@@ -22,14 +22,13 @@ class DefaultButton extends StatelessWidget {
         height: 56.h,
         decoration: BoxDecoration(
             border: Border.all(color: AppColors.redcolor, width: 1),
-           
             color: AppColors.redcolor,
             borderRadius: BorderRadius.circular(10)),
         child: Center(
           child: Text(
             text,
             style: const TextStyle(
-                fontFamily: 'Open Sans',
+                fontFamily: 'Poppins-SemiBold',
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.white),

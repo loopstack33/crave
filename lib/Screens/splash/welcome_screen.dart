@@ -25,6 +25,9 @@ class Welcome_Screen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Spacer(
+              flex: 2,
+            ),
             Image.asset(
               logoRed,
               width: 80.w,
@@ -34,7 +37,9 @@ class Welcome_Screen extends StatelessWidget {
                 color: AppColors.white,
                 boldText: FontWeight.w600,
                 fontFamily: "Roboto-Bold"),
-            Container(color: Colors.transparent, height: 100, child: Spacer()),
+            Spacer(
+              flex: 3,
+            ),
             text(context, "The app that will", 32.sp,
                 color: AppColors.white,
                 boldText: FontWeight.w900,
@@ -61,11 +66,11 @@ class Welcome_Screen extends StatelessWidget {
                 color: const Color(0xffF5F5F5).withOpacity(0.5),
                 boldText: FontWeight.w200,
                 fontFamily: "Roboto-Light"),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                AppRoutes.push(context, PageTransitionType.topToBottom,
-                    SigninPhoneValid());
+                AppRoutes.push(
+                    context, PageTransitionType.fade, SigninPhoneValid());
               },
               child: Container(
                   width: 320.w,
@@ -84,9 +89,7 @@ class Welcome_Screen extends StatelessWidget {
                         width: 10,
                       ),
                       text(context, "Continue with Phone", 18.sp,
-                          color: AppColors.black,
-                          boldText: FontWeight.w500,
-                          fontFamily: "Roboto-Medium"),
+                          color: AppColors.black, fontFamily: "Roboto-Medium"),
                     ],
                   )),
             ),
@@ -116,13 +119,13 @@ class Welcome_Screen extends StatelessWidget {
                         width: 10,
                       ),
                       text(context, "Continue with Apple", 18.sp,
-                          color: AppColors.black,
-                          boldText: FontWeight.w600,
-                          fontFamily: "Roboto-Medium"),
+                          color: AppColors.black, fontFamily: "Roboto-Medium"),
                     ],
                   )),
             ),
-            const SizedBox(height: 40),
+            SizedBox(
+              height: 20.h,
+            ),
             text(context, "By registering, you agree to our Terms of Service,",
                 11.sp,
                 color: const Color(0xffF5F5F5),
@@ -132,7 +135,9 @@ class Welcome_Screen extends StatelessWidget {
                 color: const Color(0xffF5F5F5),
                 boldText: FontWeight.w700,
                 fontFamily: "Roboto-Regular"),
-                
+            Spacer(
+              flex: 1,
+            ),
           ],
         ),
       ),

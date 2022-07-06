@@ -29,7 +29,9 @@ class _SigninPhoneValidState extends State<FirstName> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        elevation: 1,
         leading: GestureDetector(
           child: const Icon(
             Icons.arrow_back_ios,
@@ -51,10 +53,10 @@ class _SigninPhoneValidState extends State<FirstName> {
             // SizedBox(
             //   width: 5.w,
             // ),
-            text(context, "  C R A V E        ", 24.sp,
+            text(context, "  C R A V E             ", 15.sp,
                 color: AppColors.redcolor,
                 boldText: FontWeight.w600,
-                fontFamily: "Poppins-Semi-Bold"),
+                fontFamily: "Roboto-Medium"),
           ],
         ),
       ),
@@ -93,7 +95,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                     padding: const EdgeInsets.only(left: 10),
                     child: TextFormField(
                       cursorColor: Colors.black,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.name,
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -143,8 +145,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                 child: DefaultButton(
                     text: "CONTINUE",
                     press: () {
-                      AppRoutes.push(context, PageTransitionType.leftToRight,
-                          BirthdayScreen());
+                      AppRoutes.push(
+                          context, PageTransitionType.fade, BirthdayScreen());
                     }),
               ),
               Spacer(),
@@ -154,8 +156,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -168,8 +170,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -182,8 +184,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.redcolor,
                         border: Border.all(
@@ -196,8 +198,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -210,8 +212,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
@@ -224,8 +226,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                       width: 10.h,
                     ),
                     Container(
-                      height: 10,
-                      width: 10,
+                      height: 8,
+                      width: 8,
                       decoration: BoxDecoration(
                         color: AppColors.greyLightShade,
                         border: Border.all(
