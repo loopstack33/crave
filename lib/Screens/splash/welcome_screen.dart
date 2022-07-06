@@ -2,7 +2,6 @@ import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
-import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,14 +25,10 @@ class Welcome_Screen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              logoRed,
+              craveLogo,
               width: 80.w,
-              height: 40.h,
+              height: 65.h,
             ),
-            text(context, "C R A V E", 16.sp,
-                color: AppColors.white,
-                boldText: FontWeight.w600,
-                fontFamily: "Roboto-Bold"),
             Container(color: Colors.transparent, height: 100, child: Spacer()),
             text(context, "The app that will", 32.sp,
                 color: AppColors.white,
