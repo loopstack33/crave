@@ -17,6 +17,12 @@ const String year = "assets/images/year.png";
 const String bell = "assets/images/bell.png";
 const String menu = "assets/images/menu.png";
 const String location = "assets/images/location.png";
+const String circle = "assets/images/circle.png";
+const String video = "assets/images/video.png";
+const String msg = "assets/images/message1.png";
+const String camera = "assets/images/camera.png";
+const String mic = "assets/images/mic.png";
+const String tick = "assets/images/read.png";
 
 const String i1 = "assets/images/i1(2).png";
 const String i_1 = "assets/images/i1.png";

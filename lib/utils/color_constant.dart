@@ -12,8 +12,14 @@ class AppColors {
   static const redcolor = Color(0xffC70606);
   static const textcolor = Color(0xff2A2E32);
   static const shahdowColor = Color(0xFFAEAEAE);
+  static const fontColor = Color(0xFF858585);
 
   static const grey1 = Color(0xffE5E5E5);
+  static const lightGrey = Color(0xFFAFAFAF);
+  static const chatColor= Color(0xFFFFD6D6);
+  static const darkGrey = Color(0xFF494949);
+  static const shadeText= Color(0xFF707070);
+  static const shadeLight= Color(0xFF606060);
 
 //// EXTRA COLORS ////
   static const containerborder = Color(0xFFE4DFDF);

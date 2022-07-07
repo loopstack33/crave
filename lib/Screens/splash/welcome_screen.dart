@@ -11,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../home/homeScreen.dart';
+
 class Welcome_Screen extends StatelessWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
 
@@ -53,7 +55,7 @@ class Welcome_Screen extends StatelessWidget {
             SizedBox(height: 30.h),
             text(context, "The Ultimate Hookup App", 19.sp, color: const Color(0xffF5F5F5).withOpacity(0.5), boldText: FontWeight.w200, fontFamily: "Roboto-Light"),
             SizedBox(height: 40.h),
-            DefaultIconButton(iconColor: AppColors.redcolor, icon: FontAwesomeIcons.phone, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Phone", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const SigninPhoneValid());
+            DefaultIconButton(iconColor: AppColors.redcolor, icon: FontAwesomeIcons.phone, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Phone", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const HomeScreen());
             }, size: 18.sp),
             SizedBox(
               height: 10.h,

@@ -1,7 +1,7 @@
 
 // ignore_for_file: file_names
 
-import 'package:crave/Screens/home/screens/chatScreen.dart';
+import 'package:crave/Screens/home/screens/chat/chatScreen.dart';
 import 'package:crave/Screens/home/screens/dashboardScreen.dart';
 import 'package:crave/Screens/home/screens/matchScreen.dart';
 import 'package:crave/Screens/home/screens/profileScreen.dart';
