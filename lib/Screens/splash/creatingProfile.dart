@@ -31,7 +31,7 @@ class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
             height: 50.h,
           ),
           Image.asset(
-            logo,
+            gif1,
             width: 100.w,
             height: 100.h,
             color: AppColors.grey1,

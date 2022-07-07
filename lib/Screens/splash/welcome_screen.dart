@@ -39,44 +39,103 @@ class Welcome_Screen extends StatelessWidget {
             const Spacer(flex: 3),
             Text.rich(
               textAlign: TextAlign.center,
-              TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: ' The app that will\n',
-                      style: TextStyle(color: AppColors.white,fontFamily: 'Roboto-Bold', fontSize: 32.sp),),
-                    TextSpan(text: ' have you',
-                      style: TextStyle(color: AppColors.white,fontFamily: 'Roboto-Bold', fontSize: 32.sp),),
-                    TextSpan(text: ' CRAVING\n',
-                      style: TextStyle(color: AppColors.redcolor, fontFamily: 'Roboto-Bold',fontSize: 32.sp),),
-                    TextSpan(text: ' for more...',
-                      style: TextStyle(color: AppColors.white,fontFamily: 'Roboto-Bold', fontSize: 32.sp),),
-                  ]
-              ),
+              TextSpan(children: <TextSpan>[
+                TextSpan(
+                  text: ' The app that will\n',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 32.sp),
+                ),
+                TextSpan(
+                  text: ' have you',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 32.sp),
+                ),
+                TextSpan(
+                  text: ' CRAVING\n',
+                  style: TextStyle(
+                      color: AppColors.redcolor,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 32.sp),
+                ),
+                TextSpan(
+                  text: ' for more...',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 32.sp),
+                ),
+              ]),
             ),
             SizedBox(height: 30.h),
-            text(context, "The Ultimate Hookup App", 19.sp, color: const Color(0xffF5F5F5).withOpacity(0.5), boldText: FontWeight.w200, fontFamily: "Roboto-Light"),
+            text(context, "The Ultimate Hookup App", 19.sp,
+                color: const Color(0xffF5F5F5).withOpacity(0.5),
+                boldText: FontWeight.w200,
+                fontFamily: "Roboto-Light"),
             SizedBox(height: 40.h),
-            DefaultIconButton(iconColor: AppColors.redcolor, icon: FontAwesomeIcons.phone, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Phone", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const HomeScreen());
-            }, size: 18.sp),
+            DefaultIconButton(
+                iconColor: AppColors.redcolor,
+                icon: FontAwesomeIcons.phone,
+                weight: FontWeight.w500,
+                color: AppColors.black,
+                fontFamily: "Roboto-Medium",
+                text: "Continue with Phone",
+                press: () {
+                  AppRoutes.push(context, PageTransitionType.topToBottom,
+                      const HomeScreen());
+                },
+                size: 18.sp),
             SizedBox(
               height: 10.h,
             ),
-            DefaultIconButton(iconColor: AppColors.black, icon: FontAwesomeIcons.apple, weight: FontWeight.w500, color: AppColors.black, fontFamily: "Roboto-Medium", text: "Continue with Apple", press: (){AppRoutes.push(context, PageTransitionType.topToBottom,  const SigninPhoneValid());
-            }, size: 18.sp),
+            DefaultIconButton(
+                iconColor: AppColors.black,
+                icon: FontAwesomeIcons.apple,
+                weight: FontWeight.w500,
+                color: AppColors.black,
+                fontFamily: "Roboto-Medium",
+                text: "Continue with Apple",
+                press: () {
+                  AppRoutes.push(context, PageTransitionType.topToBottom,
+                      const SigninPhoneValid());
+                },
+                size: 18.sp),
             SizedBox(height: 30.h),
             Text.rich(
-             textAlign: TextAlign.center,
-             TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: ' By registering, you agree to our',
-                        style: TextStyle(color: AppColors.white,fontFamily: 'Roboto-Regular', fontSize: 11.sp),),
-                    TextSpan(text: ' Terms of Service,\n',
-                      style: TextStyle(color: AppColors.white, fontFamily: 'Roboto-Bold',fontSize: 11.sp),),
-                    TextSpan(text: ' Privacy Policy and',
-                      style: TextStyle(color: AppColors.white, fontFamily: 'Roboto-Regular',fontSize: 11.sp),),
-                    TextSpan(text: ' Cookie Policy',
-                      style: TextStyle(color: AppColors.white, fontFamily: 'Roboto-Bold',fontSize: 11.sp),),
-                  ]
-              ),
+              textAlign: TextAlign.center,
+              TextSpan(children: <TextSpan>[
+                TextSpan(
+                  text: ' By registering, you agree to our',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Regular',
+                      fontSize: 11.sp),
+                ),
+                TextSpan(
+                  text: ' Terms of Service,\n',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 11.sp),
+                ),
+                TextSpan(
+                  text: ' Privacy Policy and',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Regular',
+                      fontSize: 11.sp),
+                ),
+                TextSpan(
+                  text: ' Cookie Policy',
+                  style: TextStyle(
+                      color: AppColors.white,
+                      fontFamily: 'Roboto-Bold',
+                      fontSize: 11.sp),
+                ),
+              ]),
             ),
             const Spacer(flex: 1),
           ],
