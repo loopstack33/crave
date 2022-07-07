@@ -26,3 +26,9 @@ const String i3 = "assets/images/i3.png";
 const String i_3 = "assets/images/i3(2).png";
 const String i4 = "assets/images/i4(4).png";
 const String i_4 = "assets/images/i4.png";
+
+const String matchframe = "assets/images/matchframe.png";
+const String refresh = "assets/images/refresh.png";
+const String match2 = "assets/images/match2.png";
+const String match22 = "assets/images/match22.png";
+const String centercrystal = "assets/images/centercrystal.png";
