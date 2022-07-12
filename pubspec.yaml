@@ -44,6 +44,7 @@ dependencies:
   country_code_picker: ^2.0.2
   pinput: ^2.2.11
   flutter_carousel_widget: ^1.1.0
+  lottie: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -96,6 +97,11 @@ flutter:
     - family: Poppins-Medium
       fonts:
         - asset: assets/fonts/Poppins-Medium.ttf
+        
+    - family: Poppins-MediumItalic
+      fonts:
+        - asset: assets/fonts/Poppins-MediumItalic.ttf
+
     - family: Poppins-SemiBold
       fonts:
         - asset: assets/fonts/Poppins-SemiBold.ttf    

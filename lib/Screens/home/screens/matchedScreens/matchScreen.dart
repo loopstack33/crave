@@ -1,8 +1,11 @@
+import 'package:crave/Screens/home/screens/matchedScreens/matchedSuccessful.dart';
+import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 
 class MatchScreen extends StatefulWidget {
   const MatchScreen({Key? key}) : super(key: key);
@@ -23,12 +26,18 @@ class _MatchScreenState extends State<MatchScreen> {
         automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 10.0,right: 10.0,left: 10.0),
+            padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Random Matches",style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 22.sp)),
-                Image.asset(circle,width: 30.w,height: 30.h,)
+                Text("Random Matches",
+                    style: TextStyle(
+                        fontFamily: 'Poppins-Medium', fontSize: 22.sp)),
+                Image.asset(
+                  circle,
+                  width: 30.w,
+                  height: 30.h,
+                )
               ],
             ),
           ),
@@ -79,7 +88,7 @@ class _MatchScreenState extends State<MatchScreen> {
                   ),
                   shape: BoxShape.circle,
                 ),
-                padding:const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Image.asset(
                   i2,
                 ),
@@ -93,18 +102,24 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
               ),
               const Spacer(flex: 1),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text("We’re finding a great match for you!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        color: Colors.white,
-                        fontFamily: "Poppins-Regular",
-                        fontWeight: FontWeight.w200,
-                      )),
+              InkWell(
+                onTap: () {
+                  AppRoutes.push(
+                      context, PageTransitionType.fade, MatchedSuccessed());
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text("We’re finding a great match for you!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: Colors.white,
+                          fontFamily: "Poppins-Regular",
+                          fontWeight: FontWeight.w200,
+                        )),
+                  ),
                 ),
               ),
             ],

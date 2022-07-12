@@ -3,8 +3,8 @@
 
 import 'package:crave/Screens/home/screens/chat/chatScreen.dart';
 import 'package:crave/Screens/home/screens/dashboardScreen.dart';
-import 'package:crave/Screens/home/screens/matchScreen.dart';
-import 'package:crave/Screens/home/screens/profileScreen.dart';
+import 'package:crave/Screens/home/screens/matchedScreens/matchScreen.dart';
+import 'package:crave/Screens/home/screens/profile/profileScreen.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

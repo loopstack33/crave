@@ -1,4 +1,5 @@
 import 'package:crave/Screens/home/homeScreen.dart';
+import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
@@ -44,7 +45,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
             },
           ),
           backgroundColor: AppColors.white,
-          title:Image.asset(
+          title: Image.asset(
             hLogo,
             width: 105.w,
             height: 18.h,
@@ -54,7 +55,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
-            padding:const EdgeInsets.only(left: 20, right: 20, top: 30),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,8 +73,10 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
-                      onTap: ()=> AppRoutes.push(context, PageTransitionType.rightToLeft,
-                        const  HomeScreen()),
+                      onTap: () => AppRoutes.push(
+                          context,
+                          PageTransitionType.rightToLeft,
+                          const CreatingProfileScreen()),
                       child: Container(
                         height: 190.h,
                         width: 100.w,
@@ -99,15 +102,13 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         ),
                       ),
                     ),
-
                     Container(
                       height: 190.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: const DecorationImage(
-                              image:  AssetImage(month),
-                              fit: BoxFit.cover)),
+                              image: AssetImage(month), fit: BoxFit.cover)),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(children: [
@@ -132,7 +133,6 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         ]),
                       ),
                     ),
-
                     Container(
                       height: 190.h,
                       width: 100.w,
@@ -209,37 +209,30 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     fontFamily: "Poppins-Regular"),
 
                 Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        text(
-                            context,
-                            "Privacy Policy ",
-                            12.sp,
-                            color: const Color(0xffAAAAAA),
-                            boldText: FontWeight.w400,
-                            fontFamily: "Poppins-Medium"),
-                        SizedBox(width: 5.w),
-                        Container(
-                          height: 12.h,
-                          width: 2.w,
-                          color: const Color(0xFF565656),
-                        ),
-                        SizedBox(width: 5.w),
-                        text(
-                            context,
-                            "Terms of Service",
-                            12.sp,
-                            color: const Color(0xffAAAAAA),
-                            boldText: FontWeight.w400,
-                            fontFamily: "Poppins-Medium"),
-                      ],
-                    ),
-                  )
-                ),
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          text(context, "Privacy Policy ", 12.sp,
+                              color: const Color(0xffAAAAAA),
+                              boldText: FontWeight.w400,
+                              fontFamily: "Poppins-Medium"),
+                          SizedBox(width: 5.w),
+                          Container(
+                            height: 12.h,
+                            width: 2.w,
+                            color: const Color(0xFF565656),
+                          ),
+                          SizedBox(width: 5.w),
+                          text(context, "Terms of Service", 12.sp,
+                              color: const Color(0xffAAAAAA),
+                              boldText: FontWeight.w400,
+                              fontFamily: "Poppins-Medium"),
+                        ],
+                      ),
+                    )),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -250,5 +243,4 @@ class _SigninPhoneValidState extends State<PackageScreen> {
       ),
     );
   }
-
 }

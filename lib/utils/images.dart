@@ -52,3 +52,26 @@ const String inperson = "assets/images/inperson.png";
 const String dirtytalk = "assets/images/dirtytalk.png";
 const String vanilla = "assets/images/vanilla.png";
 const String cross = "assets/images/cross.png";
+const String stars = 'assets/starsmatched.json';
+const String matchedboy = "assets/images/matchedboy.png";
+const String matchedgirl = 'assets/images/matchedgirl.png';
+
+
+
+const String casualDating1 = "assets/images/casualDating1.png";
+const String nostring = 'assets/images/nostring.png';
+const String kinky1 = "assets/images/kinky1.png";
+const String sexting = 'assets/images/sexting1.png';
+const String inperson1 = "assets/images/inperson1.png";
+const String vanilla1 = 'assets/images/vanilla1.png';
+const String submissive1 = "assets/images/submissive1.png";
+const String dominance1 = 'assets/images/dominance.png';
+const String dressup1 = "assets/images/dressup1.png";
+const String dirtytalk1 = 'assets/images/dirtytalk1.png';
+const String bondage1 = "assets/images/bondage1.png";
+const String roleplay1 = 'assets/images/roleplay1.png';
+const String shower1 = "assets/images/shower1.png";
+const String buttstuf1 = 'assets/images/buttstuf1.png';
+const String feetstuf1 = "assets/images/feetstuf1.png";
+const String cuddling1 = 'assets/images/cuddling1.png';
+const String blindfolding1 = "assets/images/blindfolding1.png";

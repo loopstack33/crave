@@ -1,31 +1,27 @@
+// ignore_for_file: file_names
+
+import 'package:crave/Screens/home/screens/profile/mycraves.dart';
+import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 
-class EditProfile extends StatefulWidget {
-  EditProfile({Key? key}) : super(key: key);
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
 
   @override
-  State<EditProfile> createState() => _EditProfileState();
+  State<Profile> createState() => _ProfileState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        leading: GestureDetector(
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.redcolor,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
         backgroundColor: AppColors.white,
         title: text(context, "Edit Profile", 24.sp,
             color: AppColors.black,
@@ -164,25 +160,31 @@ class _EditProfileState extends State<EditProfile> {
                           width: 114.w,
                           height: 22.h,
                         ),
-                        Container(
-                          height: 35.h,
-                          width: 85.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.redcolor,
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              text(context, "Add", 16.sp,
+                        InkWell(
+                          onTap: () {
+                            AppRoutes.push(
+                                context, PageTransitionType.fade, MyCraves());
+                          },
+                          child: Container(
+                            height: 35.h,
+                            width: 85.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.redcolor,
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                text(context, "Add", 16.sp,
+                                    color: AppColors.white,
+                                    boldText: FontWeight.w400,
+                                    fontFamily: "Poppins-Regular"),
+                                const Icon(
+                                  Icons.add,
                                   color: AppColors.white,
-                                  boldText: FontWeight.w400,
-                                  fontFamily: "Poppins-Regular"),
-                              const Icon(
-                                Icons.add,
-                                color: AppColors.white,
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
