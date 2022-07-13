@@ -40,40 +40,47 @@ class _ProfileState extends State<Profile> {
                   height: 96.w,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      height: 145,
-                      width: 137,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.asset(
-                        editprofileimage,
-                        width: 20.w,
-                        height: 60.h,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 130,
-                  left: 215,
-                  child: Container(
-                    height: 35,
-                    width: 35,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        cameraEdit,
-                        width: 20.2.w,
-                        height: 16.19.h,
-                      ),
+                  padding:const EdgeInsets.only(top: 30),
+                  child: Center(
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 140.w,
+                          height: 140.h,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 4.w,
+                                  color: Theme.of(context).scaffoldBackgroundColor),
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 2.r,
+                                    blurRadius: 10.r,
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset:const Offset(0, 10))
+                              ],
+                              shape: BoxShape.circle,
+                              image:const DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(editprofileimage))),
+                        ),
+                        Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              height: 40.h,
+                              width: 40.w,
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  width: 4,
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                ),
+                                color: AppColors.redcolor,
+                              ),
+                              child: Image.asset(cameraEdit)
+                            )),
+                      ],
                     ),
                   ),
                 ),
@@ -94,6 +101,7 @@ class _ProfileState extends State<Profile> {
                   width: 16.w,
                   height: 16.h,
                 ),
+                SizedBox(width: 5.w),
                 text(context, "California, USA", 14.sp,
                     color: const Color(0xff606060),
                     boldText: FontWeight.w500,
@@ -118,10 +126,10 @@ class _ProfileState extends State<Profile> {
               height: 10.h,
             ),
             Container(
-              height: 136,
-              width: 326,
+              height: 136.h,
+              margin: const EdgeInsets.only(left: 20,right: 20),
               decoration: BoxDecoration(
-                color: Color(0xffF5F5F5),
+                color: const Color(0xffF5F5F5),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
@@ -131,7 +139,7 @@ class _ProfileState extends State<Profile> {
                       context,
                       "Lorem Ipsum is simply dummy text of the printingand typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
                       14.sp,
-                      color: Color(0xff636363),
+                      color: const Color(0xff636363),
                       boldText: FontWeight.w400,
                       fontFamily: "Poppins-Regular"),
                 ),
@@ -144,7 +152,7 @@ class _ProfileState extends State<Profile> {
               height: 255.h,
               width: 335.w,
               decoration: BoxDecoration(
-                color: Color(0xffF5F5F5),
+                color: const Color(0xffF5F5F5),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
@@ -163,7 +171,7 @@ class _ProfileState extends State<Profile> {
                         InkWell(
                           onTap: () {
                             AppRoutes.push(
-                                context, PageTransitionType.fade, MyCraves());
+                                context, PageTransitionType.fade, const MyCraves());
                           },
                           child: Container(
                             height: 35.h,
@@ -195,7 +203,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(
@@ -244,7 +252,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(
@@ -293,7 +301,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(
@@ -342,7 +350,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(
@@ -391,7 +399,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(
@@ -440,7 +448,7 @@ class _ProfileState extends State<Profile> {
                         Container(
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: Color(0xff464646),
+                            color: const Color(0xff464646),
                             borderRadius: BorderRadius.circular(32),
                           ),
                           child: Padding(

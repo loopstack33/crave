@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:crave/Screens/home/screens/matchedScreens/matchedSuccessful.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -105,7 +107,7 @@ class _MatchScreenState extends State<MatchScreen> {
               InkWell(
                 onTap: () {
                   AppRoutes.push(
-                      context, PageTransitionType.fade, MatchedSuccessed());
+                      context, PageTransitionType.fade, const MatchedSuccessed());
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10),

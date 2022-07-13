@@ -1,4 +1,6 @@
 
+// ignore_for_file: file_names
+
 class User {
   final int id;
   final String name;

@@ -1,9 +1,12 @@
+// ignore_for_file: file_names
+
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 class MatchedSuccessed extends StatefulWidget {
   const MatchedSuccessed({Key? key}) : super(key: key);
@@ -21,7 +24,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
@@ -50,14 +53,16 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
             const Spacer(flex: 1),
             text(context, "YOU MATCHED!", 28.sp,
-                color: Colors.white,
-                boldText: FontWeight.w700,
+                color: Colors.white.withOpacity(0.58),
                 fontFamily: "Poppins-Bold"),
             const Spacer(flex: 1),
             Stack(
               children: [
+                Image.asset("assets/raw/stars.gif"),
+               // Lottie.asset(stars),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Image.asset(
@@ -68,13 +73,14 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                 ),
                 Positioned(
                   top: 50,
-                  left: 140,
+                  left: 160,
                   child: Image.asset(
                     matchedboy,
                     width: 220.w,
                     height: 230.h,
                   ),
                 ),
+
               ],
             ),
             const Spacer(flex: 1),

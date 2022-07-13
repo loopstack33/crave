@@ -93,7 +93,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                     width: 10.w,
                   ),
                   Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width*0.6,
                       height: 56.h,
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -105,6 +105,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                       ),
                       child: TextFormField(
                         cursorColor: Colors.black,
+                        textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,

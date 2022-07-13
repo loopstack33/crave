@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, file_names
+
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +13,7 @@ class ConversationList extends StatefulWidget{
   String time;
   String count;
   bool isMessageRead;
-  ConversationList({required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead,required this.count});
+  ConversationList({Key? key, required this.name,required this.messageText,required this.imageUrl,required this.time,required this.isMessageRead,required this.count}) : super(key: key);
   @override
   _ConversationListState createState() => _ConversationListState();
 }

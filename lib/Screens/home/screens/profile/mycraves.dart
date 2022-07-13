@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyCraves extends StatefulWidget {
-  MyCraves({Key? key}) : super(key: key);
+  const MyCraves({Key? key}) : super(key: key);
 
   @override
   State<MyCraves> createState() => _MyCravesState();
@@ -102,7 +102,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -146,7 +146,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -184,7 +184,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -228,7 +228,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -266,7 +266,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -310,7 +310,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -393,7 +393,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -431,7 +431,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -475,7 +475,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -513,7 +513,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -557,7 +557,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -595,7 +595,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -639,7 +639,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -677,7 +677,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(
@@ -721,7 +721,7 @@ class _MyCravesState extends State<MyCraves> {
                 Container(
                   height: 40.h,
                   decoration: BoxDecoration(
-                    color: Color(0xffFAFAFA),
+                    color: const Color(0xffFAFAFA),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Padding(

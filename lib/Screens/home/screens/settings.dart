@@ -1,4 +1,3 @@
-import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
@@ -6,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({Key? key}) : super(key: key);
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -54,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               height: 10.h,
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             SizedBox(
@@ -76,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               height: 10.h,
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             SizedBox(
@@ -98,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               height: 10.h,
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
             SizedBox(
@@ -116,10 +115,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               height: 10.h,
             ),
-            Divider(
+            const Divider(
               thickness: 1,
             ),
-            Spacer(flex: 1),
+            const Spacer(flex: 1),
             text(context, "Delete Account", 22.sp,
                 color: AppColors.redcolor,
                 boldText: FontWeight.w500,

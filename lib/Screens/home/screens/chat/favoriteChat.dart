@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../model/messageModel.dart';
 
 class FavoriteContacts extends StatelessWidget {
+  const FavoriteContacts({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {

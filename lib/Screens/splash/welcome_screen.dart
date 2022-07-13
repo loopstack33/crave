@@ -11,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../home/homeScreen.dart';
 
 class Welcome_Screen extends StatelessWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
@@ -85,7 +84,7 @@ class Welcome_Screen extends StatelessWidget {
                 text: "Continue with Phone",
                 press: () {
                   AppRoutes.push(context, PageTransitionType.topToBottom,
-                      const HomeScreen());
+                      const SigninPhoneValid());
                 },
                 size: 18.sp),
             SizedBox(

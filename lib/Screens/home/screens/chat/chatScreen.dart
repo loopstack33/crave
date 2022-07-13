@@ -3,10 +3,8 @@
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../model/chat_users.dart';
 import '../../../../widgets/conversationList.dart';
-import 'chatDetail.dart';
 import 'favoriteChat.dart';
 
 class Chat extends StatefulWidget {
@@ -36,7 +34,7 @@ class _ChatState extends State<Chat> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                FavoriteContacts(),
+                 FavoriteContacts(),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0,right: 15.0,bottom: 10.0),
                   child: Divider(color: AppColors.containerborder,thickness: 1.w,),

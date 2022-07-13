@@ -38,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
           child: InkWell(
               onTap: () {
                 AppRoutes.push(
-                    context, PageTransitionType.leftToRight, SettingsScreen());
+                    context, PageTransitionType.leftToRight, const SettingsScreen());
               },
               child: Image.asset(menu)),
         ),
@@ -90,8 +90,9 @@ class _DashboardState extends State<Dashboard> {
                                       loadingBuilder: (BuildContext ctx,
                                           Widget child,
                                           ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Center(
                                           child: CircularProgressIndicator(
                                             value: loadingProgress

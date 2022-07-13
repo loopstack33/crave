@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +10,7 @@ import '../../../../utils/images.dart';
 
 class ChatDetailPage extends StatefulWidget{
   String name, image;
-  ChatDetailPage({required this.name,required this.image});
+  ChatDetailPage({Key? key, required this.name,required this.image}) : super(key: key);
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -57,8 +59,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(widget.name,style: TextStyle( fontFamily: 'Poppins-Medium',fontSize: 16.sp),),
-                        Text("active now",style: TextStyle(fontFamily: 'Poppins-Regular', fontSize: 11.sp),),
+                        Text(widget.name,style: TextStyle( fontFamily: 'Poppins-Medium',fontSize: 13.sp),),
+                        Text("active now",style: TextStyle(fontFamily: 'Poppins-Regular', fontSize: 10.sp),),
                         Text("00:15:31",style: TextStyle(fontFamily: 'Poppins-SemiBold', fontSize: 10.sp),),
                       ],
                     ),
@@ -184,7 +186,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Image.asset(mic),
                           ),
-                          contentPadding: EdgeInsets.only(left: 10,bottom: 10),
+                          contentPadding: const EdgeInsets.only(left: 10,bottom: 10),
                             hintText: "Message...",
                             hintStyle: TextStyle(color:const Color(0xFF636363),fontFamily: 'Poppins-Regular',fontSize: 16.sp),
                             border: InputBorder.none

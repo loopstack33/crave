@@ -82,6 +82,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: TextFormField(
+                      textAlignVertical: TextAlignVertical.center,
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -105,17 +106,27 @@ class _SigninPhoneValidState extends State<FirstName> {
               ),
               Row(
                 children: [
-                  Checkbox(
-                      checkColor: AppColors.redcolor,
-                      focusColor: AppColors.black,
-                      hoverColor: AppColors.containerborder,
-                      activeColor: Colors.white,
-                      side: BorderSide(
-                        color: AppColors.redcolor, //your desire colour here
-                        width: 1.5.w,
-                      ),
-                      value: checkbox,
-                      onChanged: _onRememberMeChanged),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: checkbox == true ? AppColors.redcolor: Colors.transparent,
+                          width: 1.3),
+                    ),
+                    width: 18.w,
+                    height: 18.h,
+                    child: Checkbox(
+                        checkColor: AppColors.redcolor,
+                        focusColor: AppColors.black,
+                        hoverColor: AppColors.containerborder,
+                        activeColor: Colors.white,
+                        side: BorderSide(
+                          color: AppColors.redcolor, //your desire colour here
+                          width: 1.5.w,
+                        ),
+                        value: checkbox,
+                        onChanged: _onRememberMeChanged),
+                  ),
+                  SizedBox(width: 10.w),
                   text(context, "Show my name on my profile", 13.sp,
                       color: AppColors.textColor,
                       boldText: FontWeight.w400,

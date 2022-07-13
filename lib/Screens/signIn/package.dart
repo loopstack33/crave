@@ -1,4 +1,3 @@
-import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';

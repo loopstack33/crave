@@ -52,7 +52,8 @@ const String inperson = "assets/images/inperson.png";
 const String dirtytalk = "assets/images/dirtytalk.png";
 const String vanilla = "assets/images/vanilla.png";
 const String cross = "assets/images/cross.png";
-const String stars = 'assets/starsmatched.json';
+const String stars = 'assets/raw/starsmatched.json';
+
 const String matchedboy = "assets/images/matchedboy.png";
 const String matchedgirl = 'assets/images/matchedgirl.png';
 
