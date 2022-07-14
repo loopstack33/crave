@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1089311314091",
+    "project_id": "craveapp-f551f",
+    "storage_bucket": "craveapp-f551f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089311314091:android:7738fd207635bfe7d727ee",
+        "android_client_info": {
+          "package_name": "com.crave.datingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1089311314091-9hsns3cfn7n59dj6uc7jlk80bnr8lnp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8aQaXpYyJkaJqZhdYNM3j-18mZ3YqKDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1089311314091-9hsns3cfn7n59dj6uc7jlk80bnr8lnp3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

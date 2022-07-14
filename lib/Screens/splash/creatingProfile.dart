@@ -20,7 +20,7 @@ class CreatingProfileScreen extends StatefulWidget {
 class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     Future.delayed(
         const Duration(seconds: 3),

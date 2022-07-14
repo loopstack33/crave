@@ -1,29 +1,51 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously
+import 'dart:async';
+
 import 'package:crave/Screens/signIn/name.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../widgets/custom_toast.dart';
+
 class CodeSignin extends StatefulWidget {
-  const CodeSignin({Key? key}) : super(key: key);
+  String phone;
+  bool isTimeOut2;
+  String verifyId;
+   CodeSignin({Key? key, required this.phone,
+    required this.verifyId,
+    required this.isTimeOut2}) : super(key: key);
 
   @override
   State<CodeSignin> createState() => _SigninPhoneValidState();
 }
 
 class _SigninPhoneValidState extends State<CodeSignin> {
+
+  ///VARIABLES AND DECLARATION
   TextEditingController otpController = TextEditingController();
+  bool verifyText = false;
+  bool loading = false;
+  bool isTimeOut = false;
+  String myVerificationId = "";
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  int start = 60;
+  bool wait = false;
+  String verificationIdFinal = "";
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    myVerificationId = widget.verifyId;
+    isTimeOut = widget.isTimeOut2;
+    startTimer();
   }
 
   @override
@@ -114,7 +136,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       fontFamily: "Poppins-SemiBold"),
                 ],
               ),
-              SizedBox(
+              /*SizedBox(
                 height: 20.h,
               ),
               Align(
@@ -146,7 +168,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                     ),
                   ),
                 ),
-              ),
+              ),*/
               SizedBox(
                 height: 20.h,
               ),
@@ -155,9 +177,97 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   child: DefaultButton(
                       text: "VERIFY",
                       press: () {
-                        AppRoutes.push(
-                            context, PageTransitionType.fade, const FirstName());
+                        PhoneAuthCredential phoneAuthCredential =
+                        PhoneAuthProvider.credential(
+                            verificationId: myVerificationId,
+                            smsCode: otpController.text);
+
+                        signInWithPhoneAuthCredential(
+                            phoneAuthCredential);
                       })),
+              verifyText == false
+                  ? const SizedBox.shrink()
+                  : Center(
+                child: Text(
+                  "Successful!",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                      color: const Color.fromARGB(255, 45, 253, 52)),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Center(
+                child: Text(
+                  "Didn't you receive any code?",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp,
+                      color: AppColors.bbColor),
+                ),
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              start == 0
+                  ?  Align(
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                      onTap: wait
+                          ? null
+                          : () async {
+                        if(mounted) {
+                          setState(() {
+                            start = 60;
+                            wait = true;
+                          });
+                        }
+                        await verifyPhoneNumber(
+                            widget.phone.toString(), context, setData);
+                      },
+
+                    child: Container(
+                      width: 105.w,
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 13.r,
+                                offset:const Offset(0,4),
+                                color: AppColors.shahdowColor.withOpacity(0.25)
+                            )
+                          ],
+                          border: Border.all(color: AppColors.black, width: 1),
+                          color: AppColors.black,
+                          borderRadius: BorderRadius.circular(10)),
+                      child:  Center(
+                        child: Text(
+                          "Resend",
+                          style: TextStyle(
+                              fontFamily: 'Poppins-Medium',
+                              fontSize: 16.sp,
+                              color: AppColors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ):const SizedBox(),
+
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: Text(
+                  "wait 00:$start sec",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp,
+                      color: AppColors.bbColor),
+                ),
+              ),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
@@ -253,5 +363,94 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         ),
       ),
     );
+  }
+
+
+  void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
+    if (mounted) {
+      setState(() {
+        loading = true;
+      });
+    }
+    try {
+      final authCredential =
+      await _auth.signInWithCredential(phoneAuthCredential);
+      if (authCredential.user != null) {
+        if (mounted) {
+          setState(() {
+            verifyText = true;
+          });
+        }
+        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+      ToastUtils.showCustomToast(context, e.message.toString(), Colors.red);
+    }
+  }
+
+  void startTimer() {
+    const onsec = Duration(seconds: 1);
+    Timer _timer = Timer.periodic(onsec, (timer) {
+      if (start == 0) {
+        if (mounted) {
+          setState(() {
+            timer.cancel();
+            wait = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            start--;
+          });
+        }
+      }
+    });
+  }
+
+  Future<void> verifyPhoneNumber(String phoneNumber, BuildContext context, Function setData) async {
+    PhoneVerificationCompleted verificationCompleted = (PhoneAuthCredential phoneAuthCredential) async {
+      ToastUtils.showCustomToast(context, "Verification Completed", Colors.green);
+    };
+    PhoneVerificationFailed verificationFailed =
+        (FirebaseAuthException exception) {
+      ToastUtils.showCustomToast(context, exception.toString(), Colors.red);
+    };
+    PhoneCodeSent codeSent = (String verificationId, int? resendToken) {
+      ToastUtils.showCustomToast(
+          context,
+          "Verification Code sent on the phone number",
+          Colors.green);
+
+      setData(verificationId);
+    };
+
+    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
+        (String verificationID) {
+      ToastUtils.showCustomToast(context, "TimeOut", Colors.red);
+    };
+    try {
+      await _auth.verifyPhoneNumber(
+          timeout:const Duration(seconds: 60),
+          phoneNumber: phoneNumber,
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+    } catch (e) {
+      ToastUtils.showCustomToast(context, e.toString(), Colors.red);
+    }
+  }
+
+  void setData(String verificationId) {
+    setState(() {
+      verificationIdFinal = verificationId;
+    });
+    startTimer();
   }
 }

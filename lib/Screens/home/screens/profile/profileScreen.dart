@@ -23,7 +23,7 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         elevation: 1,
         backgroundColor: AppColors.white,
-        title: text(context, "Edit Profile", 24.sp,
+        title: text(context, "Profile", 24.sp,
             color: AppColors.black,
             boldText: FontWeight.w500,
             fontFamily: "Poppins-Medium"),
@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
                   height: 96.w,
                 ),
                 Padding(
-                  padding:const EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 30),
                   child: Center(
                     child: Stack(
                       children: [
@@ -50,16 +50,17 @@ class _ProfileState extends State<Profile> {
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 4.w,
-                                  color: Theme.of(context).scaffoldBackgroundColor),
+                                  color: Theme.of(context)
+                                      .scaffoldBackgroundColor),
                               boxShadow: [
                                 BoxShadow(
                                     spreadRadius: 2.r,
                                     blurRadius: 10.r,
                                     color: Colors.black.withOpacity(0.1),
-                                    offset:const Offset(0, 10))
+                                    offset: const Offset(0, 10))
                               ],
                               shape: BoxShape.circle,
-                              image:const DecorationImage(
+                              image: const DecorationImage(
                                   fit: BoxFit.cover,
                                   image: AssetImage(editprofileimage))),
                         ),
@@ -67,19 +68,19 @@ class _ProfileState extends State<Profile> {
                             bottom: 0,
                             right: 0,
                             child: Container(
-                              height: 40.h,
-                              width: 40.w,
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 4,
-                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                height: 40.h,
+                                width: 40.w,
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    width: 4,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                  ),
+                                  color: AppColors.redcolor,
                                 ),
-                                color: AppColors.redcolor,
-                              ),
-                              child: Image.asset(cameraEdit)
-                            )),
+                                child: Image.asset(cameraEdit))),
                       ],
                     ),
                   ),
@@ -127,7 +128,7 @@ class _ProfileState extends State<Profile> {
             ),
             Container(
               height: 136.h,
-              margin: const EdgeInsets.only(left: 20,right: 20),
+              margin: const EdgeInsets.only(left: 20, right: 20),
               decoration: BoxDecoration(
                 color: const Color(0xffF5F5F5),
                 borderRadius: BorderRadius.circular(12),
@@ -170,8 +171,8 @@ class _ProfileState extends State<Profile> {
                         ),
                         InkWell(
                           onTap: () {
-                            AppRoutes.push(
-                                context, PageTransitionType.fade, const MyCraves());
+                            AppRoutes.push(context, PageTransitionType.fade,
+                                const MyCraves());
                           },
                           child: Container(
                             height: 35.h,

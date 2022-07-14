@@ -17,10 +17,9 @@ class FirstName extends StatefulWidget {
 
 class _SigninPhoneValidState extends State<FirstName> {
   bool checkbox = false;
- // Color checkBoxBorder = AppColors.greyShade;
+  // Color checkBoxBorder = AppColors.greyShade;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -41,7 +40,7 @@ class _SigninPhoneValidState extends State<FirstName> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -80,7 +79,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                     borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10, bottom: 10),
                     child: TextFormField(
                       textAlignVertical: TextAlignVertical.center,
                       cursorColor: Colors.black,
@@ -91,7 +90,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                           enabledBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
                           disabledBorder: InputBorder.none,
-                          contentPadding:const EdgeInsets.only(
+                          contentPadding: const EdgeInsets.only(
                               left: 10, bottom: 5, top: 5, right: 5),
                           hintText: "Enter your first name",
                           hintStyle: TextStyle(
@@ -109,7 +108,9 @@ class _SigninPhoneValidState extends State<FirstName> {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: checkbox == true ? AppColors.redcolor: Colors.transparent,
+                          color: checkbox == true
+                              ? AppColors.redcolor
+                              : Colors.transparent,
                           width: 1.3),
                     ),
                     width: 18.w,
@@ -141,8 +142,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                 child: DefaultButton(
                     text: "CONTINUE",
                     press: () {
-                      AppRoutes.push(
-                          context, PageTransitionType.fade, const BirthdayScreen());
+                      AppRoutes.push(context, PageTransitionType.fade,
+                          const BirthdayScreen());
                     }),
               ),
               const Spacer(),
@@ -243,8 +244,8 @@ class _SigninPhoneValidState extends State<FirstName> {
   }
 
   void _onRememberMeChanged(newValue) => setState(() {
-    setState((){
-      checkbox = newValue;
-    });
+        setState(() {
+          checkbox = newValue;
+        });
       });
 }

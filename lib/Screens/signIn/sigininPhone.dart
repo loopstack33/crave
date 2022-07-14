@@ -7,9 +7,12 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../../widgets/custom_toast.dart';
 
 class SigninPhoneValid extends StatefulWidget {
   const SigninPhoneValid({Key? key}) : super(key: key);
@@ -19,16 +22,14 @@ class SigninPhoneValid extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<SigninPhoneValid> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  ///VARIABLES AND DECLARATION
+  CountryCode countryCode = CountryCode.fromDialCode('+92');
+  bool loading = false;
+  bool isEnabled = false;
+  TextEditingController phone = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    CountryCode countryCode = CountryCode.fromDialCode('+86');
-
     return Scaffold(
       backgroundColor: AppColors.white,
       resizeToAvoidBottomInset: false,
@@ -44,7 +45,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -80,20 +81,28 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           const BorderRadius.all(Radius.circular(8.0)),
                     ),
                     child: CountryCodePicker(
-                      padding:const EdgeInsets.all(2),
-                      textStyle: TextStyle(fontFamily: 'Poppins-Regular',fontSize: 16.sp, color: AppColors.textColor),
-                      onChanged: print,
+                      padding: const EdgeInsets.all(2),
+                      textStyle: TextStyle(
+                          fontFamily: 'Poppins-Regular',
+                          fontSize: 16.sp,
+                          color: AppColors.textColor),
+                      onChanged: (code) {
+                        if (mounted) {
+                          setState(() {
+                            countryCode = code;
+                          });
+                        }
+                      },
                       initialSelection: countryCode.toString(),
                       showCountryOnly: false,
                       showOnlyCountryWhenClosed: false,
-                      alignLeft: false,
                     ),
                   ),
                   SizedBox(
                     width: 10.w,
                   ),
                   Container(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.57,
                       height: 56.h,
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -104,16 +113,30 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                         borderRadius: BorderRadius.all(Radius.circular(8.r)),
                       ),
                       child: TextFormField(
+                        onChanged: (text) {
+                          setState(() {
+                            if(text.isNotEmpty) {
+                              isEnabled=true;
+                            } else {
+                              isEnabled=false;
+                            }
+                          });
+                        },
+                        controller: phone,
                         cursorColor: Colors.black,
+                        style: TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            fontSize: 16.sp,
+                            color: AppColors.textColor),
                         textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
-                            enabledBorder:InputBorder.none,
+                            enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
-                            contentPadding:const EdgeInsets.only(
+                            contentPadding: const EdgeInsets.only(
                                 left: 10, bottom: 5, top: 5, right: 5),
                             hintText: "Phone Number",
                             hintStyle: TextStyle(
@@ -138,11 +161,79 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: DefaultButton(
+                child:loading
+                    ?const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                  ),
+                )
+                    :  DefaultButton(
                     text: "CONTINUE",
-                    press: () {
-                      AppRoutes.push(
-                          context, PageTransitionType.fade, const CodeSignin());
+                    press: ()async {
+
+                      if (mounted) {
+                        setState(() {
+                          loading = true;
+                        });
+                      }
+                      if (phone.text.isEmpty) {
+                        ToastUtils.showCustomToast(
+                            context,
+                            "Please enter number",
+                            AppColors.redcolor);
+                        if (mounted) {
+                          setState(() {
+                            loading = false;
+                          });
+                        }
+                      } else {
+                        await FirebaseAuth.instance.verifyPhoneNumber(
+                          phoneNumber: countryCode.toString() + phone.text.toString().replaceAll(RegExp(r'^0+(?=.)'), ''),
+                          verificationCompleted: (PhoneAuthCredential credential) async {
+                          },
+                          verificationFailed:
+                              (FirebaseAuthException e) {
+                            if (mounted) {
+                              setState(() {
+                                loading = false;
+                              });
+                            }
+                            ToastUtils.showCustomToast(
+                                context, e.code.toString(), Colors.red);
+                          },
+                          codeSent: (String verificationId,
+                              int? resendToken) {
+                            ToastUtils.showCustomToast(context,
+                                "Code Sent", Colors.lightGreen);
+                            if (mounted) {
+                              setState(() {
+                                loading = false;
+                              });
+                            }
+                            AppRoutes.push(
+                                context, PageTransitionType.fade,
+                                 CodeSignin(
+                                    isTimeOut2: false,
+                                    phone: countryCode.toString() +
+                                        phone.text
+                                            .toString()
+                                            .replaceAll(
+                                            RegExp(r'^0+(?=.)'), '')
+                                            .toString(),
+                                    verifyId: verificationId
+                                ));
+
+                          },
+                          codeAutoRetrievalTimeout:
+                              (String verificationId) {
+                            if (mounted) {
+                              setState(() {
+                                loading = false;
+                              });
+                            }
+                          },
+                        );
+                      }
                     }),
               ),
               const Spacer(),
@@ -241,4 +332,5 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
       ),
     );
   }
+
 }
