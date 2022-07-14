@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../widgets/custom_toast.dart';
 
 class FirstName extends StatefulWidget {
@@ -287,9 +286,9 @@ class _SigninPhoneValidState extends State<FirstName> {
   }
 
   void postDetailsToFirestore(BuildContext context, name) async {
-    final _auth = FirebaseAuth.instance;
+    final auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    User? user = _auth.currentUser;
+    User? user = auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'name': name,

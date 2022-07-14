@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches, file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UsersModel {
@@ -44,53 +46,53 @@ class UsersModel {
     try {
       userId = doc.get("userId");
     } catch (e) {
-      print(e);
+      
     }
 
     try {
       userToken = doc.get("userToken");
     }
     catch (e) {
-      print(e);
+      
     }
     try {
       userName = doc.get("userName");
     } catch (e) {
-      print(e);
+      
     }
     try {
       genes = doc.get("genes");
     } catch (e) {
-      print(e);
+      
     }
     try {
       birthday = doc.get("birthday");
     } catch (e) {
-      print(e);
+      
     }
 
     try {
       phoneNumber = doc.get("phoneNumber");
     } catch (e) {
-      print(e);
+      
     }
 
     try {
       bio = doc.get("bio");
     } catch (e) {
-      print(e);
+      
     }
 
     try {
       status = doc.get("status");
     } catch (e) {
-      print(e);
+      
     }
 
     try {
       gender = doc.get("gender");
     } catch (e) {
-      print(e);
+      
     }
 
     return UsersModel(

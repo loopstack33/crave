@@ -95,7 +95,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                         date = newDate;
                         duration = AgeCalculator.age(date);
                         age = duration!.years.toString();
-                        print('Your age is $duration');
+
                       });
                     },
                   ),
@@ -106,7 +106,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: text(context, "Age ${age}", 22.sp,
+                child: text(context, "Age $age", 22.sp,
                     color: AppColors.black,
                     boldText: FontWeight.w600,
                     fontFamily: "Poppins-SemiBold"),

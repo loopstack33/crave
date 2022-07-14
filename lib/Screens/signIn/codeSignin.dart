@@ -1,9 +1,7 @@
 // ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously, must_be_immutable
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/name.dart';
-import 'package:crave/model/userModel.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
@@ -478,10 +476,10 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   }
 
   void postDetailsToFirestore(BuildContext context, phone) async {
-    final _auth = FirebaseAuth.instance;
+    final auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
+    User? user = auth.currentUser;
 
 
     await firebaseFirestore.collection("users").doc(user!.uid).set({
