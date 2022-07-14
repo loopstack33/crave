@@ -4,6 +4,7 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,14 +17,19 @@ class GenderScreen extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<GenderScreen> {
+  String? gender;
+  bool man = false;
+  bool woman = false;
+  bool others = false;
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
   Color genderContainerBorderMan = const Color(0xffE3E3E3);
   Color genderContainerMan = const Color(0xffF3F3F3);
+  Color lightRedContainer = const Color(0xffFFE9E9);
+
   DateTime date = DateTime(2016, 10, 26);
   @override
   void initState() {
-    
     super.initState();
   }
 
@@ -44,7 +50,7 @@ class _SigninPhoneValidState extends State<GenderScreen> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -68,54 +74,94 @@ class _SigninPhoneValidState extends State<GenderScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(8.r)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          text(context, "Man", 20.sp,
-                              color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
-                          SizedBox(height: 10.h),
-                          Image.asset(
-                            male,
-                            width: 74.w,
-                          //  height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (woman == true || others == true) {
+                          woman = false;
+                          others = false;
+                          man = true;
+                          gender = "Man";
+                        } else {
+                          man = true;
+                          gender = "Man";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: man
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color: man ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(8.r)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            text(context, "Man", 20.sp,
+                                color: man
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                boldText: FontWeight.w600,
+                                fontFamily: "Poppins-SemiBold"),
+                            SizedBox(height: 10.h),
+                            Image.asset(
+                              male,
+                              width: 74.w,
+                              //  height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          text(context, "Woman", 20.sp,
-                              color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
-                          SizedBox(height: 10.h),
-                          Image.asset(
-                            female,
-                            width: 74.w,
-                           // height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (man == true || others == true) {
+                          man = false;
+                          others = false;
+                          woman = true;
+                          gender = "Woman";
+                        } else {
+                          woman = true;
+                          gender = "Woman";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: woman
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color: woman ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            text(context, "Woman", 20.sp,
+                                color: woman
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                boldText: FontWeight.w600,
+                                fontFamily: "Poppins-SemiBold"),
+                            SizedBox(height: 10.h),
+                            Image.asset(
+                              female,
+                              width: 74.w,
+                              // height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                 ],
               ),
@@ -125,28 +171,49 @@ class _SigninPhoneValidState extends State<GenderScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          text(context, "Other", 20.sp,
-                              color: AppColors.greyShade,
-                              boldText: FontWeight.w600,
-                              fontFamily: "Poppins-SemiBold"),
-                          SizedBox(height: 10.h),
-                          Image.asset(
-                            other,
-                            width: 74.w,
-                         //   height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (man == true || woman == true) {
+                          woman = false;
+                          man = false;
+                          others = true;
+                          gender = "Other";
+                        } else {
+                          others = true;
+                          gender = "Other";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: others
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color:
+                              others ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            text(context, "Other", 20.sp,
+                                color: others
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                boldText: FontWeight.w600,
+                                fontFamily: "Poppins-SemiBold"),
+                            SizedBox(height: 10.h),
+                            Image.asset(
+                              other,
+                              width: 74.w,
+                              //   height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                 ],
               ),
@@ -158,11 +225,21 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                 child: DefaultButton(
                     text: "NEXT",
                     press: () {
-                      AppRoutes.push(
-                          context, PageTransitionType.fade, const GenderOption());
+                      if (man == true ||
+                          woman == true ||
+                          others == true ||
+                          gender != null) {
+                        AppRoutes.push(context, PageTransitionType.fade,
+                            const GenderOption());
+                        ToastUtils.showCustomToast(
+                            context, gender!, Colors.red);
+                      } else {
+                        ToastUtils.showCustomToast(
+                            context, "choose gender", Colors.red);
+                      }
                     }),
               ),
-             const Spacer(),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Row(
@@ -258,5 +335,4 @@ class _SigninPhoneValidState extends State<GenderScreen> {
       ),
     );
   }
-
 }

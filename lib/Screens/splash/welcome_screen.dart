@@ -11,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 
-
 class Welcome_Screen extends StatelessWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
 
