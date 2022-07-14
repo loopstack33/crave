@@ -1,3 +1,4 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:crave/Screens/signIn/gender.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -20,10 +21,10 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
   DateTime date = DateTime(2016, 10, 26);
-
+  DateDuration? duration;
+  String age = "your age";
   @override
   void initState() {
-    
     super.initState();
   }
 
@@ -44,7 +45,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -65,7 +66,8 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
               SizedBox(
                 height: 10.h,
               ),
-              text(context, "Your birthday won’t be visible to \nothers.", 15.sp,
+              text(
+                  context, "Your birthday won’t be visible to \nothers.", 15.sp,
                   color: AppColors.textColor2.withOpacity(0.72),
                   boldText: FontWeight.w400,
                   fontFamily: "Poppins-Regular"),
@@ -78,7 +80,10 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
-                      dateTimePickerTextStyle: TextStyle(color: AppColors.black,fontFamily: 'Poppins-Medium',fontSize: 19.sp),
+                      dateTimePickerTextStyle: TextStyle(
+                          color: AppColors.black,
+                          fontFamily: 'Poppins-Medium',
+                          fontSize: 19.sp),
                     ),
                   ),
                   child: CupertinoDatePicker(
@@ -86,7 +91,12 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                     mode: CupertinoDatePickerMode.date,
                     use24hFormat: true,
                     onDateTimeChanged: (DateTime newDate) {
-                      setState(() => date = newDate);
+                      setState(() {
+                        date = newDate;
+                        duration = AgeCalculator.age(date);
+                        age = duration!.years.toString();
+                        print('Your age is $duration');
+                      });
                     },
                   ),
                 ),
@@ -96,7 +106,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: text(context, "Age 1", 22.sp,
+                child: text(context, "Age ${age}", 22.sp,
                     color: AppColors.black,
                     boldText: FontWeight.w600,
                     fontFamily: "Poppins-SemiBold"),
@@ -110,8 +120,8 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                 child: DefaultButton(
                     text: "NEXT",
                     press: () {
-                      AppRoutes.push(
-                          context, PageTransitionType.fade, const GenderScreen());
+                      AppRoutes.push(context, PageTransitionType.fade,
+                          const GenderScreen());
                     }),
               ),
               const Spacer(),
@@ -210,5 +220,4 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
       ),
     );
   }
-
 }
