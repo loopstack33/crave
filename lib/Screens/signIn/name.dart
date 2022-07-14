@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/birthday.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../widgets/custom_toast.dart';
 
 class FirstName extends StatefulWidget {
   const FirstName({Key? key}) : super(key: key);
@@ -17,7 +22,14 @@ class FirstName extends StatefulWidget {
 
 class _SigninPhoneValidState extends State<FirstName> {
   bool checkbox = false;
-  // Color checkBoxBorder = AppColors.greyShade;
+  TextEditingController nameController = TextEditingController();
+  bool loading = false;
+  //Initialize a button color variable
+  Color btnColor =const Color(0xFFE38282);
+  bool isEnabled = false;
+
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
@@ -81,8 +93,27 @@ class _SigninPhoneValidState extends State<FirstName> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, bottom: 10),
                     child: TextFormField(
-                      textAlignVertical: TextAlignVertical.center,
+                      onChanged: (text) {
+                        if(mounted) {
+                          setState(() {
+                            if(text.isNotEmpty) {
+                              isEnabled=true;
+                              btnColor =AppColors.redcolor;
+                            } else {
+                              isEnabled=false;
+                              btnColor =const Color(0xFFE38282);
+                            }
+                          });
+                        }
+                      },
+                      controller: nameController,
+                      textAlignVertical: TextAlignVertical.top,
                       cursorColor: Colors.black,
+                      style:  TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 16.sp,
+                          color: AppColors.textColor,
+                          fontWeight: FontWeight.w400),
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -139,12 +170,24 @@ class _SigninPhoneValidState extends State<FirstName> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: DefaultButton(
+                child:loading
+                    ?const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                     ),
+                     )
+                    :DefaultButton(
+                    color: btnColor,
                     text: "CONTINUE",
-                    press: () {
-                      AppRoutes.push(context, PageTransitionType.fade,
-                          const BirthdayScreen());
-                    }),
+                    press:isEnabled? () {
+                      if(mounted){
+                        setState((){
+                          loading = true;
+                        });
+                      }
+                      postDetailsToFirestore(context, nameController.text.toString());
+
+                    }:(){}),
               ),
               const Spacer(),
               Padding(
@@ -243,9 +286,40 @@ class _SigninPhoneValidState extends State<FirstName> {
     );
   }
 
-  void _onRememberMeChanged(newValue) => setState(() {
+  void postDetailsToFirestore(BuildContext context, name) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
+      'name': name,
+      'showName':checkbox.toString(),
+    }).then((text) {
+      if (mounted) {
+        ToastUtils.showCustomToast(
+            context, "Name Added", Colors.green);
         setState(() {
-          checkbox = newValue;
+          loading = false;
         });
+        preferences.setString("name", name.toString());
+        AppRoutes.push(context, PageTransitionType.fade,
+            const BirthdayScreen());
+      }
+
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
       });
+    }
+  }
+
+  void _onRememberMeChanged(newValue) {
+    if(mounted) {
+      setState(() {
+        checkbox = newValue;
+      });
+    }
+  }
+
 }

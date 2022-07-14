@@ -7,8 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DefaultButton extends StatelessWidget {
   String text;
   final Function() press;
+  Color? color;
   DefaultButton({
     Key? key,
+    this.color,
     required this.text,
     required this.press,
   }) : super(key: key);
@@ -21,8 +23,8 @@ class DefaultButton extends StatelessWidget {
         width: 320.w,
         height: 56.h,
         decoration: BoxDecoration(
-            border: Border.all(color: AppColors.redcolor, width: 1),
-            color: AppColors.redcolor,
+            border: Border.all(color:color ?? AppColors.redcolor, width: 1),
+            color:color ?? AppColors.redcolor,
             borderRadius: BorderRadius.circular(8.r)),
         child: Center(
           child: Text(

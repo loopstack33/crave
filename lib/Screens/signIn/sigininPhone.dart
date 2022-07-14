@@ -27,6 +27,8 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
   bool loading = false;
   bool isEnabled = false;
   TextEditingController phone = TextEditingController();
+  //Initialize a button color variable
+  Color btnColor =const Color(0xFFE38282);
 
   @override
   Widget build(BuildContext context) {
@@ -114,21 +116,25 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                       ),
                       child: TextFormField(
                         onChanged: (text) {
-                          setState(() {
+                          if(mounted) {
+                            setState(() {
                             if(text.isNotEmpty) {
                               isEnabled=true;
+                              btnColor =AppColors.redcolor;
                             } else {
                               isEnabled=false;
+                              btnColor =const Color(0xFFE38282);
                             }
                           });
+                          }
                         },
                         controller: phone,
-                        cursorColor: Colors.black,
+                        cursorColor: AppColors.redcolor,
                         style: TextStyle(
                             fontFamily: "Poppins-Regular",
                             fontSize: 16.sp,
                             color: AppColors.textColor),
-                        textAlignVertical: TextAlignVertical.center,
+                        textAlignVertical: TextAlignVertical.top,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: InputBorder.none,
@@ -149,13 +155,51 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
               SizedBox(
                 height: 30.h,
               ),
-              text(
-                  context,
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquet in sit tristique purus proin amet tortor. Quamed parturient orci nibh. Tortor diame adipiscing ac, proin neque. Neque ornare sit tristique",
-                  11.sp,
-                  color: AppColors.textColor,
-                  boldText: FontWeight.w400,
-                  fontFamily: "Poppins-Regular"),
+              Center(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                        'By providing my phone number, I hereby agree and accept the ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            color: AppColors.textColor),
+                      ),
+                      TextSpan(
+                        text: ' Terms of Services',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp,
+                            fontFamily: "Poppins-Regular",
+                            color: AppColors.textColor),
+                      ),
+                      TextSpan(
+                        text: ' and',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            color: AppColors.textColor),
+                      ),
+                      TextSpan(
+                        text: ' Privacy Policy',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            color: AppColors.textColor),
+                      ),
+                      TextSpan(
+                        text: ' of this app',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            color: AppColors.textColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 30.h,
               ),
@@ -169,8 +213,8 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                 )
                     :  DefaultButton(
                     text: "CONTINUE",
-                    press: ()async {
-
+                    color: btnColor,
+                    press:isEnabled? ()async  {
                       if (mounted) {
                         setState(() {
                           loading = true;
@@ -186,7 +230,8 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                             loading = false;
                           });
                         }
-                      } else {
+                      }
+                      else {
                         await FirebaseAuth.instance.verifyPhoneNumber(
                           phoneNumber: countryCode.toString() + phone.text.toString().replaceAll(RegExp(r'^0+(?=.)'), ''),
                           verificationCompleted: (PhoneAuthCredential credential) async {
@@ -204,7 +249,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           codeSent: (String verificationId,
                               int? resendToken) {
                             ToastUtils.showCustomToast(context,
-                                "Code Sent", Colors.lightGreen);
+                                "Code Sent", Colors.green);
                             if (mounted) {
                               setState(() {
                                 loading = false;
@@ -234,7 +279,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           },
                         );
                       }
-                    }),
+                    }:(){}),
               ),
               const Spacer(),
               Padding(

@@ -1,7 +1,9 @@
-// ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously
+// ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously, must_be_immutable
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/name.dart';
+import 'package:crave/model/userModel.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pinput/pinput.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_toast.dart';
 
@@ -39,6 +42,9 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   int start = 60;
   bool wait = false;
   String verificationIdFinal = "";
+  //Initialize a button color variable
+  Color btnColor =const Color(0xFFE38282);
+  bool isEnabled = false;
 
   @override
   void initState() {
@@ -50,7 +56,6 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
@@ -89,7 +94,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               ),
               Center(
                 child: Pinput(
-                  length: 5,
+                  length: 6,
                   defaultPinTheme: PinTheme(
                     width: 55.w,
                     height: 55.h,
@@ -104,15 +109,28 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       border: Border.all(color: AppColors.containerborder,width: 2.w),
                     ),
                   ),
+                  onChanged: (text) {
+                    if(mounted) {
+                      setState(() {
+                        if(text.isNotEmpty) {
+                          isEnabled=true;
+                          btnColor =AppColors.redcolor;
+                        } else {
+                          isEnabled=false;
+                          btnColor =const Color(0xFFE38282);
+                        }
+                      });
+                    }
+                  },
                   controller: otpController,
                   forceErrorState: true,
                   pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                   validator: (pin) {
-                  /*  if (pin!.length < 4) {
+                    if (pin!.length < 6) {
                       return "You should enter all SMS code";
                     } else {
                       return null;
-                    }*/
+                    }
                   },
                 ),
               ),
@@ -130,53 +148,27 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   SizedBox(
                     width: 5.w,
                   ),
-                  text(context, " 401  60X - 5XXX", 11.sp,
+                  text(context, widget.phone.toString(), 11.sp,
                       color: AppColors.textColor,
                       boldText: FontWeight.w400,
                       fontFamily: "Poppins-SemiBold"),
                 ],
               ),
-              /*SizedBox(
-                height: 20.h,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    width: 105.w,
-                    height: 40.h,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 13.r,
-                          offset:const Offset(0,4),
-                          color: AppColors.shahdowColor.withOpacity(0.25)
-                        )
-                      ],
-                        border: Border.all(color: AppColors.black, width: 1),
-                        color: AppColors.black,
-                        borderRadius: BorderRadius.circular(10)),
-                    child:  Center(
-                      child: Text(
-                        "Resend",
-                        style: TextStyle(
-                            fontFamily: 'Poppins-Medium',
-                            fontSize: 16.sp,
-                            color: AppColors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ),*/
               SizedBox(
                 height: 20.h,
               ),
               Align(
                   alignment: Alignment.center,
-                  child: DefaultButton(
+                  child: loading
+                      ?const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.redcolor,
+                    ),
+                  )
+                      :  DefaultButton(
+                    color: btnColor,
                       text: "VERIFY",
-                      press: () {
+                      press:isEnabled? () {
                         PhoneAuthCredential phoneAuthCredential =
                         PhoneAuthProvider.credential(
                             verificationId: myVerificationId,
@@ -184,14 +176,18 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
                         signInWithPhoneAuthCredential(
                             phoneAuthCredential);
-                      })),
+                      }:(){}
+                      )),
+              SizedBox(
+                height: 10.h,
+              ),
               verifyText == false
                   ? const SizedBox.shrink()
                   : Center(
                 child: Text(
                   "Successful!",
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Poppins-SemiBold',
                       fontSize: 16.sp,
                       color: const Color.fromARGB(255, 45, 253, 52)),
                   textAlign: TextAlign.center,
@@ -200,7 +196,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               SizedBox(
                 height: 20.h,
               ),
-              Center(
+              verifyText==true?  Center(
                 child: Text(
                   "Didn't you receive any code?",
                   style: TextStyle(
@@ -208,12 +204,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       fontSize: 14.sp,
                       color: AppColors.bbColor),
                 ),
-              ),
+              ):const SizedBox(),
               SizedBox(
                 height: 30.h,
               ),
               start == 0
-                  ?  Align(
+                  ? verifyText==true?  Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
                       onTap: wait
@@ -221,8 +217,10 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                           : () async {
                         if(mounted) {
                           setState(() {
+                            verifyText = false;
                             start = 60;
                             wait = true;
+                            loading = true;
                           });
                         }
                         await verifyPhoneNumber(
@@ -254,20 +252,23 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                       ),
                     ),
                   ),
-                ):const SizedBox(),
-
-              const SizedBox(
-                height: 10,
+                )
+                  :const SizedBox()
+                  :const SizedBox(),
+               SizedBox(
+                height: 10.h,
               ),
-              Center(
+             start.toString() !="0"?
+             Center(
                 child: Text(
-                  "wait 00:$start sec",
+                  "Resend code in 00:$start sec",
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 14.sp,
                       color: AppColors.bbColor),
                 ),
-              ),
+              )
+              :const SizedBox(),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),
@@ -365,7 +366,6 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     );
   }
 
-
   void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
     if (mounted) {
       setState(() {
@@ -381,7 +381,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             verifyText = true;
           });
         }
-        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+        postDetailsToFirestore(context, widget.phone.toString());
+
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -393,13 +394,15 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     }
   }
 
+  Timer? _timer;
   void startTimer() {
     const onsec = Duration(seconds: 1);
-    Timer _timer = Timer.periodic(onsec, (timer) {
+     _timer = Timer.periodic(onsec, (timer) {
       if (start == 0) {
         if (mounted) {
           setState(() {
             timer.cancel();
+            _timer!.cancel();
             wait = false;
           });
         }
@@ -419,9 +422,19 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     };
     PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException exception) {
+          if(mounted){
+            setState((){
+              loading = false;
+            });
+          }
       ToastUtils.showCustomToast(context, exception.toString(), Colors.red);
     };
     PhoneCodeSent codeSent = (String verificationId, int? resendToken) {
+      if(mounted){
+        setState((){
+          loading = false;
+        });
+      }
       ToastUtils.showCustomToast(
           context,
           "Verification Code sent on the phone number",
@@ -432,7 +445,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationID) {
-      ToastUtils.showCustomToast(context, "TimeOut", Colors.red);
+          if(mounted){
+            setState((){
+              loading = false;
+            });
+          }
+      ToastUtils.showCustomToast(context, "Code TimeOut", Colors.red);
     };
     try {
       await _auth.verifyPhoneNumber(
@@ -443,6 +461,11 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           codeSent: codeSent,
           codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
     } catch (e) {
+      if(mounted){
+        setState((){
+          loading = false;
+        });
+      }
       ToastUtils.showCustomToast(context, e.toString(), Colors.red);
     }
   }
@@ -452,5 +475,44 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       verificationIdFinal = verificationId;
     });
     startTimer();
+  }
+
+  void postDetailsToFirestore(BuildContext context, phone) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+
+
+    await firebaseFirestore.collection("users").doc(user!.uid).set({
+      'uid': user.uid,
+      'phone': phone,
+      'name': '',
+       'showName':'',
+      'deviceToken': "",
+      'status': '',
+      'age':'',
+      'gender':'',
+       'birthday':'',
+        'genes':'',
+      'bio': '',
+    }).then((value) {
+      if (mounted) {
+        ToastUtils.showCustomToast(
+            context, "Registration Success", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+      }
+      preferences.setString("logStatus", "true");
+
+
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }
