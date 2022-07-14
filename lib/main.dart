@@ -1,12 +1,13 @@
-
-
 import 'package:crave/Screens/splash/splash.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
           return const MaterialApp(
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
-            home:  Splash(),
+            home: Splash(),
           );
         });
   }

@@ -21,7 +21,7 @@ class SigninPhoneValid extends StatefulWidget {
 class _SigninPhoneValidState extends State<SigninPhoneValid> {
   @override
   void initState() {
-    // TODO: implement initState
+    //
     super.initState();
   }
 
@@ -44,7 +44,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -80,8 +80,11 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           const BorderRadius.all(Radius.circular(8.0)),
                     ),
                     child: CountryCodePicker(
-                      padding:const EdgeInsets.all(2),
-                      textStyle: TextStyle(fontFamily: 'Poppins-Regular',fontSize: 16.sp, color: AppColors.textColor),
+                      padding: const EdgeInsets.all(2),
+                      textStyle: TextStyle(
+                          fontFamily: 'Poppins-Regular',
+                          fontSize: 16.sp,
+                          color: AppColors.textColor),
                       onChanged: print,
                       initialSelection: countryCode.toString(),
                       showCountryOnly: false,
@@ -93,7 +96,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                     width: 10.w,
                   ),
                   Container(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.57,
                       height: 56.h,
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -110,10 +113,10 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
-                            enabledBorder:InputBorder.none,
+                            enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
-                            contentPadding:const EdgeInsets.only(
+                            contentPadding: const EdgeInsets.only(
                                 left: 10, bottom: 5, top: 5, right: 5),
                             hintText: "Phone Number",
                             hintStyle: TextStyle(

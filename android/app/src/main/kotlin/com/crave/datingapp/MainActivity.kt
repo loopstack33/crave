@@ -1,4 +1,4 @@
-package com.crave.dating_app
+package com.crave.datingapp
 
 import io.flutter.embedding.android.FlutterActivity
 
