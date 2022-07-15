@@ -283,7 +283,13 @@ class _SigninPhoneValidState extends State<GenderOption> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: DefaultButton(
+                child:  loading
+                    ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                  ),
+                )
+                    : DefaultButton(
                     text: "NEXT",
                     color: sexuality != null ? AppColors.redcolor : btnColor,
                     press: sexuality != null
@@ -293,6 +299,11 @@ class _SigninPhoneValidState extends State<GenderOption> {
                                 gayb == true ||
                                 bisexualb == true ||
                                 sexuality != null) {
+                              if(mounted){
+                                setState((){
+                                  loading = true;
+                                });
+                              }
                               postDetailsToFirestore(context, sexuality);
                             } else {
                               ToastUtils.showCustomToast(

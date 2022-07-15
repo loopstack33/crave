@@ -504,6 +504,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'name': '',
       'showName': '',
       'deviceToken': "",
+      'craves':[],
       'status': '',
       'age': '',
       'gender': '',

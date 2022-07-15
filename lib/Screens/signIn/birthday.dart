@@ -146,6 +146,11 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                               ToastUtils.showCustomToast(
                                   context, "Must be 18 years old", Colors.red);
                             } else {
+                              if(mounted){
+                                setState((){
+                                  loading = true;
+                                });
+                              }
                               postDetailsToFirestore(context, age2.toString());
                             }
                           }

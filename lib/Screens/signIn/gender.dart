@@ -227,7 +227,13 @@ class _SigninPhoneValidState extends State<GenderScreen> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: DefaultButton(
+                child: loading
+                    ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                  ),
+                )
+                    :  DefaultButton(
                     text: "NEXT",
                     color: gender != null ? AppColors.redcolor : btnColor,
                     press: gender != null
@@ -236,6 +242,11 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                                 woman == true ||
                                 others == true ||
                                 gender != null) {
+                              if(mounted){
+                                setState((){
+                                  loading = true;
+                                });
+                              }
                               postDetailsToFirestore(context, gender);
                             } else {
                               ToastUtils.showCustomToast(
