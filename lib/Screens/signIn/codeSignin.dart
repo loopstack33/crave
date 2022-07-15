@@ -55,6 +55,13 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer!.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -94,6 +101,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               ),
               Center(
                 child: Pinput(
+                  androidSmsAutofillMethod:  AndroidSmsAutofillMethod.smsRetrieverApi,
                   length: 6,
                   defaultPinTheme: PinTheme(
                     width: 55.w,

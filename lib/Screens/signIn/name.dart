@@ -129,7 +129,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                               color: AppColors.textColor,
                               fontWeight: FontWeight.w400)),
                     ),
-                  )),
+                  )
+              ),
               SizedBox(
                 height: 10.h,
               ),
@@ -143,8 +144,8 @@ class _SigninPhoneValidState extends State<FirstName> {
                               : Colors.transparent,
                           width: 1.3),
                     ),
-                    width: 18.w,
-                    height: 18.h,
+                    width: 20.w,
+                    height: 20.h,
                     child: Checkbox(
                         checkColor: AppColors.redcolor,
                         focusColor: AppColors.black,
