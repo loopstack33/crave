@@ -20,7 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leading: GestureDetector(
           child: const Icon(
             Icons.arrow_back_ios,
-            color: AppColors.black,
+            color: AppColors.redcolor,
           ),
           onTap: () {
             Navigator.pop(context);
