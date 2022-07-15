@@ -236,10 +236,7 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                                 woman == true ||
                                 others == true ||
                                 gender != null) {
-                              AppRoutes.push(context, PageTransitionType.fade,
-                                  const GenderOption());
-                              ToastUtils.showCustomToast(
-                                  context, gender!, Colors.red);
+                              postDetailsToFirestore(context, gender);
                             } else {
                               ToastUtils.showCustomToast(
                                   context, "choose gender", Colors.red);
@@ -344,21 +341,21 @@ class _SigninPhoneValidState extends State<GenderScreen> {
     );
   }
 
-  void postDetailsToFirestore(BuildContext context, age) async {
+  void postDetailsToFirestore(BuildContext context, genderb) async {
     final _auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = _auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
-      'age': age,
+      'gender': genderb,
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "age Added", Colors.green);
+        ToastUtils.showCustomToast(context, "gender Added", Colors.green);
         setState(() {
           loading = false;
         });
-        preferences.setString("gender", age);
-        AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
+        preferences.setString("gender", genderb);
+        AppRoutes.push(context, PageTransitionType.fade, const GenderOption());
       }
     }).catchError((e) {});
     if (mounted) {
