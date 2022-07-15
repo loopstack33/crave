@@ -28,6 +28,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   DateDuration? duration;
   String age = "your age";
 
+
   Color btnColor = const Color(0xFFE38282);
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   bool loading = false;
@@ -101,9 +102,9 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                     onDateTimeChanged: (DateTime newDate) {
                       setState(() {
                         date = newDate;
-                        duration = AgeCalculator.age(date);
-                        age = duration!.years.toString();
-
+                        // duration = AgeCalculator.age(date);
+                        // age = duration!.years.toString();
+                        age2 = calculateAge(newDate);
                       });
                     },
                   ),
@@ -112,9 +113,16 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
               SizedBox(
                 height: 20.h,
               ),
-              Align(
+
+              (age2 > -1)? Align(
                 alignment: Alignment.center,
-                child: text(context, "Age $age", 22.sp,
+                child: text(context, "Age $age2", 22.sp,
+                    color: AppColors.black,
+                    boldText: FontWeight.w600,
+                    fontFamily: "Poppins-SemiBold"),
+              ): Align(
+                alignment: Alignment.center,
+                child: text(context, "Age ---", 22.sp,
                     color: AppColors.black,
                     boldText: FontWeight.w600,
                     fontFamily: "Poppins-SemiBold"),
@@ -125,17 +133,23 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
 
               Align(
                 alignment: Alignment.center,
-                child: DefaultButton(
+                child: loading
+                    ?const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                  ),
+                )
+                    :DefaultButton(
                     text: "NEXT",
-                    color: age == "your age" ? btnColor : AppColors.redcolor,
-                    press: age != "your age"
+                    color: age2.toString() == "your age" ? btnColor : AppColors.redcolor,
+                    press: age2.toString() != "your age"
                         ? () {
-                            var checkAge = int.parse(age);
+                            var checkAge = age2;
                             if (checkAge <= 0 || checkAge < 18) {
                               ToastUtils.showCustomToast(
-                                  context, "must be 18 years old", Colors.red);
+                                  context, "Must be 18 years old", Colors.red);
                             } else {
-                              postDetailsToFirestore(context, age);
+                              postDetailsToFirestore(context, age2.toString());
                             }
                           }
                         : () {}),
@@ -249,7 +263,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
       'age': age,
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "age Added", Colors.green);
+        ToastUtils.showCustomToast(context, "Age Added", Colors.green);
         setState(() {
           loading = false;
         });
@@ -262,5 +276,24 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
         loading = false;
       });
     }
+  }
+
+  String birthDate = "";
+  int age2 = -1;
+  calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
   }
 }
