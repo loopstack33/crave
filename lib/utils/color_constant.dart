@@ -14,6 +14,9 @@ class AppColors {
   static const shahdowColor = Color(0xFFAEAEAE);
   static const fontColor = Color(0xFF858585);
 
+  static const chipColor = Color(0xFF545454);
+  static const chipCircle = Color(0xFF464646);
+
   static const grey1 = Color(0xffE5E5E5);
   static const lightGrey = Color(0xFFAFAFAF);
   static const chatColor= Color(0xFFFFD6D6);

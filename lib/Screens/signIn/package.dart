@@ -82,6 +82,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     GestureDetector(
                       onTap: () async {
                         SelectedPackage = "week";
+
                         postDetailsToFirestore(context, SelectedPackage);
                       },
                       child: Container(
@@ -227,6 +228,16 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     boldText: FontWeight.w400,
                     fontFamily: "Poppins-Regular"),
 
+                loading
+                    ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.redcolor,
+                  ),
+                )
+                    :const SizedBox(),
+                SizedBox(
+                  height: 10.h,
+                ),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
@@ -252,6 +263,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         ],
                       ),
                     )),
+
                 SizedBox(
                   height: 20.h,
                 ),
@@ -264,6 +276,11 @@ class _SigninPhoneValidState extends State<PackageScreen> {
   }
 
   void postDetailsToFirestore(BuildContext context, package) async {
+    if(mounted){
+      setState((){
+        loading =true;
+      });
+    }
     final _auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = _auth.currentUser;
