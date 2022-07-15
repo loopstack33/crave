@@ -6,6 +6,7 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
@@ -18,14 +19,21 @@ class GenderOption extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<GenderOption> {
+  bool heterob = false;
+  bool lesbianb = false;
+  bool gayb = false;
+  bool bisexualb = false;
+  String? sexuality;
+
+  Color lightRedContainer = const Color(0xffFFE9E9);
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
   Color genderContainerBorderMan = const Color(0xffE3E3E3);
   Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
+  Color btnColor = const Color(0xFFE38282);
   @override
   void initState() {
-     
     super.initState();
   }
 
@@ -46,7 +54,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
           },
         ),
         backgroundColor: AppColors.white,
-        title:Image.asset(
+        title: Image.asset(
           hLogo,
           width: 105.w,
           height: 18.h,
@@ -70,50 +78,98 @@ class _SigninPhoneValidState extends State<GenderOption> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          text(context, "Hetero", 20.sp,
-                              color: AppColors.greyShade,
-                              fontFamily: "Poppins-Medium"),
-                          Image.asset(
-                            hetero,
-                            width: 74.w,
-                            height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (lesbianb == true ||
+                            gayb == true ||
+                            bisexualb == true) {
+                          lesbianb = false;
+                          gayb = false;
+                          bisexualb = false;
+                          heterob = true;
+                          sexuality = "Hetero";
+                        } else {
+                          heterob = true;
+                          sexuality = "Hetero";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: heterob
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color:
+                              heterob ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            text(context, "Hetero", 20.sp,
+                                color: heterob
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                fontFamily: "Poppins-Medium"),
+                            Image.asset(
+                              hetero,
+                              width: 74.w,
+                              height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          text(context, "Lesbian", 20.sp,
-                              color: AppColors.greyShade,
-                              fontFamily: "Poppins-Medium"),
-                          Image.asset(
-                            lesbian,
-                            width: 74.w,
-                            height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (heterob == true ||
+                            gayb == true ||
+                            bisexualb == true) {
+                          heterob = false;
+                          gayb = false;
+                          bisexualb = false;
+                          lesbianb = true;
+                          sexuality = "Lesbian";
+                        } else {
+                          lesbianb = true;
+                          sexuality = "Lesbian";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: lesbianb
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color:
+                              lesbianb ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            text(context, "Lesbian", 20.sp,
+                                color: lesbianb
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                fontFamily: "Poppins-Medium"),
+                            Image.asset(
+                              lesbian,
+                              width: 74.w,
+                              height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                 ],
               ),
@@ -123,50 +179,98 @@ class _SigninPhoneValidState extends State<GenderOption> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          text(context, "Gay", 20.sp,
-                              color: AppColors.greyShade,
-                              fontFamily: "Poppins-Medium"),
-                          Image.asset(
-                            gay,
-                            width: 74.w,
-                            height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (lesbianb == true ||
+                            heterob == true ||
+                            bisexualb == true) {
+                          lesbianb = false;
+                          heterob = false;
+                          bisexualb = false;
+                          gayb = true;
+                          sexuality = "Gay";
+                        } else {
+                          gayb = true;
+                          sexuality = "Gay";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: gayb
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color: gayb ? lightRedContainer : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            text(context, "Gay", 20.sp,
+                                color: gayb
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                fontFamily: "Poppins-Medium"),
+                            Image.asset(
+                              gay,
+                              width: 74.w,
+                              height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
-                  Container(
-                    width: 150.w,
-                    height: 180.h,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: genderContainerBorderMan, width: 1),
-                        color: genderContainerMan,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          text(context, "Bisexual", 20.sp,
-                              color: AppColors.greyShade,
-                              fontFamily: "Poppins-Medium"),
-                          Image.asset(
-                            bisexual,
-                            width: 74.w,
-                            height: 121.h,
-                          ),
-                        ]),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (lesbianb == true ||
+                            gayb == true ||
+                            heterob == true) {
+                          lesbianb = false;
+                          gayb = false;
+                          heterob = false;
+                          bisexualb = true;
+                          sexuality = "Bisexual";
+                        } else {
+                          bisexualb = true;
+                          sexuality = "Bisexual";
+                        }
+                      });
+                    },
+                    child: Container(
+                      width: 150.w,
+                      height: 180.h,
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: bisexualb
+                                  ? AppColors.redcolor
+                                  : genderContainerBorderMan,
+                              width: 1),
+                          color: bisexualb
+                              ? lightRedContainer
+                              : genderContainerMan,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            text(context, "Bisexual", 20.sp,
+                                color: bisexualb
+                                    ? AppColors.redcolor
+                                    : AppColors.greyShade,
+                                fontFamily: "Poppins-Medium"),
+                            Image.asset(
+                              bisexual,
+                              width: 74.w,
+                              height: 121.h,
+                            ),
+                          ]),
+                    ),
                   ),
                 ],
               ),
@@ -177,10 +281,24 @@ class _SigninPhoneValidState extends State<GenderOption> {
                 alignment: Alignment.center,
                 child: DefaultButton(
                     text: "NEXT",
-                    press: () {
-                      AppRoutes.push(
-                          context, PageTransitionType.fade, const PackageScreen());
-                    }),
+                    color: sexuality != null ? AppColors.redcolor : btnColor,
+                    press: sexuality != null
+                        ? () {
+                            if (heterob == true ||
+                                lesbianb == true ||
+                                gayb == true ||
+                                bisexualb == true ||
+                                sexuality != null) {
+                              AppRoutes.push(context, PageTransitionType.fade,
+                                  const PackageScreen());
+                              ToastUtils.showCustomToast(
+                                  context, sexuality!, Colors.red);
+                            } else {
+                              ToastUtils.showCustomToast(
+                                  context, "choose gender Option", Colors.red);
+                            }
+                          }
+                        : () {}),
               ),
               const Spacer(),
               Padding(
@@ -278,5 +396,4 @@ class _SigninPhoneValidState extends State<GenderOption> {
       ),
     );
   }
-
 }

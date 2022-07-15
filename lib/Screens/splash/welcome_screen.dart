@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types
 
+import 'package:crave/Screens/signIn/birthday.dart';
+import 'package:crave/Screens/signIn/name.dart';
 import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -10,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-
 
 class Welcome_Screen extends StatelessWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
@@ -84,7 +85,7 @@ class Welcome_Screen extends StatelessWidget {
                 text: "Continue with Phone",
                 press: () {
                   AppRoutes.push(context, PageTransitionType.topToBottom,
-                      const SigninPhoneValid());
+                      const BirthdayScreen());
                 },
                 size: 18.sp),
             SizedBox(

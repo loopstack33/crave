@@ -5,6 +5,7 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,9 +21,10 @@ class BirthdayScreen extends StatefulWidget {
 class _SigninPhoneValidState extends State<BirthdayScreen> {
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
-  DateTime date = DateTime(2016, 10, 26);
+  DateTime date = DateTime(2010, 10, 26);
   DateDuration? duration;
   String age = "your age";
+  Color btnColor = const Color(0xFFE38282);
   @override
   void initState() {
     super.initState();
@@ -119,10 +121,19 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                 alignment: Alignment.center,
                 child: DefaultButton(
                     text: "NEXT",
-                    press: () {
-                      AppRoutes.push(context, PageTransitionType.fade,
-                          const GenderScreen());
-                    }),
+                    color: age == "your age" ? btnColor : AppColors.redcolor,
+                    press: age != "your age"
+                        ? () {
+                            var checkAge = int.parse(age);
+                            if (checkAge <= 0 || checkAge < 18) {
+                              ToastUtils.showCustomToast(
+                                  context, "Correct Age", Colors.red);
+                            } else {
+                              AppRoutes.push(context, PageTransitionType.fade,
+                                  const GenderScreen());
+                            }
+                          }
+                        : () {}),
               ),
               const Spacer(),
               Padding(
