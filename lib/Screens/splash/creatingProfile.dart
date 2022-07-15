@@ -3,7 +3,9 @@
 import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
+import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
@@ -18,15 +20,17 @@ class CreatingProfileScreen extends StatefulWidget {
 }
 
 class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
+  SharedPrefUtil _sharedPrefUtil = SharedPrefUtil();
   @override
   void initState() {
-    
     super.initState();
-    Future.delayed(
-        const Duration(seconds: 3),
-            () => AppRoutes.pushAndRemoveUntil(
-            context, PageTransitionType.topToBottom, const HomeScreen()));
+
+    Future.delayed(const Duration(seconds: 2), () {
+      AppRoutes.pushAndRemoveUntil(
+          context, PageTransitionType.topToBottom, const HomeScreen());
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

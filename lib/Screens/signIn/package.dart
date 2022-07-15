@@ -2,6 +2,7 @@ import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
+import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,9 +21,10 @@ class _SigninPhoneValidState extends State<PackageScreen> {
   Color genderContainerBorderMan = const Color(0xffE3E3E3);
   Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
+  String? SelectedPackage;
+  SharedPrefUtil _sharedPrefUtil = SharedPrefUtil();
   @override
   void initState() {
-    
     super.initState();
   }
 
@@ -72,10 +74,12 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
-                      onTap: () => AppRoutes.push(
-                          context,
-                          PageTransitionType.rightToLeft,
-                          const CreatingProfileScreen()),
+                      onTap: () async {
+                        SelectedPackage = "week";
+                        _sharedPrefUtil.saveGender(SelectedPackage!);
+                        AppRoutes.push(context, PageTransitionType.rightToLeft,
+                            const CreatingProfileScreen());
+                      },
                       child: Container(
                         height: 190.h,
                         width: 100.w,
@@ -101,66 +105,82 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: 190.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                              image: AssetImage(month), fit: BoxFit.cover)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(children: [
-                          text(context, "ONE MONTH", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Regular"),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          text(context, "\$29.99", 14.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Bold"),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          text(context, "SAVE  \$10", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Regular"),
-                        ]),
+                    GestureDetector(
+                      onTap: () {
+                        SelectedPackage = "month";
+                        _sharedPrefUtil.saveGender(SelectedPackage!);
+                        AppRoutes.push(context, PageTransitionType.rightToLeft,
+                            const CreatingProfileScreen());
+                      },
+                      child: Container(
+                        height: 190.h,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: const DecorationImage(
+                                image: AssetImage(month), fit: BoxFit.cover)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(children: [
+                            text(context, "ONE MONTH", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Regular"),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            text(context, "\$29.99", 14.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Bold"),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            text(context, "SAVE  \$10", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Regular"),
+                          ]),
+                        ),
                       ),
                     ),
-                    Container(
-                      height: 190.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                              image: AssetImage(year), fit: BoxFit.cover)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(children: [
-                          text(context, "ONE YEAR", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Regular"),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          text(context, "\$299.99", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Bold"),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          text(context, "SAVE  \$20", 12.sp,
-                              color: AppColors.white,
-                              boldText: FontWeight.w400,
-                              fontFamily: "Roboto-Regular"),
-                        ]),
+                    GestureDetector(
+                      onTap: () {
+                        SelectedPackage = "year";
+                        _sharedPrefUtil.saveGender(SelectedPackage!);
+                        AppRoutes.push(context, PageTransitionType.rightToLeft,
+                            const CreatingProfileScreen());
+                      },
+                      child: Container(
+                        height: 190.h,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: const DecorationImage(
+                                image: AssetImage(year), fit: BoxFit.cover)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(children: [
+                            text(context, "ONE YEAR", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Regular"),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            text(context, "\$299.99", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Bold"),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            text(context, "SAVE  \$20", 12.sp,
+                                color: AppColors.white,
+                                boldText: FontWeight.w400,
+                                fontFamily: "Roboto-Regular"),
+                          ]),
+                        ),
                       ),
                     ),
                   ],

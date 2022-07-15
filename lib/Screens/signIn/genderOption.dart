@@ -31,6 +31,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
   Color genderContainerBorderMan = const Color(0xffE3E3E3);
   Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
+  Color btnColor = const Color(0xFFE38282);
   @override
   void initState() {
     super.initState();
@@ -280,21 +281,24 @@ class _SigninPhoneValidState extends State<GenderOption> {
                 alignment: Alignment.center,
                 child: DefaultButton(
                     text: "NEXT",
-                    press: () {
-                      if (heterob == true ||
-                          lesbianb == true ||
-                          gayb == true ||
-                          bisexualb == true ||
-                          sexuality != null) {
-                        AppRoutes.push(context, PageTransitionType.fade,
-                            const PackageScreen());
-                        ToastUtils.showCustomToast(
-                            context, sexuality!, Colors.red);
-                      } else {
-                        ToastUtils.showCustomToast(
-                            context, "choose gender Option", Colors.red);
-                      }
-                    }),
+                    color: sexuality != null ? AppColors.redcolor : btnColor,
+                    press: sexuality != null
+                        ? () {
+                            if (heterob == true ||
+                                lesbianb == true ||
+                                gayb == true ||
+                                bisexualb == true ||
+                                sexuality != null) {
+                              AppRoutes.push(context, PageTransitionType.fade,
+                                  const PackageScreen());
+                              ToastUtils.showCustomToast(
+                                  context, sexuality!, Colors.red);
+                            } else {
+                              ToastUtils.showCustomToast(
+                                  context, "choose gender Option", Colors.red);
+                            }
+                          }
+                        : () {}),
               ),
               const Spacer(),
               Padding(

@@ -17,6 +17,7 @@ class GenderScreen extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<GenderScreen> {
+  Color btnColor = const Color(0xFFE38282);
   String? gender;
   bool man = false;
   bool woman = false;
@@ -224,20 +225,23 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                 alignment: Alignment.center,
                 child: DefaultButton(
                     text: "NEXT",
-                    press: () {
-                      if (man == true ||
-                          woman == true ||
-                          others == true ||
-                          gender != null) {
-                        AppRoutes.push(context, PageTransitionType.fade,
-                            const GenderOption());
-                        ToastUtils.showCustomToast(
-                            context, gender!, Colors.red);
-                      } else {
-                        ToastUtils.showCustomToast(
-                            context, "choose gender", Colors.red);
-                      }
-                    }),
+                    color: gender != null ? AppColors.redcolor : btnColor,
+                    press: gender != null
+                        ? () {
+                            if (man == true ||
+                                woman == true ||
+                                others == true ||
+                                gender != null) {
+                              AppRoutes.push(context, PageTransitionType.fade,
+                                  const GenderOption());
+                              ToastUtils.showCustomToast(
+                                  context, gender!, Colors.red);
+                            } else {
+                              ToastUtils.showCustomToast(
+                                  context, "choose gender", Colors.red);
+                            }
+                          }
+                        : () {}),
               ),
               const Spacer(),
               Padding(
