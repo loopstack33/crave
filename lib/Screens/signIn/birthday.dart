@@ -1,4 +1,5 @@
 import 'package:age_calculator/age_calculator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/gender.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -6,10 +7,12 @@ import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BirthdayScreen extends StatefulWidget {
   const BirthdayScreen({Key? key}) : super(key: key);
@@ -24,7 +27,10 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   DateTime date = DateTime(2010, 10, 26);
   DateDuration? duration;
   String age = "your age";
+
   Color btnColor = const Color(0xFFE38282);
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -127,10 +133,9 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                             var checkAge = int.parse(age);
                             if (checkAge <= 0 || checkAge < 18) {
                               ToastUtils.showCustomToast(
-                                  context, "Correct Age", Colors.red);
+                                  context, "must be 18 years old", Colors.red);
                             } else {
-                              AppRoutes.push(context, PageTransitionType.fade,
-                                  const GenderScreen());
+                              postDetailsToFirestore(context, age);
                             }
                           }
                         : () {}),
@@ -230,5 +235,32 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
         ),
       ),
     );
+  }
+
+  void postDetailsToFirestore(BuildContext context, age) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'age': age,
+    }).then((text) {
+      if (mounted) {
+        ToastUtils.showCustomToast(context, "age Added", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        preferences.setString("age", age);
+        AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }
