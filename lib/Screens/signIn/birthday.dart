@@ -1,4 +1,3 @@
-import 'package:age_calculator/age_calculator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/gender.dart';
 import 'package:crave/utils/app_routes.dart';
@@ -25,8 +24,6 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
   DateTime date = DateTime(2010, 10, 26);
-  DateDuration? duration;
-  String age = "your age";
 
 
   Color btnColor = const Color(0xFFE38282);
@@ -278,8 +275,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
     }
   }
 
-  String birthDate = "";
-  int age2 = -1;
+  int age2 = 0;
   calculateAge(DateTime birthDate) {
     DateTime currentDate = DateTime.now();
     int age = currentDate.year - birthDate.year;
