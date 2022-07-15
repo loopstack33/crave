@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/genderOption.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -5,9 +6,11 @@ import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GenderScreen extends StatefulWidget {
   const GenderScreen({Key? key}) : super(key: key);
@@ -27,7 +30,8 @@ class _SigninPhoneValidState extends State<GenderScreen> {
   Color genderContainerBorderMan = const Color(0xffE3E3E3);
   Color genderContainerMan = const Color(0xffF3F3F3);
   Color lightRedContainer = const Color(0xffFFE9E9);
-
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  bool loading = false;
   DateTime date = DateTime(2016, 10, 26);
   @override
   void initState() {
@@ -338,5 +342,29 @@ class _SigninPhoneValidState extends State<GenderScreen> {
         ),
       ),
     );
+  }
+
+  void postDetailsToFirestore(BuildContext context, age) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
+      'age': age,
+    }).then((text) {
+      if (mounted) {
+        ToastUtils.showCustomToast(context, "age Added", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        preferences.setString("gender", age);
+        AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }
