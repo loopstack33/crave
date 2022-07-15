@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -103,7 +104,6 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                         date = newDate;
                         duration = AgeCalculator.age(date);
                         age = duration!.years.toString();
-
                       });
                     },
                   ),
@@ -135,7 +135,8 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                               ToastUtils.showCustomToast(
                                   context, "must be 18 years old", Colors.red);
                             } else {
-                              postDetailsToFirestore(context, age);
+                              postDetailsToFirestore(context, age,
+                                  DateFormat.yMMMMd('en_US').format(date));
                             }
                           }
                         : () {}),
@@ -237,16 +238,14 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
     );
   }
 
-  void postDetailsToFirestore(BuildContext context, age) async {
+  void postDetailsToFirestore(BuildContext context, age, birthday) async {
     final _auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = _auth.currentUser;
 
-    await firebaseFirestore
-        .collection("users")
-        .doc(user!.uid)
-        .update({
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
       'age': age,
+      'birthday': birthday,
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "age Added", Colors.green);
@@ -254,6 +253,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
           loading = false;
         });
         preferences.setString("age", age);
+        preferences.setString("birthday", birthday);
         AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
       }
     }).catchError((e) {});

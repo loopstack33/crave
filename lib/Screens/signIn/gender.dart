@@ -347,7 +347,7 @@ class _SigninPhoneValidState extends State<GenderScreen> {
     User? user = _auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
-      'age': genderb,
+      'gender': genderb,
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "gender Added", Colors.green);

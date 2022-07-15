@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PackageScreen extends StatefulWidget {
   const PackageScreen({Key? key}) : super(key: key);
@@ -22,7 +26,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
   Color genderContainerMan = const Color(0xffF3F3F3);
   DateTime date = DateTime(2016, 10, 26);
   String? SelectedPackage;
-  SharedPrefUtil _sharedPrefUtil = SharedPrefUtil();
+
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -76,9 +82,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     GestureDetector(
                       onTap: () async {
                         SelectedPackage = "week";
-                        _sharedPrefUtil.saveGender(SelectedPackage!);
-                        AppRoutes.push(context, PageTransitionType.rightToLeft,
-                            const CreatingProfileScreen());
+                        postDetailsToFirestore(context, SelectedPackage);
                       },
                       child: Container(
                         height: 190.h,
@@ -108,9 +112,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     GestureDetector(
                       onTap: () {
                         SelectedPackage = "month";
-                        _sharedPrefUtil.saveGender(SelectedPackage!);
-                        AppRoutes.push(context, PageTransitionType.rightToLeft,
-                            const CreatingProfileScreen());
+                        postDetailsToFirestore(context, SelectedPackage);
                       },
                       child: Container(
                         height: 190.h,
@@ -147,9 +149,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                     GestureDetector(
                       onTap: () {
                         SelectedPackage = "year";
-                        _sharedPrefUtil.saveGender(SelectedPackage!);
-                        AppRoutes.push(context, PageTransitionType.rightToLeft,
-                            const CreatingProfileScreen());
+                        postDetailsToFirestore(context, SelectedPackage);
                       },
                       child: Container(
                         height: 190.h,
@@ -261,5 +261,30 @@ class _SigninPhoneValidState extends State<PackageScreen> {
         ),
       ),
     );
+  }
+
+  void postDetailsToFirestore(BuildContext context, package) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
+      'package': package,
+    }).then((text) {
+      if (mounted) {
+        ToastUtils.showCustomToast(context, "package Added", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        preferences.setString("package", package);
+        AppRoutes.push(
+            context, PageTransitionType.fade, const CreatingProfileScreen());
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }

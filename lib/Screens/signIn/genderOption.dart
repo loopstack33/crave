@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/package.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -7,9 +8,11 @@ import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GenderOption extends StatefulWidget {
   const GenderOption({Key? key}) : super(key: key);
@@ -24,7 +27,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
   bool gayb = false;
   bool bisexualb = false;
   String? sexuality;
-
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  bool loading = false;
   Color lightRedContainer = const Color(0xffFFE9E9);
   bool checkbox = false;
   Color checkBoxBorder = AppColors.greyShade;
@@ -289,10 +293,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
                                 gayb == true ||
                                 bisexualb == true ||
                                 sexuality != null) {
-                              AppRoutes.push(context, PageTransitionType.fade,
-                                  const PackageScreen());
-                              ToastUtils.showCustomToast(
-                                  context, sexuality!, Colors.red);
+                              postDetailsToFirestore(context, sexuality);
                             } else {
                               ToastUtils.showCustomToast(
                                   context, "choose gender Option", Colors.red);
@@ -395,5 +396,29 @@ class _SigninPhoneValidState extends State<GenderOption> {
         ),
       ),
     );
+  }
+
+  void postDetailsToFirestore(BuildContext context, gene) async {
+    final _auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
+      'genes': gene,
+    }).then((text) {
+      if (mounted) {
+        ToastUtils.showCustomToast(context, "gender Added", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        preferences.setString("gene", gene);
+        AppRoutes.push(context, PageTransitionType.fade, const PackageScreen());
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }
