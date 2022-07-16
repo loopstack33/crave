@@ -1,8 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:crave/Screens/splash/welcome_screen.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -12,6 +18,18 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
+  Future<void> handleSignOut() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString("logStatus", "null");
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const Welcome_Screen()),
+          (Route<dynamic> route) => false,
+    );
+    ToastUtils.showCustomToast(context, "Logout Successfully", Colors.green);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,10 +124,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                text(context, "Log Out", 18.sp,
-                    color: AppColors.black,
-                    boldText: FontWeight.w500,
-                    fontFamily: "Poppins-Medium"),
+                GestureDetector(
+                  onTap: (){
+                    handleSignOut();
+                  },
+                  child: text(context, "Log Out", 18.sp,
+                      color: AppColors.black,
+                      boldText: FontWeight.w500,
+                      fontFamily: "Poppins-Medium"),
+                ),
               ],
             ),
             SizedBox(

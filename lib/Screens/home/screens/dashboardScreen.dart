@@ -322,19 +322,19 @@ class _DashboardState extends State<Dashboard> {
                               avatar: CircleAvatar(
                                 backgroundColor: AppColors.chipColor,
                                 child: Image.asset(
-                                  e=="Casual Dating"?casualDating1:
-                                  e=="No String Attached"?nostring:
+                                  e=="Casual Dating"?casualdating:
+                                  e=="No String Attached"?nostring1:
                                   e=="In Person"?inperson:
-                                  e=="Sexting"?sexting:
+                                  e=="Sexting"?sexting2:
                                   e=="Kinky"?kinky:
                                   e=="Vanilla"?vanilla:
                                   e=="Submissive"?submissive:
-                                  e=="Dominance"?dominance1:
-                                  e=="Dress Up"?dressup1:
-                                  e=="Blindfolding"?blindfolding1:
-                                  e=="Bondage"?bondage1:
-                                  e=="Butt Stuff"?buttstuf1:
-                                  kinky1,color: AppColors.white,),
+                                  e=="Dominance"?dominance:
+                                  e=="Dress Up"?dressup:
+                                  e=="Blindfolding"?blindfolding:
+                                  e=="Bondage"?bondage:
+                                  e=="Butt Stuff"?buttstuff:
+                                  kinky1,color: AppColors.white,width: 15,height: 15),
                               ),
                               label: Text(
                                 e.toString(),

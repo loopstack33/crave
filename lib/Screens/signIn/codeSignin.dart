@@ -1,6 +1,7 @@
-// ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously, must_be_immutable
+// ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously, must_be_immutable, prefer_typing_uninitialized_variables
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/Screens/signIn/name.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -46,13 +47,38 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   Color btnColor = const Color(0xFFE38282);
   bool isEnabled = false;
 
+  var instance = FirebaseFirestore.instance;
+
+  var exists;
+  doesUserExist(phone) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('phone', isEqualTo: phone)
+          .get()
+          .then((value) => value.size > 0 ? setState((){
+            exists = true;
+      }) : setState((){
+        exists = false;
+      }));
+    } catch (e) {
+      debugPrint(e.toString());
+
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
     myVerificationId = widget.verifyId;
     isTimeOut = widget.isTimeOut2;
     startTimer();
+    doesUserExist(widget.phone);
+
   }
+
+
 
   @override
   void dispose() {
@@ -396,7 +422,20 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             verifyText = true;
           });
         }
-        postDetailsToFirestore(context, widget.phone.toString());
+        if(exists==true){
+          if (mounted) {
+            ToastUtils.showCustomToast(
+                context, "Login Success", Colors.green);
+            setState(() {
+              loading = false;
+            });
+            AppRoutes.push(context, PageTransitionType.fade, const HomeScreen());
+          }
+        }
+        else{
+          postDetailsToFirestore(context, widget.phone.toString());
+        }
+
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
