@@ -79,10 +79,11 @@ const String bondage = "assets/images/Group 11528.png";
 const String roleplay1 = 'assets/images/roleplay1.png';
 const String shower1 = "assets/images/shower1.png";
 const String buttstuf1 = 'assets/images/buttstuf1.png';
-const String buttstuff= 'assets/images/Group 11540.png';
+const String buttstuff = 'assets/images/Group 11540.png';
 const String feetstuf1 = "assets/images/feetstuf1.png";
 const String cuddling1 = 'assets/images/cuddling1.png';
 const String blindfolding1 = "assets/images/blindfolding1.png";
 const String blindfolding = "assets/images/Group 11485.png";
 
 const String addpic = "assets/images/addpic.png";
+const String deletePic = "assets/images/deletePic.png";
