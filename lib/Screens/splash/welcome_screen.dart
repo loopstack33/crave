@@ -1,5 +1,4 @@
 // ignore_for_file: camel_case_types
-import 'package:crave/Screens/signIn/chip.dart';
 import 'package:crave/Screens/signIn/createProfile.dart';
 import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
@@ -83,8 +82,8 @@ class Welcome_Screen extends StatelessWidget {
                 fontFamily: "Roboto-Medium",
                 text: "Continue with Phone",
                 press: () {
-                  AppRoutes.push(context, PageTransitionType.topToBottom,
-                      SigninPhoneValid());
+                  AppRoutes.push(
+                      context, PageTransitionType.topToBottom, SigninPhoneValid());
                 },
                 size: 18.sp),
             SizedBox(

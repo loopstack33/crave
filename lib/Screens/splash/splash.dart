@@ -1,7 +1,7 @@
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:crave/Screens/home/homeScreen.dart';
+import 'package:crave/Screens/signIn/createProfile.dart';
 import 'package:crave/Screens/splash/welcome_screen.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -22,27 +22,24 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-        const Duration(seconds: 3),
-        () =>  checkSignedIn());
+    print("right here");
+
+    Future.delayed(const Duration(seconds: 3), () => checkSignedIn());
   }
 
-  checkSignedIn() async{
+  checkSignedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var status = prefs.getString("logStatus");
-    if(status.toString() =="null") {
+    if (status.toString() == "null") {
       AppRoutes.pushAndRemoveUntil(
           context, PageTransitionType.topToBottom, const Welcome_Screen());
-    }
-    else if(status.toString() !="null" && status.toString() =="true"){
+    } else if (status.toString() != "null" && status.toString() == "true") {
       AppRoutes.pushAndRemoveUntil(
           context, PageTransitionType.topToBottom, const HomeScreen());
-    }
-    else{
+    } else {
       AppRoutes.pushAndRemoveUntil(
           context, PageTransitionType.topToBottom, const Welcome_Screen());
     }
-
   }
 
   @override
