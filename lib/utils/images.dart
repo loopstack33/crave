@@ -84,6 +84,5 @@ const String feetstuf1 = "assets/images/feetstuf1.png";
 const String cuddling1 = 'assets/images/cuddling1.png';
 const String blindfolding1 = "assets/images/blindfolding1.png";
 const String blindfolding = "assets/images/Group 11485.png";
-
 const String addpic = "assets/images/addpic.png";
 const String deletePic = "assets/images/deletePic.png";

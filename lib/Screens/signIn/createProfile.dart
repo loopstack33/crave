@@ -335,6 +335,7 @@ class _CreateProfileState extends State<CreateProfile> {
 
 
     if (_image != null) {
+      
       Reference ref =
           FirebaseStorage.instance.ref().child(_image!.path.split('/').last);
       await ref.putFile(_image!);
@@ -342,7 +343,7 @@ class _CreateProfileState extends State<CreateProfile> {
       picsList.add(downloadURL!);
     }
     if (_image1 != null) {
-
+      
       Reference ref1 =
           FirebaseStorage.instance.ref().child(_image1!.path.split('/').last);
       await ref1.putFile(_image1!);
@@ -350,13 +351,12 @@ class _CreateProfileState extends State<CreateProfile> {
       picsList.add(downloadURL1!);
     }
     if (_image2 != null) {
-
+     
       Reference ref2 =
           FirebaseStorage.instance.ref().child(_image2!.path.split('/').last);
       await ref2.putFile(_image2!);
       downloadURL2 = await ref2.getDownloadURL();
       picsList.add(downloadURL2!);
-      log(picsList.toString());
     }
 
     final auth = FirebaseAuth.instance;
