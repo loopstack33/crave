@@ -469,26 +469,7 @@ class _ProfileState extends State<EditProfile> {
                   DefaultButton(
                       text: "Save",
                       press: () {
-                        // if(_image == null){
-                        //   ToastUtils.showCustomToast(context, "Please select at least one image.", AppColors.redcolor);
-                        // }
-                        // else if(textController.text.isEmpty){
-                        //   ToastUtils.showCustomToast(context, "Please add your bio", AppColors.redcolor);
-                        // }
-                        // if (_filters.isEmpty) {
-                        //   ToastUtils.showCustomToast(context,
-                        //       "Please select your craves", AppColors.redcolor);
-                        // } else {
                         postDetailsToFirestore(context);
-                        // }
-                        // else {
-                        //   if(mounted){
-                        //     setState(() {
-                        //       isLoading = true;
-                        //     });
-                        //   }
-                        //   postDetailsToFirestore(context);
-                        // }
                       }),
                   SizedBox(
                     height: 10.h,
