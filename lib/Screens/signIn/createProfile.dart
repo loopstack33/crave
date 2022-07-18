@@ -155,6 +155,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           ]
                         ],
                       ),
+                    
                       Stack(
                         children: [
                           SizedBox(
@@ -494,6 +495,7 @@ class _CreateProfileState extends State<CreateProfile> {
       }
     } else {}
   }
+
 }
 
 class Company {
