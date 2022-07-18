@@ -61,15 +61,23 @@ class _ProfileState extends State<Profile> {
         country = value.data()!["country"];
         age = value.data()!["age"];
         isLoading = false;
-        pic1url = photoUrl[0];
-        if (photoUrl.length == 2) {
+       if(photoUrl.length==1){
+         pic1url = photoUrl[0];
+       }
+
+        else if (photoUrl.length == 2) {
+          pic1url = photoUrl[0];
           pic2url = photoUrl[1];
         }
-        if (photoUrl.length == 3) {
+       else if (photoUrl.length == 3) {
+         pic1url = photoUrl[0];
+         pic2url = photoUrl[1];
           pic3url = photoUrl[2];
         }
 
-        print(pic2url);
+        log(pic1url.toString());
+        log(pic2url.toString());
+        log(pic3url.toString());
       });
       controllerBio = TextEditingController(text: bio);
     });
@@ -150,79 +158,79 @@ class _ProfileState extends State<Profile> {
                           ]
                         ],
                       ),
-                      // Stack(
-                      //   children: [
-                      //     SizedBox(
-                      //       width: 102.w,
-                      //       height: 154.h,
-                      //       child: InkWell(
-                      //         onTap: () {
-                      //           imagePickermethod(2);
-                      //         },
-                      //         child: _image1 == null || clearPic1 == false
-                      //             ? Image.asset(addpic)
-                      //             : Image.file(_image1!),
-                      //       ),
-                      //     ),
-                      //     if (clearPic1 == true) ...[
-                      //       Positioned(
-                      //         left: 65,
-                      //         child: InkWell(
-                      //           onTap: () {
-                      //             setState(() {
-                      //               clearPic1 = false;
-                      //             });
-                      //           },
-                      //           child: Align(
-                      //             alignment: Alignment.topRight,
-                      //             child: Image.asset(
-                      //               deletePic,
-                      //               width: 30.w,
-                      //               height: 30.h,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       )
-                      //     ]
-                      //   ],
-                      // ),
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 102.w,
+                            height: 154.h,
+                            child: InkWell(
+                              onTap: () {
+                                imagePickermethod(2);
+                              },
+                              child: _image1 == null || clearPic1 == false
+                                  ? Image.asset(addpic)
+                                  : Image.file(_image1!),
+                            ),
+                          ),
+                          if (clearPic1 == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    clearPic1 = false;
+                                  });
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
                       
-                      // Stack(
-                      //   children: [
-                      //     SizedBox(
-                      //       width: 102.w,
-                      //       height: 154.h,
-                      //       child: InkWell(
-                      //         onTap: () {
-                      //           imagePickermethod(3);
-                      //         },
-                      //         child: _image2 == null || clearPic2 == false
-                      //             ? Image.asset(addpic)
-                      //             : Image.file(_image2!),
-                      //       ),
-                      //     ),
-                      //     if (clearPic2 == true) ...[
-                      //       Positioned(
-                      //         left: 65,
-                      //         child: InkWell(
-                      //           onTap: () {
-                      //             setState(() {
-                      //               clearPic2 = false;
-                      //             });
-                      //           },
-                      //           child: Align(
-                      //             alignment: Alignment.topRight,
-                      //             child: Image.asset(
-                      //               deletePic,
-                      //               width: 30.w,
-                      //               height: 30.h,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       )
-                      //     ]
-                      //   ],
-                      // ),
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 102.w,
+                            height: 154.h,
+                            child: InkWell(
+                              onTap: () {
+                                imagePickermethod(3);
+                              },
+                              child: _image2 == null || clearPic2 == false
+                                  ? Image.asset(addpic)
+                                  : Image.file(_image2!),
+                            ),
+                          ),
+                          if (clearPic2 == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    clearPic2 = false;
+                                  });
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
                    
                    
                     ],
