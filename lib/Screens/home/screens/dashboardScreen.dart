@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'dart:developer';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -275,23 +276,21 @@ class _DashboardState extends State<Dashboard> {
                                                   color: AppColors.containerborder.withOpacity(0.6),
                                                   child:IconButton(
                                                       padding: EdgeInsets.zero,
-                                                      onPressed:loading? null:() async{
+                                                      onPressed:() async{
                                                         if(mounted){
                                                           setState((){
                                                             selectedIndex = index;
                                                             loading = true;
                                                           });
                                                         }
+
                                                         try {
                                                           await FirebaseFirestore.instance
                                                               .collection('users').doc(_auth.currentUser!.uid).collection("likes")
                                                               .get()
                                                               .then((value) {
-
-                                                            if(value.docs[index]["liked"]!="true"){
-
-                                                              likeUser(docs[index]['name'].toString(),docs[index]['imageUrl'][0].toString());
-
+                                                            if(value.docs[index]["likedId"]!=docs[index]["uid"]){
+                                                              likeUser(docs[index]['name'].toString(),docs[index]['imageUrl'][0].toString(),docs[index]['uid'].toString());
                                                             }
                                                             else{
                                                               if(mounted){
@@ -427,7 +426,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  likeUser(name,image) async{
+  likeUser(name,image,id) async{
     var rnd = math.Random();
     var next = rnd.nextDouble() * 1000000;
     while (next < 100000) {
@@ -438,7 +437,7 @@ class _DashboardState extends State<Dashboard> {
     await firebaseFirestore.collection("users").doc(user!.uid).collection("likes").doc(next.toInt().toString()).set({
       'name': name,
       'imageUrl':image.toString(),
-      'liked':'true'
+      'likedId':id
 
     }).then((text) {
       ToastUtils.showCustomToast(
