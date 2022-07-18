@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crave/Screens/home/screens/profile/editProfile.dart';
 import 'package:crave/Screens/home/screens/profile/mycraves.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -99,11 +100,18 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: () {},
-                    child: text(context, "Edit Profile", 16.sp,
-                        color: AppColors.black,
-                        boldText: FontWeight.w500,
-                        fontFamily: "Roboto-Medium"),
+                    onTap: () {
+                       AppRoutes.push(context, PageTransitionType.fade, const EditProfile());
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        text(context, "Edit Profile ---> ", 16.sp,
+                            color: AppColors.redcolor,
+                            boldText: FontWeight.w500,
+                            fontFamily: "Roboto-Medium"),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 10.h,
@@ -118,120 +126,44 @@ class _ProfileState extends State<Profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Stack(
-                        children: [
-//                           ClipRRect(
-//     borderRadius: BorderRadius.circular(8.0),
-//     child: Image.network(
-//         ,
-//         height: 150.0,
-//         width: 100.0,
-//     ),
-// )
-                          Container(
-                            width: 102.w,
-                            height: 154.h,
-                            child: InkWell(
-                                onTap: () {
-                                  // imagePickermethod(1);
-                                },
-                                child: pic1url.isEmpty || clearPic == false
-                                    ? Image.asset(addpic)
-                                    : Image.network(pic1url)),
-                          ),
-                          if (clearPic == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  // setState(() {
-                                  //   clearPic = false;
-                                  // });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
+                      Container(
+                        width: 100.w,
+                        height: 154.h,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: pic1url == ""
+                                  ? const AssetImage(addpic) as ImageProvider
+                                  : NetworkImage(pic1url)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0)),
+                        ),
                       ),
-                      Stack(
-                        children: [
-                          SizedBox(
-                            width: 102.w,
-                            height: 154.h,
-                            child: InkWell(
-                              onTap: () {
-                                //  imagePickermethod(2);
-                              },
-                              child: pic2url == "" || clearPic1 == false
-                                  ? Image.asset(addpic)
-                                  : Image.network(pic2url),
-                            ),
-                          ),
-                          if (clearPic1 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  // setState(() {
-                                  //   clearPic1 = false;
-                                  // });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
+                      Container(
+                        width: 100.w,
+                        height: 154.h,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: pic2url == ""
+                                  ? const AssetImage(addpic) as ImageProvider
+                                  : NetworkImage(pic2url)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0)),
+                        ),
                       ),
-                      Stack(
-                        children: [
-                          SizedBox(
-                            width: 102.w,
-                            height: 154.h,
-                            child: InkWell(
-                              onTap: () {
-                                //  imagePickermethod(3);
-                              },
-                              child: pic3url == "" || clearPic2 == false
-                                  ? Image.asset(addpic)
-                                  : Image.network(pic3url),
-                            ),
-                          ),
-                          if (clearPic2 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  // setState(() {
-                                  //   clearPic2 = false;
-                                  // });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
+                      Container(
+                        width: 100.w,
+                        height: 154.h,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: pic3url == ""
+                                  ? const AssetImage(addpic) as ImageProvider
+                                  : NetworkImage(pic3url)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0)),
+                        ),
                       ),
                     ],
                   ),

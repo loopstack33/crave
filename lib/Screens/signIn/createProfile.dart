@@ -35,7 +35,6 @@ class _CreateProfileState extends State<CreateProfile> {
   bool clearPic = false;
   bool clearPic2 = false;
   final imagepicker = ImagePicker();
-  late GlobalKey<ScaffoldState> _key;
   late List<Company> _companies;
   late List<String> _filters;
   late List<String> picsList;
@@ -48,7 +47,6 @@ class _CreateProfileState extends State<CreateProfile> {
   @override
   void initState() {
     super.initState();
-    _key = GlobalKey<ScaffoldState>();
     _filters = <String>[];
     picsList = <String>[];
     _companies = <Company>[
@@ -156,6 +154,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           ]
                         ],
                       ),
+                    
                       Stack(
                         children: [
                           SizedBox(
@@ -495,6 +494,7 @@ class _CreateProfileState extends State<CreateProfile> {
       }
     } else {}
   }
+
 }
 
 class Company {
