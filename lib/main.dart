@@ -1,5 +1,9 @@
+import 'dart:developer';
 import 'package:crave/Screens/splash/splash.dart';
+import 'package:crave/services/fcm_services.dart';
+import 'package:crave/services/local_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,8 +18,50 @@ Future main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // status bar color
   ));
+  await LocalNotificationsService.instance.initialize();
+  FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  FCMServices.fcmGetTokenandSubscribe('crave');
+  fcmListen();
   runApp(const MyApp());
 }
+
+Future<void> _messageHandler(RemoteMessage event) async {
+  LocalNotificationsService.instance.showNotification(
+      title: '${event.notification?.title}',
+      body: '${event.notification?.body}');
+
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {});
+ /* if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
+    LocalNotificationsService.instance.showNotification(
+        title: '${event.notification?.title}',
+        body: '${event.notification?.body}');
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {});
+  }*/
+  log("Handling a background message: ${event.messageId}");
+}
+
+fcmListen() async {
+  // var sfID = await AuthServices.getTraderID();
+  FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+     log('event: $event');
+    /*if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid ||
+        event.data['id'].toString() == "all") {
+      LocalNotificationsService.instance.showNotification(
+          title: '${event.notification?.title}',
+          body: '${event.notification?.body}');
+
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {});
+    } else {}*/
+     LocalNotificationsService.instance.showNotification(
+         title: '${event.notification?.title}',
+         body: '${event.notification?.body}');
+
+     FirebaseMessaging.onMessageOpenedApp.listen((message) {});
+  });
+}
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
