@@ -357,9 +357,9 @@ class _SigninPhoneValidState extends State<GenderScreen> {
   }
 
   void postDetailsToFirestore(BuildContext context, genderb) async {
-    final _auth = FirebaseAuth.instance;
+    final auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    User? user = _auth.currentUser;
+    User? user = auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'gender': genderb,

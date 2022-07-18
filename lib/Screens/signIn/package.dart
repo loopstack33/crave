@@ -1,10 +1,10 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/createProfile.dart';
-import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
-import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:crave/widgets/custom_toast.dart';
 import 'package:crave/widgets/loader.dart';
@@ -289,9 +289,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
 
   void postDetailsToFirestore(BuildContext context, package) async {
 
-    final _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    User? user = _auth.currentUser;
+    User? user = auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'package': package,
@@ -304,7 +304,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
         });
         preferences.setString("package", package);
         AppRoutes.push(
-            context, PageTransitionType.fade,  CreateProfile());
+            context, PageTransitionType.fade,  const CreateProfile());
       }
     }).catchError((e) {});
     if (mounted) {

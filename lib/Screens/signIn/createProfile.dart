@@ -1,4 +1,5 @@
-import 'dart:developer';
+// ignore_for_file: file_names
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
@@ -35,7 +36,6 @@ class _CreateProfileState extends State<CreateProfile> {
   bool clearPic = false;
   bool clearPic2 = false;
   final imagepicker = ImagePicker();
-  late GlobalKey<ScaffoldState> _key;
   late List<Company> _companies;
   late List<String> _filters;
   late List<String> picsList;
@@ -48,7 +48,6 @@ class _CreateProfileState extends State<CreateProfile> {
   @override
   void initState() {
     super.initState();
-    _key = GlobalKey<ScaffoldState>();
     _filters = <String>[];
     picsList = <String>[];
     _companies = <Company>[
@@ -283,7 +282,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: text(context, "Selected  ${craveCounter}/3", 14.sp,
+                    child: text(context, "Selected  $craveCounter/3", 14.sp,
                         color: AppColors.black,
                         boldText: FontWeight.w400,
                         fontFamily: "Poppins-Medium"),
@@ -416,7 +415,7 @@ class _CreateProfileState extends State<CreateProfile> {
             ),
           ),
           backgroundColor:
-              company.status == false ? Color(0xffFAFAFA) : AppColors.redcolor,
+              company.status == false ? const Color(0xffFAFAFA) : AppColors.redcolor,
           label: text(context, company.name, 12.sp,
               color: company.status == false ? Colors.black : AppColors.white,
               boldText: FontWeight.w400,

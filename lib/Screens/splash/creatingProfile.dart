@@ -3,7 +3,6 @@
 import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
-import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +18,6 @@ class CreatingProfileScreen extends StatefulWidget {
 }
 
 class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
-  SharedPrefUtil _sharedPrefUtil = SharedPrefUtil();
   @override
   void initState() {
     super.initState();

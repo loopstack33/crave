@@ -21,12 +21,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final List<String> imgList = [
-    'https://source.unsplash.com/random/1920x1920/?abstracts',
-    'https://source.unsplash.com/random/1920x1920/?fruits,flowers',
-  ];
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -87,6 +82,7 @@ class _DashboardState extends State<Dashboard> {
                 itemCount: docs.length,
                 itemBuilder: (context, index) {
                   List<dynamic> craves = List.from(docs[index]['craves']);
+                  List<dynamic> imgList = List.from(docs[index]['imageUrl']);
                   return Container(
                     margin: const EdgeInsets.all(10),
                     padding: const EdgeInsets.all(10),

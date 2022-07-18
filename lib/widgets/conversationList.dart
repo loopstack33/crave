@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, file_names
+// ignore_for_file: must_be_immutable, file_names, library_private_types_in_public_api
 
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
