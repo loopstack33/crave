@@ -76,7 +76,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       body: Stack(
         children: <Widget>[
           Align(
-
             alignment: Alignment.topCenter,
             child: Container(
               padding:const EdgeInsets.only(left: 20,right: 20),

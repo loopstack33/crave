@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 import 'dart:ui';
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/settings.dart';
 import 'package:crave/utils/app_routes.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../../../widgets/custom_toast.dart';
+
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
@@ -21,8 +24,10 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
+  bool loading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  int selectedIndex =0;
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +241,6 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                               ),
                                             ),
-
                                             SizedBox(height: 10.h),
                                             ClipRRect(
                                               borderRadius: BorderRadius
@@ -268,18 +272,66 @@ class _DashboardState extends State<Dashboard> {
                                                 filter: ImageFilter.blur(
                                                     sigmaX: 10, sigmaY: 10),
                                                 child: Container(
-                                                  color: AppColors
-                                                      .containerborder
-                                                      .withOpacity(0.6),
-                                                  child: IconButton(
+                                                  color: AppColors.containerborder.withOpacity(0.6),
+                                                  child:IconButton(
                                                       padding: EdgeInsets.zero,
-                                                      onPressed: () {},
-                                                      icon: Icon(
+                                                      onPressed:loading? null:() async{
+                                                        if(mounted){
+                                                          setState((){
+                                                            selectedIndex = index;
+                                                            loading = true;
+                                                          });
+                                                        }
+                                                        try {
+                                                          await FirebaseFirestore.instance
+                                                              .collection('users').doc(_auth.currentUser!.uid).collection("likes")
+                                                              .get()
+                                                              .then((value) {
+
+                                                            if(value.docs[index]["liked"]!="true"){
+
+                                                              likeUser(docs[index]['name'].toString(),docs[index]['imageUrl'][0].toString());
+
+                                                            }
+                                                            else{
+                                                              if(mounted){
+                                                                setState((){
+                                                                  loading = false;
+                                                                });
+                                                              }
+                                                              ToastUtils.showCustomToast(
+                                                                  context, "Already Liked", AppColors.redcolor);
+                                                            }
+                                                          });
+                                                        } catch (e) {
+                                                          if(mounted){
+                                                            setState((){
+                                                              loading = false;
+                                                            });
+                                                          }
+                                                          debugPrint(e.toString());
+                                                        }
+
+
+                                                      },
+                                                      icon:selectedIndex==index?
+                                                      loading?SizedBox(
+                                                          width: 25.w,
+                                                          height: 25.h,
+                                                          child: CircularProgressIndicator(color: AppColors.redcolor,strokeWidth: 2.0.w,))
+                                                          : Icon(
                                                         FontAwesomeIcons
                                                             .solidHeart,
                                                         size: 28.sp,
                                                         color: AppColors.white,
-                                                      )),
+                                                      ):
+                                                      Icon(
+                                                        FontAwesomeIcons
+                                                            .solidHeart,
+                                                        size: 28.sp,
+                                                        color: AppColors.white,
+                                                      ))
+
                                                 ),
                                               ),
                                             ),
@@ -375,6 +427,36 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  likeUser(name,image) async{
+    var rnd = math.Random();
+    var next = rnd.nextDouble() * 1000000;
+    while (next < 100000) {
+      next *= 10;
+    }
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore.collection("users").doc(user!.uid).collection("likes").doc(next.toInt().toString()).set({
+      'name': name,
+      'imageUrl':image.toString(),
+      'liked':'true'
+
+    }).then((text) {
+      ToastUtils.showCustomToast(
+          context, "User Liked", Colors.green);
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+
+      }
+
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
 
 }
 
