@@ -306,8 +306,13 @@ class _SigninPhoneValidState extends State<GenderOption> {
                               }
                               postDetailsToFirestore(context, sexuality);
                             } else {
+                              if(mounted){
+                                setState((){
+                                  loading = false;
+                                });
+                              }
                               ToastUtils.showCustomToast(
-                                  context, "choose gender Option", Colors.red);
+                                  context, "Choose genes option", Colors.red);
                             }
                           }
                         : () {}),
@@ -416,9 +421,10 @@ class _SigninPhoneValidState extends State<GenderOption> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'genes': gene,
+      'steps':'4',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "gender Added", Colors.green);
+        ToastUtils.showCustomToast(context, "Gender Added", Colors.green);
         setState(() {
           loading = false;
         });

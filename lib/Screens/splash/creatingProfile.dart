@@ -5,7 +5,6 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/utils/sharedPref.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:crave/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';

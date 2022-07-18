@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
 import 'package:crave/utils/app_routes.dart';
@@ -20,7 +19,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateProfile extends StatefulWidget {
-  CreateProfile({Key? key}) : super(key: key);
+  const CreateProfile({Key? key}) : super(key: key);
 
   @override
   State<CreateProfile> createState() => _CreateProfileState();
@@ -137,9 +136,12 @@ class _CreateProfileState extends State<CreateProfile> {
                               left: 65,
                               child: InkWell(
                                 onTap: () {
-                                  setState(() {
+                                  if(mounted) {
+                                    setState(() {
+                                      _image=null;
                                     clearPic = false;
                                   });
+                                  }
                                 },
                                 child: Align(
                                   alignment: Alignment.topRight,
@@ -173,9 +175,12 @@ class _CreateProfileState extends State<CreateProfile> {
                               left: 65,
                               child: InkWell(
                                 onTap: () {
-                                  setState(() {
+                                  if(mounted) {
+                                    setState(() {
+                                      _image1=null;
                                     clearPic1 = false;
                                   });
+                                  }
                                 },
                                 child: Align(
                                   alignment: Alignment.topRight,
@@ -209,9 +214,12 @@ class _CreateProfileState extends State<CreateProfile> {
                               left: 65,
                               child: InkWell(
                                 onTap: () {
-                                  setState(() {
+                                  if(mounted) {
+                                    setState(() {
+                                      _image2=null;
                                     clearPic2 = false;
                                   });
+                                  }
                                 },
                                 child: Align(
                                   alignment: Alignment.topRight,
@@ -293,13 +301,22 @@ class _CreateProfileState extends State<CreateProfile> {
                       DefaultButton(
                           text: "Confirm",
                           press: () {
-                            if (textController.text != null ||
-                                _filters.length != 0 ||
-                                _image != null) {
+                            if(_image == null){
+                              ToastUtils.showCustomToast(context, "Please select at least one image.", AppColors.redcolor);
+                            }
+                            else if(textController.text.isEmpty){
+                              ToastUtils.showCustomToast(context, "Please add your bio", AppColors.redcolor);
+                            }
+                            else if(_filters.isEmpty){
+                              ToastUtils.showCustomToast(context, "Please select your craves", AppColors.redcolor);
+                            }
+                            else {
+                              if(mounted){
+                                setState(() {
+                                  isLoading = true;
+                                });
+                              }
                               postDetailsToFirestore(context);
-                            } else {
-                              ToastUtils.showCustomToast(
-                                  context, "Add data accordingly", Colors.red);
                             }
                           }),
                       SizedBox(
@@ -315,12 +332,9 @@ class _CreateProfileState extends State<CreateProfile> {
   }
 
   void postDetailsToFirestore(BuildContext context) async {
-    setState(() {
-      isLoading = true;
-    });
+
 
     if (_image != null) {
-      print("in");
       Reference ref =
           FirebaseStorage.instance.ref().child(_image!.path.split('/').last);
       await ref.putFile(_image!);
@@ -328,7 +342,7 @@ class _CreateProfileState extends State<CreateProfile> {
       picsList.add(downloadURL!);
     }
     if (_image1 != null) {
-      print("in");
+
       Reference ref1 =
           FirebaseStorage.instance.ref().child(_image1!.path.split('/').last);
       await ref1.putFile(_image1!);
@@ -336,7 +350,7 @@ class _CreateProfileState extends State<CreateProfile> {
       picsList.add(downloadURL1!);
     }
     if (_image2 != null) {
-      print("in");
+
       Reference ref2 =
           FirebaseStorage.instance.ref().child(_image2!.path.split('/').last);
       await ref2.putFile(_image2!);
@@ -352,7 +366,8 @@ class _CreateProfileState extends State<CreateProfile> {
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'bio': textController.text,
       'imageUrl': FieldValue.arrayUnion(picsList),
-      'craves': FieldValue.arrayUnion(_filters)
+      'craves': FieldValue.arrayUnion(_filters),
+      'steps':'6',
     }).then((text) {
       if (mounted) {
         setState(() {
@@ -361,6 +376,7 @@ class _CreateProfileState extends State<CreateProfile> {
 
         AppRoutes.push(
             context, PageTransitionType.fade, const CreatingProfileScreen());
+        preferences.setString("logStatus", "true");
       }
     }).catchError((e) {});
     if (mounted) {
@@ -409,7 +425,8 @@ class _CreateProfileState extends State<CreateProfile> {
           selectedColor:
               company.status == false ? Colors.white : AppColors.redcolor,
           onSelected: (bool selected) {
-            setState(() {
+            if(mounted) {
+              setState(() {
               if (selected) {
                 if (_filters.length < 3) {
                   craveCounter = _filters.length + 1;
@@ -428,6 +445,7 @@ class _CreateProfileState extends State<CreateProfile> {
               if (_filters.length < 3) {
               } else {}
             });
+            }
           },
         ),
       );
@@ -460,7 +478,8 @@ class _CreateProfileState extends State<CreateProfile> {
         ],
       );
       if (croppedFile != null) {
-        setState(() {
+        if(mounted) {
+          setState(() {
           if (check == 1) {
             _image = File(croppedFile.path);
             clearPic = true;
@@ -472,6 +491,7 @@ class _CreateProfileState extends State<CreateProfile> {
             clearPic2 = true;
           }
         });
+        }
       }
     } else {}
   }

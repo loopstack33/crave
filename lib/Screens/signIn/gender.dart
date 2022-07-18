@@ -249,8 +249,12 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                               }
                               postDetailsToFirestore(context, gender);
                             } else {
-                              ToastUtils.showCustomToast(
-                                  context, "choose gender", Colors.red);
+                              if(mounted){
+                                setState((){
+                                  loading = false;
+                                });
+                              }
+                              ToastUtils.showCustomToast(context, "Choose a Gender", AppColors.redcolor);
                             }
                           }
                         : () {}),
@@ -359,6 +363,7 @@ class _SigninPhoneValidState extends State<GenderScreen> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'gender': genderb,
+      'steps':'3',
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "gender Added", Colors.green);

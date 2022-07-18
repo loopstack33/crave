@@ -180,6 +180,15 @@ class _SigninPhoneValidState extends State<FirstName> {
                     color: btnColor,
                     text: "CONTINUE",
                     press:isEnabled? () {
+                    if(nameController.text.isEmpty){
+                      if(mounted){
+                        setState((){
+                          loading = false;
+                        });
+                      }
+                      ToastUtils.showCustomToast(context, "Please enter a name", AppColors.redcolor);
+                    }
+                    else{
                       if(mounted){
                         setState((){
                           loading = true;
@@ -187,6 +196,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                       }
                       postDetailsToFirestore(context, nameController.text.toString());
 
+                    }
                     }:(){}),
               ),
               const Spacer(),
@@ -294,6 +304,7 @@ class _SigninPhoneValidState extends State<FirstName> {
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'name': name,
       'showName':checkbox.toString(),
+      'steps':'1',
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(

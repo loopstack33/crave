@@ -29,10 +29,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   Color btnColor = const Color(0xFFE38282);
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   bool loading = false;
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +147,11 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                                   ToastUtils.showCustomToast(context,
                                       "Must be 18 years old", Colors.red);
                                 } else {
+                                  if(mounted){
+                                    setState((){
+                                      loading = true;
+                                    });
+                                  }
                                   postDetailsToFirestore(
                                       context,
                                       age2.toString(),
@@ -263,7 +265,7 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
     await firebaseFirestore
         .collection("users")
         .doc(user!.uid)
-        .update({'age': age, 'birthday': birthday}).then((text) {
+        .update({'age': age, 'birthday': birthday, 'steps':'2',}).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "Age Added", Colors.green);
         setState(() {

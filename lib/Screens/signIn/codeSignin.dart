@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, prefer_function_declarations_over_variables, use_build_context_synchronously, must_be_immutable, prefer_typing_uninitialized_variables
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/homeScreen.dart';
 import 'package:crave/Screens/signIn/name.dart';
@@ -16,6 +17,11 @@ import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_toast.dart';
+import 'birthday.dart';
+import 'createProfile.dart';
+import 'gender.dart';
+import 'genderOption.dart';
+import 'package.dart';
 
 class CodeSignin extends StatefulWidget {
   String phone;
@@ -57,10 +63,31 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           .where('phone', isEqualTo: phone)
           .get()
           .then((value) => value.size > 0 ? setState((){
+            getUser();
             exists = true;
       }) : setState((){
         exists = false;
       }));
+    } catch (e) {
+      debugPrint(e.toString());
+
+    }
+  }
+  String step='';
+  getUser() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .get()
+          .then((value){
+            if(mounted){
+              setState((){
+                step =value.data()!["steps"];
+                log(step.toString());
+              });
+            }
+         });
     } catch (e) {
       debugPrint(e.toString());
 
@@ -204,13 +231,28 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                           text: "VERIFY",
                           press: isEnabled
                               ? () {
-                                  PhoneAuthCredential phoneAuthCredential =
-                                      PhoneAuthProvider.credential(
-                                          verificationId: myVerificationId,
-                                          smsCode: otpController.text);
+                            if (otpController.text.isEmpty) {
+                              ToastUtils.showCustomToast(
+                                  context,
+                                  "Please enter six digit code",
+                                  AppColors.redcolor);
+                              if (mounted) {
+                                setState(() {
+                                  loading = false;
+                                });
+                              }
+                            }
+                            else{
+                              PhoneAuthCredential phoneAuthCredential =
+                              PhoneAuthProvider.credential(
+                                  verificationId: myVerificationId,
+                                  smsCode: otpController.text);
 
-                                  signInWithPhoneAuthCredential(
-                                      phoneAuthCredential);
+                              signInWithPhoneAuthCredential(
+                                  phoneAuthCredential);
+
+                            }
+
                                 }
                               : () {})),
               SizedBox(
@@ -408,6 +450,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthCredential) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
         loading = true;
@@ -423,14 +466,79 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           });
         }
         if(exists==true){
-          if (mounted) {
-            ToastUtils.showCustomToast(
-                context, "Login Success", Colors.green);
-            setState(() {
-              loading = false;
-            });
-            AppRoutes.push(context, PageTransitionType.fade, const HomeScreen());
+          if(step =="0"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const FirstName());
+            }
           }
+          else if(step =="1"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const BirthdayScreen());
+            }
+          }
+          else if(step =="2"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const GenderScreen());
+            }
+          }
+          else if(step =="3"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const GenderOption());
+            }
+          }
+          else if(step =="4"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const PackageScreen());
+            }
+          }
+          else if(step =="5"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Complete your registration", Colors.red);
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const CreateProfile());
+            }
+          }
+          else if(step =="6"){
+            if (mounted) {
+              ToastUtils.showCustomToast(
+                  context, "Login Success", Colors.green);
+              preferences.setString("logStatus", "true");
+              setState(() {
+                loading = false;
+              });
+              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
+
+            }
+          }
+
         }
         else{
           postDetailsToFirestore(context, widget.phone.toString());
@@ -533,7 +641,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   void postDetailsToFirestore(BuildContext context, phone) async {
     final auth = FirebaseAuth.instance;
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = auth.currentUser;
 
@@ -552,6 +660,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'birthday': '',
       'genes': '',
       'bio': '',
+       'steps':'0'
     }).then((value) {
       if (mounted) {
         ToastUtils.showCustomToast(
@@ -561,7 +670,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         });
         AppRoutes.push(context, PageTransitionType.fade, const FirstName());
       }
-      preferences.setString("logStatus", "true");
+      // preferences.setString("logStatus", "true");
     }).catchError((e) {});
     if (mounted) {
       setState(() {
