@@ -100,9 +100,18 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: () {
-                      AppRoutes.push(context, PageTransitionType.fade,
-                          const EditProfile());
+                    onTap: () async {
+                      final refresh = await Navigator.push(
+                          context,
+                          // Create the SelectionScreen in the next step.
+                          MaterialPageRoute(
+                              builder: (context) => const EditProfile()));
+
+                      setState(() {
+                        if (refresh == "Refresh") {
+                          getData();
+                        }
+                      });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

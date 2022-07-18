@@ -475,12 +475,12 @@ class _ProfileState extends State<EditProfile> {
                         // else if(textController.text.isEmpty){
                         //   ToastUtils.showCustomToast(context, "Please add your bio", AppColors.redcolor);
                         // }
-                        if (_filters.isEmpty) {
-                          ToastUtils.showCustomToast(context,
-                              "Please select your craves", AppColors.redcolor);
-                        } else {
-                          postDetailsToFirestore(context);
-                        }
+                        // if (_filters.isEmpty) {
+                        //   ToastUtils.showCustomToast(context,
+                        //       "Please select your craves", AppColors.redcolor);
+                        // } else {
+                        postDetailsToFirestore(context);
+                        // }
                         // else {
                         //   if(mounted){
                         //     setState(() {
@@ -611,6 +611,9 @@ class _ProfileState extends State<EditProfile> {
   }
 
   void postDetailsToFirestore(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
     if (_image != null) {
       Reference ref =
           FirebaseStorage.instance.ref().child(_image!.path.split('/').last);
@@ -648,8 +651,7 @@ class _ProfileState extends State<EditProfile> {
           isLoading = false;
         });
 
-        // AppRoutes.push(
-        //     context, PageTransitionType.fade, const CreatingProfileScreen());
+        Navigator.pop(context, 'Refresh');
         preferences.setString("logStatus", "true");
       }
     }).catchError((e) {});
