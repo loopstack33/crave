@@ -131,10 +131,6 @@ class _ProfileState extends State<EditProfile> {
           val2.add(pic2url);
           val3.add(pic3url);
         }
-
-        craveCounter = craves.length;
-        log(craves.toString());
-        
       });
       controllerBio = TextEditingController(text: bio);
     });
