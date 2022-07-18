@@ -1,15 +1,11 @@
 // ignore_for_file: file_names
-
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/profile/mycraves.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:crave/widgets/custom_toast.dart';
 import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -61,23 +57,16 @@ class _ProfileState extends State<Profile> {
         country = value.data()!["country"];
         age = value.data()!["age"];
         isLoading = false;
-       if(photoUrl.length==1){
-         pic1url = photoUrl[0];
-       }
-
-        else if (photoUrl.length == 2) {
+        if (photoUrl.length == 1) {
+          pic1url = photoUrl[0];
+        } else if (photoUrl.length == 2) {
           pic1url = photoUrl[0];
           pic2url = photoUrl[1];
-        }
-       else if (photoUrl.length == 3) {
-         pic1url = photoUrl[0];
-         pic2url = photoUrl[1];
+        } else if (photoUrl.length == 3) {
+          pic1url = photoUrl[0];
+          pic2url = photoUrl[1];
           pic3url = photoUrl[2];
         }
-
-        log(pic1url.toString());
-        log(pic2url.toString());
-        log(pic3url.toString());
       });
       controllerBio = TextEditingController(text: bio);
     });
@@ -105,10 +94,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  text(context, "Profile Images", 16.sp,
-                      color: AppColors.black,
-                      boldText: FontWeight.w500,
-                      fontFamily: "Roboto-Medium"),
+
                   SizedBox(
                     height: 10.h,
                   ),
@@ -117,15 +103,7 @@ class _ProfileState extends State<Profile> {
                     children: [
                       Stack(
                         children: [
-//                           ClipRRect(
-//     borderRadius: BorderRadius.circular(8.0),
-//     child: Image.network(
-//         ,
-//         height: 150.0,
-//         width: 100.0,
-//     ),
-// )
-                          Container(
+                          SizedBox(
                             width: 102.w,
                             height: 154.h,
                             child: InkWell(
@@ -134,28 +112,38 @@ class _ProfileState extends State<Profile> {
                                 },
                                 child: pic1url.isEmpty || clearPic == false
                                     ? Image.asset(addpic)
-                                    : Image.network(pic1url)),
-                          ),
-                          if (clearPic == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  // setState(() {
-                                  //   clearPic = false;
-                                  // });
+                                    : ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      child: Image.network(pic1url,loadingBuilder: (BuildContext ctx,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                      return child;
+                                  }
+                                  return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                            .expectedTotalBytes !=
+                                            null
+                                            ? loadingProgress
+                                            .cumulativeBytesLoaded /
+                                            loadingProgress
+                                                .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                  );
                                 },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
+                                  errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace,) {
+                                      return Text(
+                                        'Oops!! An error occurred. 😢',
+                                        style: TextStyle(fontSize: 16.sp),
+                                      );
+                                  },),
+                                    )),
+                          ),
+
                         ],
                       ),
                       Stack(
@@ -165,36 +153,42 @@ class _ProfileState extends State<Profile> {
                             height: 154.h,
                             child: InkWell(
                               onTap: () {
-                                imagePickermethod(2);
+                                //  imagePickermethod(2);
                               },
-                              child: _image1 == null || clearPic1 == false
+                              child: pic2url == "" || clearPic1 == false
                                   ? Image.asset(addpic)
-                                  : Image.file(_image1!),
+                                  : Image.network(pic2url,loadingBuilder: (BuildContext ctx,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress
+                                        .expectedTotalBytes !=
+                                        null
+                                        ? loadingProgress
+                                        .cumulativeBytesLoaded /
+                                        loadingProgress
+                                            .expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
+                                errorBuilder: (BuildContext context,
+                                    Object exception,
+                                    StackTrace? stackTrace,) {
+                                  return Text(
+                                    'Oops!! An error occurred. 😢',
+                                    style: TextStyle(fontSize: 16.sp),
+                                  );
+                                },),
                             ),
                           ),
-                          if (clearPic1 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    clearPic1 = false;
-                                  });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
+
                         ],
                       ),
-                      
                       Stack(
                         children: [
                           SizedBox(
@@ -202,37 +196,42 @@ class _ProfileState extends State<Profile> {
                             height: 154.h,
                             child: InkWell(
                               onTap: () {
-                                imagePickermethod(3);
+                                //  imagePickermethod(3);
                               },
-                              child: _image2 == null || clearPic2 == false
+                              child: pic3url == "" || clearPic2 == false
                                   ? Image.asset(addpic)
-                                  : Image.file(_image2!),
+                                  : Image.network(pic3url,loadingBuilder: (BuildContext ctx,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress
+                                        .expectedTotalBytes !=
+                                        null
+                                        ? loadingProgress
+                                        .cumulativeBytesLoaded /
+                                        loadingProgress
+                                            .expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
+                                errorBuilder: (BuildContext context,
+                                    Object exception,
+                                    StackTrace? stackTrace,) {
+                                  return Text(
+                                    'Oops!! An error occurred. 😢',
+                                    style: TextStyle(fontSize: 16.sp),
+                                  );
+                                },),
                             ),
                           ),
-                          if (clearPic2 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    clearPic2 = false;
-                                  });
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
+
                         ],
                       ),
-                   
-                   
                     ],
                   ),
 
@@ -284,6 +283,7 @@ class _ProfileState extends State<Profile> {
                     child: Padding(
                         padding: const EdgeInsets.only(left: 10, bottom: 10),
                         child: TextFormField(
+                          readOnly: true,
                           style: TextStyle(
                               fontSize: 14.sp,
                               color: const Color(0xff636363),
@@ -368,353 +368,59 @@ class _ProfileState extends State<Profile> {
                               runSpacing: 4.0, // gap between lines
                               children: craves
                                   .map((e) => Chip(
-                                        labelPadding: const EdgeInsets.all(2.0),
-                                        avatar: CircleAvatar(
-                                          backgroundColor: AppColors.chipColor,
-                                          child: Image.asset(
-                                            e == "Casual Dating"
-                                                ? casualdating
-                                                : e == "No String Attached"
-                                                    ? nostring1
-                                                    : e == "In Person"
-                                                        ? inperson
-                                                        : e == "Sexting"
-                                                            ? sexting2
-                                                            : e == "Kinky"
-                                                                ? kinky
-                                                                : e == "Vanilla"
-                                                                    ? vanilla
-                                                                    : e == "Submissive"
-                                                                        ? submissive
-                                                                        : e == "Dominance"
-                                                                            ? dominance
-                                                                            : e == "Dress Up"
-                                                                                ? dressup
-                                                                                : e == "Blindfolding"
-                                                                                    ? blindfolding
-                                                                                    : e == "Bondage"
-                                                                                        ? bondage
-                                                                                        : e == "Butt Stuff"
-                                                                                            ? buttstuff
-                                                                                            : kinky1,
-                                            color: AppColors.white,
-                                            width: 15,
-                                            height: 15,
-                                          ),
-                                        ),
-                                        label: Text(
-                                          e.toString(),
-                                          style: TextStyle(
-                                              fontSize: 13.sp,
-                                              color: AppColors.white,
-                                              fontFamily: "Poppins-Regular"),
-                                        ),
-                                        deleteIcon: Image.asset(
-                                          cross,
-                                          width: 19.w,
-                                          height: 19.h,
-                                        ),
-                                        onDeleted: () {},
-                                        backgroundColor: AppColors.chipCircle,
-                                        padding: const EdgeInsets.all(6.0),
-                                      ))
+                                labelPadding: const EdgeInsets.all(2.0),
+                                avatar: CircleAvatar(
+                                  backgroundColor: AppColors.chipColor,
+                                  child: Image.asset(
+                                    e == "Casual Dating"
+                                        ? casualdating
+                                        : e == "No String Attached"
+                                        ? nostring1
+                                        : e == "In Person"
+                                        ? inperson
+                                        : e == "Sexting"
+                                        ? sexting2
+                                        : e == "Kinky"
+                                        ? kinky
+                                        : e == "Vanilla"
+                                        ? vanilla
+                                        : e == "Submissive"
+                                        ? submissive
+                                        : e == "Dominance"
+                                        ? dominance
+                                        : e == "Dress Up"
+                                        ? dressup
+                                        : e == "Blindfolding"
+                                        ? blindfolding
+                                        : e == "Bondage"
+                                        ? bondage
+                                        : e == "Butt Stuff"
+                                        ? buttstuff
+                                        : kinky1,
+                                    color: AppColors.white,
+                                    width: 15,
+                                    height: 15,
+                                  ),
+                                ),
+                                label: Text(
+                                  e.toString(),
+                                  style: TextStyle(
+                                      fontSize: 13.sp,
+                                      color: AppColors.white,
+                                      fontFamily: "Poppins-Regular"),
+                                ),
+                                deleteIcon: Image.asset(
+                                  cross,
+                                  width: 19.w,
+                                  height: 19.h,
+                                ),
+                                onDeleted: () {},
+                                backgroundColor: AppColors.chipCircle,
+                                padding: const EdgeInsets.all(6.0),
+                              ))
                                   .toList(),
                             ),
                           ),
-                          /*Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "Kinky", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Image.asset(
-                                          kinky,
-                                          width: 14.w,
-                                          height: 16.h,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "Casual Dating", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Image.asset(
-                                        casualdating,
-                                        width: 12.w,
-                                        height: 16.h,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "Submissive", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Image.asset(
-                                          submissive,
-                                          width: 14.w,
-                                          height: 16.h,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "In Person", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Image.asset(
-                                        inperson,
-                                        width: 12.w,
-                                        height: 16.h,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "Dirty Talk", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Image.asset(
-                                          dirtytalk,
-                                          width: 14.w,
-                                          height: 16.h,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Container(
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff464646),
-                                borderRadius: BorderRadius.circular(32),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    text(context, "Vanilla", 12.sp,
-                                        color: AppColors.white,
-                                        boldText: FontWeight.w400,
-                                        fontFamily: "Poppins-Regular"),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Container(
-                                      height: 22,
-                                      width: 22,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff545454),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Image.asset(
-                                        vanilla,
-                                        width: 12.w,
-                                        height: 16.h,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5.h,
-                                    ),
-                                    Image.asset(
-                                      cross,
-                                      width: 19.w,
-                                      height: 19.h,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),*/
                         ],
                       ),
                     ),
