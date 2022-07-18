@@ -43,7 +43,7 @@ class _ProfileState extends State<EditProfile> {
 
   var val1 = [];
   var val2 = [];
-
+  var val3 = [];
   TextEditingController controllerBio = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -129,11 +129,10 @@ class _ProfileState extends State<EditProfile> {
           clearPic2 = true;
           val1.add(pic1url);
           val2.add(pic2url);
+          val3.add(pic3url);
         }
       });
       controllerBio = TextEditingController(text: bio);
-      log(pic2url.toString());
-      log(clearPic1.toString());
     });
   }
 
@@ -171,18 +170,27 @@ class _ProfileState extends State<EditProfile> {
                     children: [
                       Stack(
                         children: [
-                          Container(
-                            width: 100.w,
-                            height: 154.h,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: pic1url == "" || clearPic == false
-                                      ? const AssetImage(addpic)
-                                          as ImageProvider
-                                      : NetworkImage(pic1url)),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10.0)),
+                          InkWell(
+                            onTap: () {
+                              if (pic1url == "") {
+                                imagePickermethod(1);
+                              }
+                            },
+                            child: Container(
+                              width: 100.w,
+                              height: 154.h,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: pic1url == "" || clearPic == false
+                                        ? const AssetImage(addpic)
+                                        : _image != null
+                                            ? FileImage(_image!)
+                                                as ImageProvider
+                                            : NetworkImage(pic1url)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
                             ),
                           ),
                           if (clearPic == true) ...[
@@ -191,18 +199,21 @@ class _ProfileState extends State<EditProfile> {
                               child: InkWell(
                                 onTap: () {
                                   if (mounted) {
-                                    setState(() {
-                                      pic1url = "";
-                                      clearPic = false;
-                                      var collection = FirebaseFirestore
-                                          .instance
-                                          .collection('users');
-                                      collection.doc(uid).update({
-                                        'imageUrl':
-                                            FieldValue.arrayRemove(val1),
+                                    if (pic1url != "") {
+                                      setState(() {
+                                        var collection = FirebaseFirestore
+                                            .instance
+                                            .collection('users');
+                                        collection.doc(uid).update({
+                                          'imageUrl':
+                                              FieldValue.arrayRemove(val1),
+                                        });
+                                        getData();
                                       });
-                                      getData();
-                                    });
+                                    }
+                                  } else if (pic1url == "checked") {
+                                    _image = null;
+                                    clearPic = false;
                                   }
                                 },
                                 child: Align(
@@ -220,38 +231,50 @@ class _ProfileState extends State<EditProfile> {
                       ),
                       Stack(
                         children: [
-                          Container(
-                            width: 100.w,
-                            height: 154.h,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: pic2url == "" || clearPic1 == false
-                                      ? const AssetImage(addpic)
-                                          as ImageProvider
-                                      : NetworkImage(pic2url)),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10.0)),
+                          InkWell(
+                            onTap: () {
+                              if (pic2url == "") {
+                                imagePickermethod(2);
+                              }
+                            },
+                            child: Container(
+                              width: 100.w,
+                              height: 154.h,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: pic2url == "" || clearPic1 == false
+                                        ? const AssetImage(addpic)
+                                        : _image1 != null
+                                            ? FileImage(_image1!)
+                                                as ImageProvider
+                                            : NetworkImage(pic2url)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
                             ),
                           ),
-                          if (clearPic == true) ...[
+                          if (clearPic1 == true) ...[
                             Positioned(
                               left: 65,
                               child: InkWell(
                                 onTap: () {
                                   if (mounted) {
-                                    setState(() {
-                                      var collection = FirebaseFirestore
-                                          .instance
-                                          .collection('users');
-                                      collection.doc(uid).update({
-                                        'imageUrl':
-                                            FieldValue.arrayRemove(val2),
+                                    if (pic2url != "") {
+                                      setState(() {
+                                        var collection = FirebaseFirestore
+                                            .instance
+                                            .collection('users');
+                                        collection.doc(uid).update({
+                                          'imageUrl':
+                                              FieldValue.arrayRemove(val2),
+                                        });
+                                        getData();
                                       });
-
-                                      clearPic = false;
-                                      getData();
-                                    });
+                                    }
+                                  } else if (pic2url == "checked") {
+                                    _image1 = null;
+                                    clearPic1 = false;
                                   }
                                 },
                                 child: Align(
@@ -267,18 +290,67 @@ class _ProfileState extends State<EditProfile> {
                           ]
                         ],
                       ),
-                      Container(
-                        width: 100.w,
-                        height: 154.h,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: pic3url == ""
-                                  ? const AssetImage(addpic) as ImageProvider
-                                  : NetworkImage(pic3url)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10.0)),
-                        ),
+                      Stack(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (pic3url == "") {
+                                imagePickermethod(3);
+                              }
+                            },
+                            child: Container(
+                              width: 100.w,
+                              height: 154.h,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: pic3url == "" || clearPic2 == false
+                                        ? const AssetImage(addpic)
+                                        : _image2 != null
+                                            ? FileImage(_image2!)
+                                                as ImageProvider
+                                            : NetworkImage(pic3url)),
+                                // : NetworkImage(pic3url)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0)),
+                              ),
+                            ),
+                          ),
+                          if (clearPic2 == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  if (mounted) {
+                                    if (pic3url != "") {
+                                      setState(() {
+                                        var collection = FirebaseFirestore
+                                            .instance
+                                            .collection('users');
+                                        collection.doc(uid).update({
+                                          'imageUrl':
+                                              FieldValue.arrayRemove(val3),
+                                        });
+                                        getData();
+                                      });
+                                    }
+                                  } else if (pic3url == "checked") {
+                                    _image2 = null;
+                                    clearPic2 = false;
+                                  }
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
                       ),
                     ],
                   ),
@@ -483,9 +555,6 @@ class _ProfileState extends State<EditProfile> {
                   });
                   craveCounter--;
                 }
-
-                if (_filters.length < 3) {
-                } else {}
               });
             }
           },
@@ -523,12 +592,15 @@ class _ProfileState extends State<EditProfile> {
         if (mounted) {
           setState(() {
             if (check == 1) {
+              pic1url = "checked";
               _image = File(croppedFile.path);
               clearPic = true;
             } else if (check == 2) {
+              pic2url = "checked";
               _image1 = File(croppedFile.path);
               clearPic1 = true;
             } else {
+              pic3url = "checked";
               _image2 = File(croppedFile.path);
               clearPic2 = true;
             }
@@ -567,7 +639,7 @@ class _ProfileState extends State<EditProfile> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'bio': controllerBio.text,
-      // 'imageUrl': FieldValue.arrayUnion(picsList),
+      'imageUrl': FieldValue.arrayUnion(picsList),
       'craves': FieldValue.arrayUnion(_filters),
       // 'steps':'6',
     }).then((text) {

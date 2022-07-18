@@ -101,7 +101,8 @@ class _ProfileState extends State<Profile> {
                 children: [
                   InkWell(
                     onTap: () {
-                       AppRoutes.push(context, PageTransitionType.fade, const EditProfile());
+                      AppRoutes.push(context, PageTransitionType.fade,
+                          const EditProfile());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -654,10 +655,15 @@ class _ProfileState extends State<Profile> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  text(context, "Disable Account", 20.sp,
-                      color: AppColors.black,
-                      boldText: FontWeight.w400,
-                      fontFamily: "Poppins-Medium"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      text(context, "Disable Account", 20.sp,
+                          color: AppColors.black,
+                          boldText: FontWeight.w400,
+                          fontFamily: "Poppins-Medium"),
+                    ],
+                  ),
                   SizedBox(
                     height: 10.h,
                   ),
