@@ -33,7 +33,6 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
     await firebaseFirestore.collection("users").doc( _auth.currentUser!.uid)
         .collection("likes").get().then((value) {
       if (mounted) {
-
         setState(() {
         count = value.docs.length;
         });
@@ -163,7 +162,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                     );
                   },
                 ):
-                const Center(child: Text("Nothing Likes",
+                const Center(child: Text("No Likes",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)));
               }
             },

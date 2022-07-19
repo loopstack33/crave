@@ -48,13 +48,13 @@ class _MatchScreenState extends State<MatchScreen> {
     super.initState();
     uid = _auth.currentUser!.uid;
 
-    currentuser();
+    currentUser();
     getAllUserData();
   }
 
   String image = "";
-  currentuser() async {
-    //currentuserdata
+  currentUser() async {
+
 
     await firebaseFirestore
         .collection("users")
@@ -80,7 +80,6 @@ class _MatchScreenState extends State<MatchScreen> {
         .get()
         .then((value) {
       for (int i = 0; i < value.docs.length; i++) {
-        //allUsersData.add(value.docs[i]);
         allUsers = UsersModel.fromDocument(value.docs[i]);
         allUsersData.add(allUsers!);
       }
@@ -211,27 +210,21 @@ class _MatchScreenState extends State<MatchScreen> {
                 InkWell(
                   onTap: () {
                     if (counter > 1) {
-                      //dialogbox
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return ConfirmDialog(
                                 message:
-                                    "For furthur matching you have to pay \$2",
+                                    "For further matching you have to pay 1.99\$",
                                 press: () {});
                           });
                     } else {
-                      // log(currentUsersData[0].genes.toString());
-                      // log(allUsersData[1].genes.toString());
-                      // log({currentUsersData[0].genes == allUsersData[1].genes}
-                      //     .toString());
                       if (mounted) {
                         setState(() {
                           loading = true;
                         });
                       }
                       matchedGenes1();
-
                       // increment();
                     }
                   },
@@ -275,7 +268,7 @@ class _MatchScreenState extends State<MatchScreen> {
                         height: 50.h,
                         child: ClipOval(
                           child: Image.network(
-                            image,
+                            "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
                             width: double.infinity,
                             fit: BoxFit.cover,
                             loadingBuilder: (BuildContext ctx, Widget child,
@@ -339,17 +332,12 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   matchedGenes1() {
-    setState(() {
-      loading = true;
-    });
+
     for (int i = 0; i < allUsersData.length; i++) {
       if (currentUsersData[0].genes == allUsersData[i].genes) {
         matchedGenes.add(allUsersData[i]);
       }
     }
-    log(matchedGenes[0].genes.toString());
-    log(allUsersData[0].userName.toString());
-
     matchedCraves1();
   }
 
@@ -362,19 +350,12 @@ class _MatchScreenState extends State<MatchScreen> {
           .intersection(allUsersData[i].craves.toSet())
           .toList();
 
-      //  log(expectedList.length.toString());
-
       if (temp < expectedList.length) {
         CompleteUserData.add(allUsersData[i]);
         temp = expectedList.length;
-        //   log(allUsersData[i].userId.toString());
       }
     }
-    // log(matchedGenes[0].genes.toString());
-    log(CompleteUserData[0].userName.toString());
-    log(CompleteUserData[0].imgUrl.toString());
     addToFirebase();
-    // matchedCraves.add(expectedList);
   }
 
   addToFirebase() async {
@@ -394,7 +375,6 @@ class _MatchScreenState extends State<MatchScreen> {
       'matchedId': CompleteUserData[0].userId,
       'imageUrl': CompleteUserData[0].imgUrl
     }).then((text) {
-      print("in");
       Timer(const Duration(seconds: 3), () {
         getPicture();
       });
@@ -408,25 +388,19 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   increment() {
-    setState(() {
+    if(mounted) {
+      setState(() {
       counter = counter + 1;
     });
+    }
   }
 
   getPicture() {
-    setState(() {
+    ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
+    if(mounted) {
+      setState(() {
       loading = false;
     });
-    print("in picture");
-  }
-}
-
-class MyClip extends CustomClipper<Rect> {
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, 50, 50);
-  }
-
-  bool shouldReclip(oldClipper) {
-    return false;
+    }
   }
 }

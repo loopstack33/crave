@@ -33,6 +33,25 @@ class _DashboardState extends State<Dashboard> {
   String viewMoreButton = "View More";
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+  String id = '';
+  List<dynamic> photoUrl = [];
+  String name = 'Name';
+  getData() async {
+    String uid = _auth.currentUser!.uid;
+    await firebaseFirestore.collection('users').doc(uid).get().then((value) {
+      setState(() {
+        id = value.data()!["uid"];
+        photoUrl = value.data()!["imageUrl"];
+        name = value.data()!["name"];
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -67,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection("users")
@@ -100,7 +119,7 @@ class _DashboardState extends State<Dashboard> {
                             List.from(docs[index]['imageUrl']);
                         return Container(
                           margin: const EdgeInsets.all(10),
-                        //  padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.only(top: 10,left: 10),
                           decoration: BoxDecoration(
                               color: AppColors.black,
                               borderRadius: BorderRadius.circular(16.r)),
@@ -338,7 +357,11 @@ class _DashboardState extends State<Dashboard> {
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                if (value.docs[
+                                                                        likeUser(
+                                                                            name.toString(),
+                                                                           photoUrl[0].toString(),
+                                                                            docs[index]['uid'].toString());
+                                                               /* if (value.docs[
                                                                             index]
                                                                         [
                                                                         "likedId"] !=
@@ -370,7 +393,7 @@ class _DashboardState extends State<Dashboard> {
                                                                       "Already Liked",
                                                                       AppColors
                                                                           .redcolor);
-                                                                }
+                                                                }*/
                                                               });
                                                             } catch (e) {
                                                               if (mounted) {
@@ -450,59 +473,7 @@ class _DashboardState extends State<Dashboard> {
                                 child: Wrap(
                                     spacing: 8.0, // gap between adjacent chips
                                     runSpacing: 4.0, // gap between lines
-                                    children: viewMore == true
-                                        ? cravesHalf
-                                            .map((e) => Chip(
-                                                  labelPadding:
-                                                      const EdgeInsets.all(2.0),
-                                                  avatar: CircleAvatar(
-                                                    backgroundColor:
-                                                        AppColors.chipColor,
-                                                    child: Image.asset(
-                                                        e == "Casual Dating"
-                                                            ? casualdating
-                                                            : e == "No String Attached"
-                                                                ? nostring1
-                                                                : e == "In Person"
-                                                                    ? inperson
-                                                                    : e == "Sexting"
-                                                                        ? sexting2
-                                                                        : e == "Kinky"
-                                                                            ? kinky
-                                                                            : e == "Vanilla"
-                                                                                ? vanilla
-                                                                                : e == "Submissive"
-                                                                                    ? submissive
-                                                                                    : e == "Dominance"
-                                                                                        ? dominance
-                                                                                        : e == "Dress Up"
-                                                                                            ? dressup
-                                                                                            : e == "Blindfolding"
-                                                                                                ? blindfolding
-                                                                                                : e == "Bondage"
-                                                                                                    ? bondage
-                                                                                                    : e == "Butt Stuff"
-                                                                                                        ? buttstuff
-                                                                                                        : kinky,
-                                                        color: AppColors.white,
-                                                        width: 15,
-                                                        height: 15),
-                                                  ),
-                                                  label: Text(
-                                                    e.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: AppColors.white,
-                                                        fontFamily:
-                                                            "Poppins-Regular"),
-                                                  ),
-                                                  backgroundColor:
-                                                      AppColors.chipCircle,
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                ))
-                                            .toList()
-                                        : craves
+                                    children: craves
                                             .map((e) => Chip(
                                                   labelPadding:
                                                       const EdgeInsets.all(2.0),
@@ -554,7 +525,7 @@ class _DashboardState extends State<Dashboard> {
                                                 ))
                                             .toList()),
                               ),
-                              Row(
+                             /* Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   ElevatedButton(
@@ -584,7 +555,7 @@ class _DashboardState extends State<Dashboard> {
                                           color: Colors.white,
                                           fontFamily: "Poppins-Medium")),
                                 ],
-                              ),
+                              ),*/
                               SizedBox(height: 10.h),
                             ],
                           ),
@@ -612,10 +583,10 @@ class _DashboardState extends State<Dashboard> {
 
     await firebaseFirestore
         .collection("users")
-        .doc(user!.uid)
+        .doc(id)
         .collection("likes")
         .doc(next.toInt().toString())
-        .set({'name': name, 'imageUrl': image.toString(), 'likedId': id}).then(
+        .set({'name': name.toString(), 'imageUrl': image.toString(), 'likedId': user!.uid.toString()}).then(
             (text) {
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {
