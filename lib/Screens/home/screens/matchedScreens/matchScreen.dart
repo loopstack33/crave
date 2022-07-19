@@ -1,8 +1,11 @@
 // ignore_for_file: file_names
 
+import 'dart:developer';
+
 import 'package:crave/Screens/home/screens/matchedScreens/matchedSuccessful.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
+import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +20,7 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +39,22 @@ class _MatchScreenState extends State<MatchScreen> {
                 Text("Random Matches",
                     style: TextStyle(
                         fontFamily: 'Poppins-Medium', fontSize: 22.sp)),
-                Image.asset(
-                  circle,
-                  width: 30.w,
-                  height: 30.h,
-                )
+                Stack(children: [
+                  Image.asset(
+                    circle,
+                    width: 35.w,
+                    height: 35.h,
+                  ),
+                  Positioned(
+                    left: 12,
+                    top: 5.7,
+                    child: Text("$counter",
+                        style: TextStyle(
+                            fontFamily: 'Poppins-Medium',
+                            fontSize: 14.sp,
+                            color: Color(0xff7A008F))),
+                  ),
+                ])
               ],
             ),
           ),
@@ -80,19 +95,36 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
               ),
               // const Spacer(flex: 1),
-              Container(
-                height: 89.w,
-                width: 89.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
+              InkWell(
+                onTap: () {
+                  if (counter > 1) {
+                    //dialogbox
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ConfirmDialog(
+                              message:
+                                  "For furthur matching you have to pay \$2",
+                              press: () {});
+                        });
+                  } else {
+                    increment();
+                  }
+                },
+                child: Container(
+                  height: 89.w,
+                  width: 89.h,
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                    shape: BoxShape.circle,
                   ),
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Image.asset(
-                  i2,
+                  padding: const EdgeInsets.all(15),
+                  child: Image.asset(
+                    i2,
+                  ),
                 ),
               ),
               Align(
@@ -106,8 +138,8 @@ class _MatchScreenState extends State<MatchScreen> {
               const Spacer(flex: 1),
               InkWell(
                 onTap: () {
-                  AppRoutes.push(
-                      context, PageTransitionType.fade, const MatchedSuccessed());
+                  AppRoutes.push(context, PageTransitionType.fade,
+                      const MatchedSuccessed());
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -129,5 +161,11 @@ class _MatchScreenState extends State<MatchScreen> {
         ),
       ),
     );
+  }
+
+  increment() {
+    setState(() {
+      counter = counter + 1;
+    });
   }
 }

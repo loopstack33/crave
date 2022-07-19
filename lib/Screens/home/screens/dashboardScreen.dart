@@ -191,31 +191,46 @@ class _DashboardState extends State<Dashboard> {
                                                       'Poppins-Regular'),
                                             ],
                                           ),
-                                          Text.rich(
-                                            textAlign: TextAlign.end,
-                                            TextSpan(children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    '5 miI, ${docs[index]["status"] == "true" ? "Online" : "Offline"}\n',
-                                                style: TextStyle(
-                                                    color: AppColors.white,
-                                                    fontFamily:
-                                                        'Poppins-Regular',
-                                                    fontSize: 15.sp),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 20),
+                                            child: InkWell(
+                                              onTap: () {
+                                                //dialouge box
+                                                log(docs[index]["uid"]);
+                                              },
+                                              child: Image.asset(
+                                                report,
+                                                width: 35.w,
+                                                height: 35.h,
                                               ),
-                                              TextSpan(
-                                                text: docs[index]["status"] ==
-                                                        "true"
-                                                    ? "Active"
-                                                    : "InActive",
-                                                style: TextStyle(
-                                                    color: AppColors.white,
-                                                    fontFamily:
-                                                        'Poppins-Regular',
-                                                    fontSize: 15.sp),
-                                              ),
-                                            ]),
-                                          )
+                                            ),
+                                          ),
+                                          // Text.rich(
+                                          //   textAlign: TextAlign.end,
+                                          //   TextSpan(children: <TextSpan>[
+                                          //     TextSpan(
+                                          //       text:
+                                          //           '5 miI, ${docs[index]["status"] == "true" ? "Online" : "Offline"}\n',
+                                          //       style: TextStyle(
+                                          //           color: AppColors.white,
+                                          //           fontFamily:
+                                          //               'Poppins-Regular',
+                                          //           fontSize: 15.sp),
+                                          //     ),
+                                          //     TextSpan(
+                                          //       text: docs[index]["status"] ==
+                                          //               "true"
+                                          //           ? "Active"
+                                          //           : "InActive",
+                                          //       style: TextStyle(
+                                          //           color: AppColors.white,
+                                          //           fontFamily:
+                                          //               'Poppins-Regular',
+                                          //           fontSize: 15.sp),
+                                          //     ),
+                                          //   ]),
+                                          // )
                                         ],
                                       ),
                                     ),
