@@ -67,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(0.0),
         child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection("users")
@@ -80,7 +80,6 @@ class _DashboardState extends State<Dashboard> {
             } else {
               final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs =
                   snapshot.data!.docs;
-
               return docs.isNotEmpty
                   ? ListView.builder(
                       itemCount: docs.length,
@@ -101,7 +100,7 @@ class _DashboardState extends State<Dashboard> {
                             List.from(docs[index]['imageUrl']);
                         return Container(
                           margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.all(10),
+                        //  padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                               color: AppColors.black,
                               borderRadius: BorderRadius.circular(16.r)),
@@ -112,6 +111,7 @@ class _DashboardState extends State<Dashboard> {
                                   FlutterCarousel(
                                     options: CarouselOptions(
                                       autoPlay: false,
+                                      enlargeCenterPage: true,
                                     ),
                                     items: imgList
                                         .map((item) => Padding(
