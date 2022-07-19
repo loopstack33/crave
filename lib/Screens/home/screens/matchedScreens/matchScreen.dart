@@ -1,16 +1,22 @@
 // ignore_for_file: file_names
 
+import 'dart:async';
 import 'dart:developer';
-
+import 'dart:math' as math;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/matchedScreens/matchedSuccessful.dart';
+import 'package:crave/model/userModel.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../../../../widgets/custom_toast.dart';
 
 class MatchScreen extends StatefulWidget {
   const MatchScreen({Key? key}) : super(key: key);
@@ -20,7 +26,50 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  bool loading = false;
   int counter = 0;
+  List<dynamic> allUserCraves = [];
+  List<UsersModel> allUsersData = [];
+  List<UsersModel> currentUsersData = [];
+  List<UsersModel> CompleteUserData = [];
+  List<UsersModel> matchedGenes = [];
+  List<dynamic> matchedCraves = [];
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  UsersModel? loggedInUser;
+  UsersModel? allUsers;
+  String? uid;
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    uid = _auth.currentUser!.uid;
+//currentuserdata
+    FirebaseFirestore.instance.collection("users").doc(uid).get().then((value) {
+      loggedInUser = UsersModel.fromDocument(value);
+      currentUsersData.add(loggedInUser!);
+      log(currentUsersData[0].imgUrl[0]);
+    });
+
+    getAllUserData();
+  }
+
+  getAllUserData() async {
+    await firebaseFirestore
+        .collection('users')
+        .where("uid", isNotEqualTo: uid)
+        .get()
+        .then((value) {
+      for (int i = 0; i < value.docs.length; i++) {
+        //allUsersData.add(value.docs[i]);
+        allUsers = UsersModel.fromDocument(value.docs[i]);
+        allUsersData.add(allUsers!);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,13 +135,37 @@ class _MatchScreenState extends State<MatchScreen> {
                   boldText: FontWeight.w200,
                   fontFamily: "Poppins-Regular"),
               const Spacer(flex: 1),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Image.asset(
-                  match2,
-                  width: 100.w,
-                  height: 145.h,
-                ),
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset(
+                      match2,
+                      width: 100.w,
+                      height: 145.h,
+                    ),
+                  ),
+                  Positioned(
+                    top: 9,
+                    left: 18,
+                    child: Container(
+                      height: 70.w,
+                      width: 65.h,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Image.network(
+                        currentUsersData[0].imgUrl[0],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               // const Spacer(flex: 1),
               InkWell(
@@ -108,7 +181,18 @@ class _MatchScreenState extends State<MatchScreen> {
                               press: () {});
                         });
                   } else {
-                    increment();
+                    // log(currentUsersData[0].genes.toString());
+                    // log(allUsersData[1].genes.toString());
+                    // log({currentUsersData[0].genes == allUsersData[1].genes}
+                    //     .toString());
+                    if (mounted) {
+                      setState(() {
+                        loading = true;
+                      });
+                    }
+                    matchedGenes1();
+
+                    // increment();
                   }
                 },
                 child: Container(
@@ -121,10 +205,16 @@ class _MatchScreenState extends State<MatchScreen> {
                     ),
                     shape: BoxShape.circle,
                   ),
-                  padding: const EdgeInsets.all(15),
-                  child: Image.asset(
-                    i2,
-                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: loading
+                      ? Image.asset(
+                          "assets/raw/loadingmatch.gif",
+                          height: 100,
+                          width: 100,
+                        )
+                      : Image.asset(
+                          i2,
+                        ),
                 ),
               ),
               Align(
@@ -163,9 +253,85 @@ class _MatchScreenState extends State<MatchScreen> {
     );
   }
 
+  matchedGenes1() {
+    setState(() {
+      loading = true;
+    });
+    for (int i = 0; i < allUsersData.length; i++) {
+      if (currentUsersData[0].genes == allUsersData[i].genes) {
+        matchedGenes.add(allUsersData[i]);
+      }
+    }
+    log(matchedGenes[0].genes.toString());
+    log(allUsersData[0].userName.toString());
+
+    matchedCraves1();
+  }
+
+  matchedCraves1() {
+    int temp = 0;
+    for (int i = 0; i < allUsersData.length; i++) {
+      var expectedList = currentUsersData[0]
+          .craves
+          .toSet()
+          .intersection(allUsersData[i].craves.toSet())
+          .toList();
+
+      //  log(expectedList.length.toString());
+
+      if (temp < expectedList.length) {
+        CompleteUserData.add(allUsersData[i]);
+        temp = expectedList.length;
+        //   log(allUsersData[i].userId.toString());
+      }
+    }
+    // log(matchedGenes[0].genes.toString());
+    log(CompleteUserData[0].userName.toString());
+    log(CompleteUserData[0].imgUrl.toString());
+    addToFirebase();
+    // matchedCraves.add(expectedList);
+  }
+
+  addToFirebase() async {
+    var rnd = math.Random();
+    var next = rnd.nextDouble() * 1000000;
+    while (next < 100000) {
+      next *= 10;
+    }
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(uid)
+        .collection("matches")
+        .doc(next.toInt().toString())
+        .set({
+      'name': CompleteUserData[0].userName,
+      'matchedId': CompleteUserData[0].userId,
+      'imageUrl': CompleteUserData[0].imgUrl
+    }).then((text) {
+      print("in");
+      Timer(const Duration(seconds: 3), () {
+        getPicture();
+      });
+      // ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
+      // if (mounted) {
+      //   setState(() {
+      //     loading = false;
+      //   });
+      // }
+    }).catchError((e) {});
+  }
+
   increment() {
     setState(() {
       counter = counter + 1;
     });
+  }
+
+  getPicture() {
+    setState(() {
+      loading = false;
+    });
+    print("in picture");
   }
 }

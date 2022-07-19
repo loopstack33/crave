@@ -13,18 +13,23 @@ class UsersModel {
   String genes;
   String bio;
   String package;
+  List craves;
+  List imgUrl;
 
-  UsersModel(
-      {required this.userName,
-      required this.bio,
-      required this.phoneNumber,
-      required this.status,
-      required this.userId,
-      required this.gender,
-      required this.userToken,
-      required this.birthday,
-      required this.package,
-      required this.genes});
+  UsersModel({
+    required this.userName,
+    required this.bio,
+    required this.phoneNumber,
+    required this.status,
+    required this.userId,
+    required this.gender,
+    required this.userToken,
+    required this.birthday,
+    required this.package,
+    required this.genes,
+    required this.craves,
+    required this.imgUrl,
+  });
 
   Map<String, dynamic> toJson() => {
         'uid': userId,
@@ -37,29 +42,33 @@ class UsersModel {
         'genes': genes,
         'bio': bio,
         'package': package,
+        'craves': craves,
+        'imageUrl': imgUrl
       };
 
   factory UsersModel.fromDocument(DocumentSnapshot doc) {
-    String userId = "";
-    String userToken = "";
-    String userName = "";
+    String uid = "";
+    String deviceToken = "";
+    String uname = "";
     String status = "";
     String gender = "";
-    String phoneNumber = "";
+    String phone = "";
     String birthday = "";
     String genes = "";
     String bio = "";
     String package = "";
+    List craves = [];
+    List imageUrl = [];
 
     try {
-      userId = doc.get("userId");
+      uid = doc.get("uid");
     } catch (e) {}
 
     try {
-      userToken = doc.get("userToken");
+      deviceToken = doc.get("deviceToken");
     } catch (e) {}
     try {
-      userName = doc.get("userName");
+      uname = doc.get("name");
     } catch (e) {}
     try {
       genes = doc.get("genes");
@@ -69,7 +78,7 @@ class UsersModel {
     } catch (e) {}
 
     try {
-      phoneNumber = doc.get("phoneNumber");
+      phone = doc.get("phone");
     } catch (e) {}
 
     try {
@@ -87,17 +96,25 @@ class UsersModel {
     try {
       package = doc.get("package");
     } catch (e) {}
+    try {
+      craves = doc.get("craves");
+    } catch (e) {}
+    try {
+      imageUrl = doc.get("imageUrl");
+    } catch (e) {}
 
     return UsersModel(
-        userId: userId,
-        phoneNumber: phoneNumber,
-        userName: userName,
-        userToken: userToken,
+        userId: uid,
+        phoneNumber: phone,
+        userName: uname,
+        userToken: deviceToken,
         status: status,
         gender: gender,
         birthday: birthday,
         genes: genes,
         bio: bio,
-        package: package);
+        package: package,
+        craves: craves,
+        imgUrl: imageUrl);
   }
 }
