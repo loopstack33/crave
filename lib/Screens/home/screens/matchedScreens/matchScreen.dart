@@ -11,6 +11,7 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class _MatchScreenState extends State<MatchScreen> {
   List<UsersModel> CompleteUserData = [];
   List<UsersModel> matchedGenes = [];
   List<dynamic> matchedCraves = [];
-
+  bool isLoad = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UsersModel? loggedInUser;
@@ -46,14 +47,30 @@ class _MatchScreenState extends State<MatchScreen> {
   void initState() {
     super.initState();
     uid = _auth.currentUser!.uid;
-//currentuserdata
-    FirebaseFirestore.instance.collection("users").doc(uid).get().then((value) {
+
+    currentuser();
+    getAllUserData();
+  }
+
+  String image = "";
+  currentuser() async {
+    //currentuserdata
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(_auth.currentUser!.uid)
+        .get()
+        .then((value) {
       loggedInUser = UsersModel.fromDocument(value);
       currentUsersData.add(loggedInUser!);
-      log(currentUsersData[0].imgUrl[0]);
-    });
 
-    getAllUserData();
+      if (mounted) {
+        setState(() {
+          image = currentUsersData[0].imgUrl[0].toString();
+          isLoad = false;
+        });
+      }
+    });
   }
 
   getAllUserData() async {
@@ -109,144 +126,212 @@ class _MatchScreenState extends State<MatchScreen> {
           ),
         ),
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(matchframe), fit: BoxFit.cover)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 40, right: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Spacer(flex: 1),
-              Image.asset(
-                logo,
-                color: AppColors.redcolor,
-                width: 74.w,
-                //  height: 121.h,
-              ),
-              SizedBox(height: 10.h),
-              //  const Spacer(flex: 1),
-              text(context, "Searching...", 19.sp,
-                  color: Colors.white,
-                  boldText: FontWeight.w200,
-                  fontFamily: "Poppins-Regular"),
-              const Spacer(flex: 1),
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      match2,
-                      width: 100.w,
-                      height: 145.h,
-                    ),
-                  ),
-                  Positioned(
-                    top: 9,
-                    left: 18,
-                    child: Container(
-                      height: 70.w,
-                      width: 65.h,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(
-                          color: Colors.black,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      child: Image.network(
-                        currentUsersData[0].imgUrl[0],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // const Spacer(flex: 1),
-              InkWell(
-                onTap: () {
-                  if (counter > 1) {
-                    //dialogbox
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ConfirmDialog(
-                              message:
-                                  "For furthur matching you have to pay \$2",
-                              press: () {});
-                        });
-                  } else {
-                    // log(currentUsersData[0].genes.toString());
-                    // log(allUsersData[1].genes.toString());
-                    // log({currentUsersData[0].genes == allUsersData[1].genes}
-                    //     .toString());
-                    if (mounted) {
-                      setState(() {
-                        loading = true;
-                      });
-                    }
-                    matchedGenes1();
-
-                    // increment();
-                  }
-                },
-                child: Container(
-                  height: 89.w,
-                  width: 89.h,
-                  decoration: BoxDecoration(
+      body: ProgressHUD(
+        inAsyncCall: isLoad,
+        opacity: 0.1,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(matchframe), fit: BoxFit.cover)),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 40, right: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(flex: 1),
+                Image.asset(
+                  logo,
+                  color: AppColors.redcolor,
+                  width: 74.w,
+                  //  height: 121.h,
+                ),
+                SizedBox(height: 10.h),
+                //  const Spacer(flex: 1),
+                text(context, "Searching...", 19.sp,
                     color: Colors.white,
-                    border: Border.all(
-                      color: Colors.white,
+                    boldText: FontWeight.w200,
+                    fontFamily: "Poppins-Regular"),
+                const Spacer(flex: 1),
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Image.asset(
+                        match2,
+                        width: 100.w,
+                        height: 145.h,
+                      ),
                     ),
-                    shape: BoxShape.circle,
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: loading
-                      ? Image.asset(
-                          "assets/raw/loadingmatch.gif",
-                          height: 100,
-                          width: 100,
-                        )
-                      : Image.asset(
-                          i2,
+                    Positioned(
+                      top: 15,
+                      left: 25,
+                      child: SizedBox(
+                        width: 50.w,
+                        height: 50.h,
+                        child: ClipOval(
+                          child: Image.network(
+                            image,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (BuildContext ctx, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (
+                              BuildContext context,
+                              Object exception,
+                              StackTrace? stackTrace,
+                            ) {
+                              return Text(
+                                'Oops!! An error occurred. 😢',
+                                style: TextStyle(fontSize: 16.sp),
+                              );
+                            },
+                          ),
                         ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Image.asset(
-                  match22,
-                  width: 100.w,
-                  height: 145.h,
-                ),
-              ),
-              const Spacer(flex: 1),
-              InkWell(
-                onTap: () {
-                  AppRoutes.push(context, PageTransitionType.fade,
-                      const MatchedSuccessed());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text("We’re finding a great match for you!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          color: Colors.white,
-                          fontFamily: "Poppins-Regular",
-                          fontWeight: FontWeight.w200,
-                        )),
+                // const Spacer(flex: 1),
+                InkWell(
+                  onTap: () {
+                    if (counter > 1) {
+                      //dialogbox
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ConfirmDialog(
+                                message:
+                                    "For furthur matching you have to pay \$2",
+                                press: () {});
+                          });
+                    } else {
+                      // log(currentUsersData[0].genes.toString());
+                      // log(allUsersData[1].genes.toString());
+                      // log({currentUsersData[0].genes == allUsersData[1].genes}
+                      //     .toString());
+                      if (mounted) {
+                        setState(() {
+                          loading = true;
+                        });
+                      }
+                      matchedGenes1();
+
+                      // increment();
+                    }
+                  },
+                  child: Container(
+                    height: 89.w,
+                    width: 89.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: loading
+                        ? Image.asset(
+                            "assets/raw/loadingmatch.gif",
+                            height: 100,
+                            width: 100,
+                          )
+                        : Image.asset(
+                            i2,
+                          ),
                   ),
                 ),
-              ),
-            ],
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Image.asset(
+                        match2,
+                        width: 100.w,
+                        height: 145.h,
+                      ),
+                    ),
+                    Positioned(
+                      top: 15,
+                      left: 208,
+                      child: SizedBox(
+                        width: 50.w,
+                        height: 50.h,
+                        child: ClipOval(
+                          child: Image.network(
+                            image,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (BuildContext ctx, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },
+                            errorBuilder: (
+                              BuildContext context,
+                              Object exception,
+                              StackTrace? stackTrace,
+                            ) {
+                              return Text(
+                                'Oops!! An error occurred. 😢',
+                                style: TextStyle(fontSize: 16.sp),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(flex: 1),
+                InkWell(
+                  onTap: () {
+                    AppRoutes.push(context, PageTransitionType.fade,
+                        const MatchedSuccessed());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text("We’re finding a great match for you!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            color: Colors.white,
+                            fontFamily: "Poppins-Regular",
+                            fontWeight: FontWeight.w200,
+                          )),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -333,5 +418,15 @@ class _MatchScreenState extends State<MatchScreen> {
       loading = false;
     });
     print("in picture");
+  }
+}
+
+class MyClip extends CustomClipper<Rect> {
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, 50, 50);
+  }
+
+  bool shouldReclip(oldClipper) {
+    return false;
   }
 }
