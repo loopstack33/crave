@@ -86,3 +86,7 @@ const String blindfolding1 = "assets/images/blindfolding1.png";
 const String blindfolding = "assets/images/Group 11485.png";
 const String addpic = "assets/images/addpic.png";
 const String deletePic = "assets/images/deletePic.png";
+
+const String icon = "assets/images/icon.png";
+
+const String report = "assets/images/report.png";

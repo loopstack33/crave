@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,7 +9,6 @@ import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:crave/widgets/custom_toast.dart';
 import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -100,9 +98,18 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: () {
-                      AppRoutes.push(context, PageTransitionType.fade,
-                          const EditProfile());
+                    onTap: () async {
+                      final refresh = await Navigator.push(
+                          context,
+                          // Create the SelectionScreen in the next step.
+                          MaterialPageRoute(
+                              builder: (context) => const EditProfile()));
+
+                      setState(() {
+                        if (refresh == "Refresh") {
+                          getData();
+                        }
+                      });
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
