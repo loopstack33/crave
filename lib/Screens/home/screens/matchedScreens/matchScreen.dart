@@ -27,7 +27,9 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  String matchedImageUrl = "";
   bool loading = false;
+  bool matched = false;
   int counter = 0;
   List<dynamic> allUserCraves = [];
   List<UsersModel> allUsersData = [];
@@ -48,13 +50,13 @@ class _MatchScreenState extends State<MatchScreen> {
     super.initState();
     uid = _auth.currentUser!.uid;
 
-    currentUser();
+    currentuser();
     getAllUserData();
   }
 
   String image = "";
-  currentUser() async {
-
+  currentuser() async {
+    //currentuserdata
 
     await firebaseFirestore
         .collection("users")
@@ -80,6 +82,7 @@ class _MatchScreenState extends State<MatchScreen> {
         .get()
         .then((value) {
       for (int i = 0; i < value.docs.length; i++) {
+        //allUsersData.add(value.docs[i]);
         allUsers = UsersModel.fromDocument(value.docs[i]);
         allUsersData.add(allUsers!);
       }
@@ -210,21 +213,27 @@ class _MatchScreenState extends State<MatchScreen> {
                 InkWell(
                   onTap: () {
                     if (counter > 1) {
+                      //dialogbox
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return ConfirmDialog(
                                 message:
-                                    "For further matching you have to pay 1.99\$",
+                                    "For furthur matching you have to pay \$2",
                                 press: () {});
                           });
                     } else {
+                      // log(currentUsersData[0].genes.toString());
+                      // log(allUsersData[1].genes.toString());
+                      // log({currentUsersData[0].genes == allUsersData[1].genes}
+                      //     .toString());
                       if (mounted) {
                         setState(() {
                           loading = true;
                         });
                       }
                       matchedGenes1();
+
                       // increment();
                     }
                   },
@@ -267,47 +276,43 @@ class _MatchScreenState extends State<MatchScreen> {
                         width: 50.w,
                         height: 50.h,
                         child: ClipOval(
-                          child: Image.network(
-                            "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60",
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (BuildContext ctx, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              }
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              );
-                            },
-                            errorBuilder: (
-                              BuildContext context,
-                              Object exception,
-                              StackTrace? stackTrace,
-                            ) {
-                              return Text(
-                                'Oops!! An error occurred. 😢',
-                                style: TextStyle(fontSize: 16.sp),
-                              );
-                            },
-                          ),
-                        ),
+                            child: Image.network(
+                          matchedImageUrl,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext ctx, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (
+                            BuildContext context,
+                            Object exception,
+                            StackTrace? stackTrace,
+                          ) {
+                            return Text(
+                              'Oops!! An error occurred. 😢',
+                              style: TextStyle(fontSize: 16.sp),
+                            );
+                          },
+                        )),
                       ),
                     ),
                   ],
                 ),
                 const Spacer(flex: 1),
                 InkWell(
-                  onTap: () {
-                    AppRoutes.push(context, PageTransitionType.fade,
-                        const MatchedSuccessed());
-                  },
+                  onTap: () {},
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Align(
@@ -332,12 +337,17 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   matchedGenes1() {
-
+    setState(() {
+      loading = true;
+    });
     for (int i = 0; i < allUsersData.length; i++) {
       if (currentUsersData[0].genes == allUsersData[i].genes) {
         matchedGenes.add(allUsersData[i]);
       }
     }
+    log(matchedGenes[0].genes.toString());
+    log(allUsersData[0].userName.toString());
+
     matchedCraves1();
   }
 
@@ -350,12 +360,19 @@ class _MatchScreenState extends State<MatchScreen> {
           .intersection(allUsersData[i].craves.toSet())
           .toList();
 
+      //  log(expectedList.length.toString());
+
       if (temp < expectedList.length) {
         CompleteUserData.add(allUsersData[i]);
         temp = expectedList.length;
+        //   log(allUsersData[i].userId.toString());
       }
     }
+    // log(matchedGenes[0].genes.toString());
+    log(CompleteUserData[0].userName.toString());
+    log(CompleteUserData[0].imgUrl.toString());
     addToFirebase();
+    // matchedCraves.add(expectedList);
   }
 
   addToFirebase() async {
@@ -375,9 +392,8 @@ class _MatchScreenState extends State<MatchScreen> {
       'matchedId': CompleteUserData[0].userId,
       'imageUrl': CompleteUserData[0].imgUrl
     }).then((text) {
-      Timer(const Duration(seconds: 3), () {
-        getPicture();
-      });
+      print("in");
+      Timer(const Duration(seconds: 2), () => getPicture());
       // ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
       // if (mounted) {
       //   setState(() {
@@ -388,19 +404,32 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   increment() {
-    if(mounted) {
-      setState(() {
+    setState(() {
       counter = counter + 1;
     });
-    }
   }
 
   getPicture() {
-    ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
-    if(mounted) {
-      setState(() {
+    setState(() {
+      matchedImageUrl = CompleteUserData[0].imgUrl[0];
+      matched = true;
       loading = false;
     });
-    }
+    ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
+    Timer(
+        const Duration(seconds: 2),
+        () => AppRoutes.push(
+            context, PageTransitionType.fade, const MatchedSuccessed()));
+    print(matched);
+  }
+}
+
+class MyClip extends CustomClipper<Rect> {
+  Rect getClip(Size size) {
+    return Rect.fromLTWH(0, 0, 50, 50);
+  }
+
+  bool shouldReclip(oldClipper) {
+    return false;
   }
 }
