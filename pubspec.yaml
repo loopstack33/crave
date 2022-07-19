@@ -52,6 +52,7 @@ dependencies:
   path_provider: ^2.0.11
   firebase_messaging: ^12.0.0
   flutter_local_notifications: ^9.7.0
+  pay: ^1.0.10
   
 
 dev_dependencies:
@@ -80,6 +81,7 @@ flutter:
   assets:
     - assets/images/
     - assets/raw/
+    - assets/files/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
