@@ -57,7 +57,6 @@ class _ChatRoomState extends State<ChatRoom> with WidgetsBindingObserver {
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       timerValue++;
-      print('timerValue: ${timerValue}');
 
     });
   }
@@ -99,15 +98,14 @@ class _ChatRoomState extends State<ChatRoom> with WidgetsBindingObserver {
     // _chatProvider = Provider.of<ChatProvider>(context, listen: false);
     // timerController = CountDownController();
   }
-
+FirebaseAuth auth = FirebaseAuth.instance;
   void updateStatus() async {
-    setState(() {
+    if(mounted) {
+      setState(() {
       chatroomIn = true;
-      print('chatroomIn: ${chatroomIn}');
     });
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var uid = sharedPreferences.getString("uid");
-    if (widget.chatRoom.idFrom != uid) {
+    }
+    if (widget.chatRoom.idFrom != auth.currentUser!.uid) {
       final DocumentReference documentReference =
       _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid);
       documentReference.update(<String, dynamic>{'read': true, 'count': 0});
@@ -120,7 +118,6 @@ class _ChatRoomState extends State<ChatRoom> with WidgetsBindingObserver {
     if(mounted) {
       setState(() {
       chatroomIn = false;
-      log('chatroomIn: ${chatroomIn}');
     });
     }
     // Provider.of<ChatProvider>(context, listen: false).audioPlayer.dispose();
@@ -331,24 +328,6 @@ class _ChatRoomState extends State<ChatRoom> with WidgetsBindingObserver {
 
   bool playTimer = false;
   int endText = 300;
-
-
-  final List<Element> _elements = <Element>[
-    Element(DateTime(2020, 6, 24, 18), 'Got to gym', Icons.fitness_center),
-    Element(DateTime(2020, 6, 24, 9), 'Work', Icons.work),
-    Element(DateTime(2020, 6, 25, 8), 'Buy groceries', Icons.shopping_basket),
-    Element(DateTime(2020, 6, 25, 16), 'Cinema', Icons.movie),
-    Element(DateTime(2020, 6, 25, 20), 'Eat', Icons.fastfood),
-    Element(DateTime(2020, 6, 26, 12), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 27, 12), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 27, 13), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 27, 14), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 27, 15), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 28, 12), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 29, 12), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 29, 12), 'Car wash', Icons.local_car_wash),
-    Element(DateTime(2020, 6, 30, 12), 'Car wash', Icons.local_car_wash),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -1366,30 +1345,3 @@ class _ChatRoomState extends State<ChatRoom> with WidgetsBindingObserver {
   }
 }
 
-class Element {
-  DateTime date;
-  String name;
-  IconData icon;
-
-  Element(this.date, this.name, this.icon);
-}
-
-const String dateFormatter = 'MMMM dd, y';
-
-extension DateHelper on DateTime {
-
-  String formatDate() {
-    final formatter = DateFormat(dateFormatter);
-    return formatter.format(this);
-  }
-  bool isSameDate(DateTime other) {
-    return year == other.year &&
-        month == other.month &&
-        day == other.day;
-  }
-
-  int getDifferenceInDaysWithNow() {
-    final now = DateTime.now();
-    return now.difference(this).inDays;
-  }
-}

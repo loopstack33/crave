@@ -21,6 +21,7 @@ import '../../../../services/fcm_services.dart';
 import '../../../../utils/color_constant.dart';
 import '../../../../widgets/conversationList.dart';
 import '../../../../widgets/custom_toast.dart';
+import 'chatDetail.dart';
 import 'chat_helper.dart';
 import 'chat_room.dart';
 import 'favoriteChat.dart';
@@ -61,17 +62,6 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
   String number = '';
   String userName = '';
   String uid = '';
-  
-  getPref() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      number = preferences.getString('number').toString();
-      userName = preferences.getString('username').toString();
-      uid = preferences.getString('uid').toString();
-      log('getPref uid: ${uid}');
-    });
-    getData();
-  }
 
   @override
   void dispose() {
@@ -101,9 +91,9 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
 
     if (isBackground) {
       log('isBackground____________________________________________________: $isBackground');
-      FirebaseHelper.updateUserStatus(uid, 'offline');
+      FirebaseHelper.updateUserStatus(auth.currentUser!.uid, 'offline');
     } else {
-      FirebaseHelper.updateUserStatus(uid, 'online');
+      FirebaseHelper.updateUserStatus(auth.currentUser!.uid, 'online');
     }
   }
 
@@ -240,121 +230,160 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
                                   if (userData.data != null) {
                                     var targetUser = userData.data as Map;
 
-                                    return Container(
+                                    return GestureDetector(
+                                      onTap: (){
+                                        if (chatRoomModel.toString() != "null") {
+                                          AppRoutes.push(context, PageTransitionType.rightToLeft, ChatDetailPage(
+                                            status: targetUser['status']
+                                                .toString(),
+                                            targetUser: UsersModel(
+                                              userId: targetUser['uid'].toString(),
+                                              userName: targetUser['name'].toString(),
+                                              phoneNumber: targetUser['phone'].toString(),
+                                              status: targetUser['status'],
+                                              bio: targetUser['bio'],
+                                              userToken: targetUser['deviceToken'],
+                                              imgUrl: targetUser['imageUrl'],
+                                              craves: [],
+                                              package: targetUser['package'],
+                                              genes: targetUser['genes'],
+                                              birthday:targetUser['birthday'],
+                                              gender: targetUser['gender'],
+                                            ),
+                                            userModel: UsersModel(
+                                              userId: currentUser['uid'].toString(),
+                                              userName: currentUser['name'].toString(),
+                                              phoneNumber: currentUser['phone'].toString(),
+                                              status: currentUser['status'],
+                                              bio: currentUser['bio'],
+                                              userToken: currentUser['deviceToken'],
+                                              imgUrl: currentUser['imageUrl'],
+                                              craves: [],
+                                              package: currentUser['package'],
+                                              genes: currentUser['genes'],
+                                              birthday:currentUser['birthday'],
+                                              gender: currentUser['gender'],
+                                            ),
+                                            chatRoom: chatRoomModel,
+                                          ));
+                                        }
+                                      },
+                                      child: Container(
 
-                                      padding:const EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Row(
-                                              children: <Widget>[
+                                        padding:const EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      boxShadow:targetUser["status"]=="online"? [
+                                                        BoxShadow(
+                                                            color: AppColors.redcolor,
+                                                            blurRadius: 15.r,
+                                                            offset:const Offset(0,1.5)
+                                                        )
+                                                      ]:null,
+                                                    ),
+                                                    width: 50.w,
+                                                    height: 50.h,
+                                                    child: ClipOval(
+                                                      child: Image.network(
+                                                        targetUser['imageUrl'][0].toString(),
+                                                        width: double.infinity,
+                                                        fit: BoxFit.cover,
+                                                        loadingBuilder: (BuildContext ctx, Widget child,
+                                                            ImageChunkEvent? loadingProgress) {
+                                                          if (loadingProgress == null) {
+                                                            return child;
+                                                          }
+                                                          return Center(
+                                                            child: CircularProgressIndicator(
+                                                              value: loadingProgress.expectedTotalBytes !=
+                                                                  null
+                                                                  ? loadingProgress.cumulativeBytesLoaded /
+                                                                  loadingProgress.expectedTotalBytes!
+                                                                  : null,
+                                                            ),
+                                                          );
+                                                        },
+                                                        errorBuilder: (
+                                                            BuildContext context,
+                                                            Object exception,
+                                                            StackTrace? stackTrace,
+                                                            ) {
+                                                          return Text(
+                                                            'Oops!! An error occurred. 😢',
+                                                            style: TextStyle(fontSize: 16.sp),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 16.w),
+                                                  Expanded(
+                                                    child: Container(
+                                                      color: Colors.transparent,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Text(targetUser['name'].toString(), style: TextStyle(fontSize: 18.sp,fontFamily: 'Poppins-Medium',color: AppColors.black),),
+                                                          (chatRoomModel.lastMessage.toString() != "") ? chatRoomModel.lastMessage.toString() == "Image File"
+                                                          ? Row(
+                                                            children: [
+                                                              Icon(FontAwesomeIcons.image,
+                                                                  size: 15.sp),
+                                                              SizedBox(
+                                                                width: 5.w,
+                                                              ),
+                                                               Text("Photo",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
+                                                            ],
+                                                          )
+                                                              : chatRoomModel.lastMessage
+                                                              .toString() ==
+                                                              "audioFile"
+                                                              ? Row(
+                                                            children: [
+                                                              Icon(
+                                                                FontAwesomeIcons.microphone,
+                                                                size: 15.sp,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 5.w,
+                                                              ),
+                                                               Text("Audio message",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
+                                                            ],
+                                                          )
+                                                              : Text(chatRoomModel
+                                                              .lastMessage
+                                                              .toString(),style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),):
+                                                              const Text("H")
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Text(dateString.toString(),style: TextStyle(fontSize: 12.sp,fontFamily: 'Poppins-Medium',color: chatRoomModel.read==true?AppColors.darkGrey:AppColors.lightGrey)),
+                                                chatRoomModel.idFrom != uid ? chatRoomModel.read == false && chatRoomModel.count.toString() != "0" ?
                                                 Container(
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: AppColors.redcolor,
-                                                          blurRadius: 15.r,
-                                                          offset:const Offset(0,1.5)
-                                                      )
-                                                    ],
+                                                  decoration:const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: AppColors.redcolor
                                                   ),
-                                                  width: 50.w,
-                                                  height: 50.h,
-                                                  child: ClipOval(
-                                                    child: Image.network(
-                                                      targetUser['imageUrl'][0].toString(),
-                                                      width: double.infinity,
-                                                      fit: BoxFit.cover,
-                                                      loadingBuilder: (BuildContext ctx, Widget child,
-                                                          ImageChunkEvent? loadingProgress) {
-                                                        if (loadingProgress == null) {
-                                                          return child;
-                                                        }
-                                                        return Center(
-                                                          child: CircularProgressIndicator(
-                                                            value: loadingProgress.expectedTotalBytes !=
-                                                                null
-                                                                ? loadingProgress.cumulativeBytesLoaded /
-                                                                loadingProgress.expectedTotalBytes!
-                                                                : null,
-                                                          ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (
-                                                          BuildContext context,
-                                                          Object exception,
-                                                          StackTrace? stackTrace,
-                                                          ) {
-                                                        return Text(
-                                                          'Oops!! An error occurred. 😢',
-                                                          style: TextStyle(fontSize: 16.sp),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 16.w),
-                                                Expanded(
-                                                  child: Container(
-                                                    color: Colors.transparent,
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Text(targetUser['name'].toString(), style: TextStyle(fontSize: 18.sp,fontFamily: 'Poppins-Medium',color: AppColors.black),),
-                                                        (chatRoomModel.lastMessage.toString() != "") ? chatRoomModel.lastMessage.toString() == "Image File"
-                                                        ? Row(
-                                                          children: [
-                                                            Icon(FontAwesomeIcons.image,
-                                                                size: 15.sp),
-                                                            SizedBox(
-                                                              width: 5.w,
-                                                            ),
-                                                             Text("Photo",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
-                                                          ],
-                                                        )
-                                                            : chatRoomModel.lastMessage
-                                                            .toString() ==
-                                                            "audioFile"
-                                                            ? Row(
-                                                          children: [
-                                                            Icon(
-                                                              FontAwesomeIcons.microphone,
-                                                              size: 15.sp,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 5.w,
-                                                            ),
-                                                             Text("Audio message",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
-                                                          ],
-                                                        )
-                                                            : Text(chatRoomModel
-                                                            .lastMessage
-                                                            .toString(),style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),):
-                                                            const Text("H")
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
+                                                  padding:const EdgeInsets.only(left: 5,right: 5,top: 2,bottom: 2),
+                                                  margin:const EdgeInsets.all(2),
+                                                  child: Text( chatRoomModel.count.toString(),style: TextStyle(fontSize: 7.5.sp,fontFamily: 'Poppins-Medium',color: AppColors.white),),
+                                                ):const SizedBox():const SizedBox()
                                               ],
                                             ),
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(dateString.toString(),style: TextStyle(fontSize: 12.sp,fontFamily: 'Poppins-Medium',color: chatRoomModel.read==true?AppColors.darkGrey:AppColors.lightGrey)),
-                                              chatRoomModel.idFrom != uid ? chatRoomModel.read == false && chatRoomModel.count.toString() != "0" ?
-                                              Container(
-                                                decoration:const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: AppColors.redcolor
-                                                ),
-                                                padding:const EdgeInsets.only(left: 5,right: 5,top: 2,bottom: 2),
-                                                margin:const EdgeInsets.all(2),
-                                                child: Text( chatRoomModel.count.toString(),style: TextStyle(fontSize: 7.5.sp,fontFamily: 'Poppins-Medium',color: AppColors.white),),
-                                              ):const SizedBox():const SizedBox()
-                                            ],
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     );
                                   /*  return ListTile(

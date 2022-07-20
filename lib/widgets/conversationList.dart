@@ -23,12 +23,12 @@ class _ConversationListState extends State<ConversationList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context){
-          return ChatDetailPage(
-            name: widget.name,
-            image: widget.imageUrl,
-          );
-        }));
+        // Navigator.push(context, MaterialPageRoute(builder: (context){
+        //   return ChatDetailPage(
+        //     name: widget.name,
+        //     image: widget.imageUrl,
+        //   );
+        // }));
       },
       child: Container(
         padding:const EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
