@@ -73,7 +73,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   double progress = 0.0;
 
-  TextEditingController masgContrl = TextEditingController();
+  TextEditingController msgController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var uuid = const Uuid();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -267,7 +267,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           DateTime.now().millisecondsSinceEpoch.toString();
     }
     else {
-      widget.chatRoom.lastMessage = masgContrl.text;
+      widget.chatRoom.lastMessage = msgController.text;
       widget.chatRoom.read = false;
       widget.chatRoom.idFrom = widget.userModel.userId;
       widget.chatRoom.idTo = widget.targetUser.userId;
@@ -283,12 +283,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         .doc(widget.chatRoom.chatroomid)
         .set(widget.chatRoom.toMap());
 
-    FCMServices.sendFCM(
-        widget.targetUser.userToken,
-        widget.targetUser.userId.toString(),
-        widget.targetUser.userName.toString(),
-        widget.chatRoom.lastMessage.toString());
-    masgContrl.clear();
+    // FCMServices.sendFCM(
+    //     widget.targetUser.userToken,
+    //     widget.targetUser.userId.toString(),
+    //     widget.targetUser.userName.toString(),
+    //     widget.chatRoom.lastMessage.toString());
+    msgController.clear();
     timerValue = 0;
   }
 
@@ -422,466 +422,484 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           ),
         ),
-      body: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              padding:const EdgeInsets.only(left: 20,right: 20),
-              height: 30.h,
-              width: double.infinity,
-              color: Colors.black.withOpacity(0.03),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("This chat will self destruct soon.",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular'),),
-                  Text("turn off chat timer",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular'))
+      body: Form(
+        key: _formKey,
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                padding:const EdgeInsets.only(left: 20,right: 20),
+                height: 30.h,
+                width: double.infinity,
+                color: Colors.black.withOpacity(0.03),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("This chat will self destruct soon.",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular'),),
+                    Text("turn off chat timer",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular'))
 
-                ],
+                  ],
 
+                ),
               ),
             ),
-          ),
-          StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection("chatrooms")
-                .doc(widget.chatRoom.chatroomid)
-                .collection("messages")
-                .orderBy("createdon", descending: true)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState ==
-                  ConnectionState.active) {
-                if (snapshot.hasData) {
-                  QuerySnapshot dataSnapshot =
-                  snapshot.data as QuerySnapshot;
+            Padding(
+              padding: const EdgeInsets.only(bottom: 55.0),
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("chatrooms")
+                    .doc(widget.chatRoom.chatroomid)
+                    .collection("messages")
+                    .orderBy("createdon", descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState ==
+                      ConnectionState.active) {
+                    if (snapshot.hasData) {
+                      QuerySnapshot dataSnapshot =
+                      snapshot.data as QuerySnapshot;
 
-                  return ListView.builder(
-                    reverse: true,
-                    itemCount: dataSnapshot.docs.length,
-                    itemBuilder: (context, index) {
-                      MessageModel currentMessage = MessageModel.fromMap(dataSnapshot.docs[index].data() as Map<String, dynamic>);
-                      // Text
-                      return /*currentMessage.type == "text"
-                          ? Row(
-                        mainAxisAlignment:
-                        (currentMessage.sender ==
-                            widget.userModel.userId)
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment:
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: dataSnapshot.docs.length,
+                        itemBuilder: (context, index) {
+                          MessageModel currentMessage = MessageModel.fromMap(dataSnapshot.docs[index].data() as Map<String, dynamic>);
+                          // Text
+                          return /*currentMessage.type == "text"
+                              ? Row(
+                            mainAxisAlignment:
                             (currentMessage.sender ==
                                 widget.userModel.userId)
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
+                                ? MainAxisAlignment.end
+                                : MainAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Clipboard.setData(
-                                      ClipboardData(
-                                          text:
-                                          currentMessage
-                                              .text))
-                                      .then((value) =>
-                                      ScaffoldMessenger.of(
-                                          context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          duration:
-                                          const Duration(
-                                              seconds:
-                                              1),
-                                          backgroundColor:
-                                          AppColors
-                                              .redcolor,
-                                          content: Text(
-                                            'Message Copied',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                'Poppins',
-                                                fontSize:
-                                                12.sp,
-                                                color: Colors
-                                                    .white),
-                                          ),
+                              Column(
+                                crossAxisAlignment:
+                                (currentMessage.sender ==
+                                    widget.userModel.userId)
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Clipboard.setData(
+                                          ClipboardData(
+                                              text:
+                                              currentMessage
+                                                  .text))
+                                          .then((value) =>
+                                          ScaffoldMessenger.of(
+                                              context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration:
+                                              const Duration(
+                                                  seconds:
+                                                  1),
+                                              backgroundColor:
+                                              AppColors
+                                                  .redcolor,
+                                              content: Text(
+                                                'Message Copied',
+                                                style: TextStyle(
+                                                    fontFamily:
+                                                    'Poppins',
+                                                    fontSize:
+                                                    12.sp,
+                                                    color: Colors
+                                                        .white),
+                                              ),
+                                            ),
+                                          ));
+                                    },
+                                    child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 300.w,
+                                            minWidth: 50.w),
+                                        //width:MediaQuery.of(context).size.width * 0.7,
+                                        margin:
+                                        const EdgeInsets.symmetric(
+                                          vertical: 0,
                                         ),
-                                      ));
-                                },
-                                child: Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth: 300.w,
-                                        minWidth: 50.w),
-                                    //width:MediaQuery.of(context).size.width * 0.7,
-                                    margin:
-                                    const EdgeInsets.symmetric(
-                                      vertical: 0,
-                                    ),
-                                    padding:
-                                    const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 20,
-                                    ),
-                                    decoration: currentMessage
-                                        .sender ==
-                                        widget.userModel.userId
-                                        ? BoxDecoration(
-                                      color: AppColors
-                                          .redcolor,
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          10.r),
-                                    )
-                                        : BoxDecoration(
-                                      color: AppColors
-                                          .redcolor,
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          10.r),
-                                    ),
-                                    child: Text(
-                                      currentMessage.text
-                                          .toString(),
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 20,
+                                        ),
+                                        decoration: currentMessage
+                                            .sender ==
+                                            widget.userModel.userId
+                                            ? BoxDecoration(
+                                          color: AppColors
+                                              .redcolor,
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              10.r),
+                                        )
+                                            : BoxDecoration(
+                                          color: AppColors
+                                              .redcolor,
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              10.r),
+                                        ),
+                                        child: Text(
+                                          currentMessage.text
+                                              .toString(),
 
-                                    )),
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              Text(
-                                DateFormat.jm().format(
-                                    currentMessage.createdon!),
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    DateFormat.jm().format(
+                                        currentMessage.createdon!),
 
-                              ),
-                              SizedBox(
-                                height: 80.h,
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                      */
-                      currentMessage.type == "text" ?
-                      Container(
-                        padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 80),
-                        child: Align(
-                          alignment: ( (currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft),
-                          child: Column(
-                            crossAxisAlignment:  (currentMessage.sender == widget.userModel.userId)? CrossAxisAlignment.end: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: (currentMessage.sender == widget.userModel.userId)?
-                                  BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomLeft: Radius.circular(15.r)):BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomRight: Radius.circular(15.r)),
-                                  color: ( (currentMessage.sender == widget.userModel.userId)?AppColors.chatColor:Colors.grey.shade200),
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: Text(currentMessage.text!, style: TextStyle(fontSize: 15.sp,fontFamily: 'Poppins-Regular',color: AppColors.shadeText),),
-                              ),
-                              SizedBox(height: 5.h),
-                              Row(
-                                mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?  MainAxisAlignment.end:MainAxisAlignment.start,
-                                children: [
-                                  Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
-                                  SizedBox(width: 5.w),
-                                  Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString() =="true"?null:AppColors.lightGrey ,)
+                                  ),
+                                  SizedBox(
+                                    height: 80.h,
+                                  ),
                                 ],
-                              )
+                              ),
                             ],
-                          ),
-                        ),
-                      ):
-                      // Image
-                      currentMessage.type == "image" ?
-                      // Audio
-                      Container(
-                        padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
-                        child: Align(
-                          alignment: ((currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.r),
-                                  child: Image.asset(currentMessage.text!,width: 185.w,height: 126.h,)),
-                              SizedBox(height: 5.h),
-                              Row(
-                                mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?
-                                MainAxisAlignment.end:  MainAxisAlignment.start,
+                          )
+                          */
+                          currentMessage.type == "text" ?
+                          Container(
+                            padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
+                            child: Align(
+                              alignment: ( (currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft),
+                              child: Column(
+                                crossAxisAlignment:  (currentMessage.sender == widget.userModel.userId)? CrossAxisAlignment.end: CrossAxisAlignment.start,
                                 children: [
-                                  Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
-                                  SizedBox(width: 5.w),
-                                  Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString()=="true"?null:AppColors.lightGrey ,)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: (currentMessage.sender == widget.userModel.userId)?
+                                      BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomLeft: Radius.circular(15.r)):BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomRight: Radius.circular(15.r)),
+                                      color: ( (currentMessage.sender == widget.userModel.userId)?AppColors.chatColor:Colors.grey.shade200),
+                                    ),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Text(currentMessage.text!, style: TextStyle(fontSize: 15.sp,fontFamily: 'Poppins-Regular',color: AppColors.shadeText),),
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  Row(
+                                    mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?  MainAxisAlignment.end:MainAxisAlignment.start,
+                                    children: [
+                                      Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
+                                      SizedBox(width: 5.w),
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString() =="true"?null:AppColors.lightGrey ,)
+                                    ],
+                                  )
                                 ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ):
-                      currentMessage.type == "audio" ?
-                     const Text("Hello")
-                      /* : currentMessage.type == "image"
-                                ? Row(
-                              mainAxisAlignment:
-                              (currentMessage.sender ==
-                                  widget.userModel.uid)
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment:
+                              ),
+                            ),
+                          ):
+                          // Image
+                          currentMessage.type == "image" ?
+                          // Audio
+                          Container(
+                            padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
+                            child: Align(
+                              alignment: ((currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      child: Image.asset(currentMessage.text!,width: 185.w,height: 126.h,)),
+                                  SizedBox(height: 5.h),
+                                  Row(
+                                    mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?
+                                    MainAxisAlignment.end:  MainAxisAlignment.start,
+                                    children: [
+                                      Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
+                                      SizedBox(width: 5.w),
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString()=="true"?null:AppColors.lightGrey ,)
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ):
+                          currentMessage.type == "audio" ?
+                         const Text("Hello")
+                          /* : currentMessage.type == "image"
+                                    ? Row(
+                                  mainAxisAlignment:
                                   (currentMessage.sender ==
-                                      widget
-                                          .userModel.uid)
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment
-                                      .start,
+                                      widget.userModel.uid)
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      child: OutlinedButton(
-                                        child: Material(
-                                          child:
-                                          currentMessage
-                                              .text !=
-                                              ""
-                                              ? Image.network(
-                                            currentMessage
-                                                .text!,
-                                            loadingBuilder: (BuildContext
-                                            context,
-                                                Widget
-                                                child,
-                                                ImageChunkEvent?
-                                                loadingProgress) {
-                                              if (loadingProgress ==
-                                                  null)
-                                                return child;
-                                              return Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  color:
-                                                  AppColors.blackColor,
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                    Radius.circular(8.r),
-                                                  ),
-                                                ),
+                                    Column(
+                                      crossAxisAlignment:
+                                      (currentMessage.sender ==
+                                          widget
+                                              .userModel.uid)
+                                          ? CrossAxisAlignment.end
+                                          : CrossAxisAlignment
+                                          .start,
+                                      children: [
+                                        Container(
+                                          child: OutlinedButton(
+                                            child: Material(
+                                              child:
+                                              currentMessage
+                                                  .text !=
+                                                  ""
+                                                  ? Image.network(
+                                                currentMessage
+                                                    .text!,
+                                                loadingBuilder: (BuildContext
+                                                context,
+                                                    Widget
+                                                    child,
+                                                    ImageChunkEvent?
+                                                    loadingProgress) {
+                                                  if (loadingProgress ==
+                                                      null)
+                                                    return child;
+                                                  return Container(
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      color:
+                                                      AppColors.blackColor,
+                                                      borderRadius:
+                                                      BorderRadius.all(
+                                                        Radius.circular(8.r),
+                                                      ),
+                                                    ),
+                                                    width:
+                                                    200.w,
+                                                    height:
+                                                    200.h,
+                                                    child:
+                                                    Center(
+                                                      child:
+                                                      CircularProgressIndicator(
+                                                        color:
+                                                        AppColors.darkBlueColor,
+                                                        value: loadingProgress.expectedTotalBytes != null
+                                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                                            : null,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                errorBuilder:
+                                                    (context,
+                                                    object,
+                                                    stackTrace) {
+                                                  return Material(
+                                                    child: Image
+                                                        .asset(
+                                                      'Images/chat/img_not_available.jpeg',
+                                                      width:
+                                                      200.w,
+                                                      height:
+                                                      200.h,
+                                                      fit: BoxFit
+                                                          .cover,
+                                                    ),
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                      Radius.circular(
+                                                          8.r),
+                                                    ),
+                                                    clipBehavior:
+                                                    Clip.hardEdge,
+                                                  );
+                                                },
                                                 width:
                                                 200.w,
                                                 height:
                                                 200.h,
-                                                child:
-                                                Center(
-                                                  child:
-                                                  CircularProgressIndicator(
-                                                    color:
-                                                    AppColors.darkBlueColor,
-                                                    value: loadingProgress.expectedTotalBytes != null
-                                                        ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                                        : null,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            errorBuilder:
-                                                (context,
-                                                object,
-                                                stackTrace) {
-                                              return Material(
-                                                child: Image
-                                                    .asset(
-                                                  'Images/chat/img_not_available.jpeg',
-                                                  width:
-                                                  200.w,
-                                                  height:
-                                                  200.h,
-                                                  fit: BoxFit
-                                                      .cover,
-                                                ),
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                  Radius.circular(
-                                                      8.r),
-                                                ),
-                                                clipBehavior:
-                                                Clip.hardEdge,
-                                              );
-                                            },
-                                            width:
-                                            200.w,
-                                            height:
-                                            200.h,
-                                            fit: BoxFit
-                                                .cover,
-                                          )
-                                              : Center(
-                                            child: StreamBuilder<
-                                                TaskSnapshot>(
-                                                stream: uploadTask
-                                                    ?.snapshotEvents,
-                                                builder:
-                                                    (context,
-                                                    snapshot) {
-                                                  if (snapshot
-                                                      .hasData) {
-                                                    final data =
-                                                        snapshot.data;
-                                                    double
-                                                    progress =
-                                                    (data!.bytesTransferred / data.totalBytes);
-                                                    return SizedBox(
-                                                      width: 200.w,
-                                                      height: 200.h,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 60.w,
-                                                            height: 60.h,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(70.0),
-                                                              child: CircularProgressIndicator(value: progress, color: AppColors.darkBlueColor, backgroundColor: Colors.grey),
-                                                            ),
+                                                fit: BoxFit
+                                                    .cover,
+                                              )
+                                                  : Center(
+                                                child: StreamBuilder<
+                                                    TaskSnapshot>(
+                                                    stream: uploadTask
+                                                        ?.snapshotEvents,
+                                                    builder:
+                                                        (context,
+                                                        snapshot) {
+                                                      if (snapshot
+                                                          .hasData) {
+                                                        final data =
+                                                            snapshot.data;
+                                                        double
+                                                        progress =
+                                                        (data!.bytesTransferred / data.totalBytes);
+                                                        return SizedBox(
+                                                          width: 200.w,
+                                                          height: 200.h,
+                                                          child: Stack(
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              SizedBox(
+                                                                width: 60.w,
+                                                                height: 60.h,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.all(70.0),
+                                                                  child: CircularProgressIndicator(value: progress, color: AppColors.darkBlueColor, backgroundColor: Colors.grey),
+                                                                ),
+                                                              ),
+                                                              Center(
+                                                                child: Text(
+                                                                  '${(100 * progress).roundToDouble()} %',
+                                                                  style: GoogleFonts.rubik(fontWeight: FontWeight.bold, fontSize: 15.sp),
+                                                                ),
+                                                              )
+                                                            ],
                                                           ),
-                                                          Center(
-                                                            child: Text(
-                                                              '${(100 * progress).roundToDouble()} %',
-                                                              style: GoogleFonts.rubik(fontWeight: FontWeight.bold, fontSize: 15.sp),
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return SizedBox();
-                                                  }
-                                                }),
-                                          ),
-                                          borderRadius:
-                                          BorderRadius.all(
-                                              Radius.circular(
-                                                  8)),
-                                          clipBehavior:
-                                          Clip.hardEdge,
-                                        ),
-                                        onPressed: () {
-                                          FocusScope.of(context)
-                                              .unfocus();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FullPhotoPage(
-                                                    url:
-                                                    currentMessage
-                                                        .text!,
-                                                  ),
+                                                        );
+                                                      } else {
+                                                        return SizedBox();
+                                                      }
+                                                    }),
+                                              ),
+                                              borderRadius:
+                                              BorderRadius.all(
+                                                  Radius.circular(
+                                                      8)),
+                                              clipBehavior:
+                                              Clip.hardEdge,
                                             ),
-                                          );
-                                        },
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty
-                                                .all<EdgeInsets>(
-                                                EdgeInsets
-                                                    .all(0))),
-                                      ),
-                                      margin: EdgeInsets.only(
-                                          bottom: 10, right: 10),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Text(
-                                      DateFormat.jm().format(
-                                          currentMessage
-                                              .createdon!),
-                                      style: GoogleFonts.rubik(
-                                        fontSize: 10.sp,
-                                        color: AppColors.lgColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10.h,
+                                            onPressed: () {
+                                              FocusScope.of(context)
+                                                  .unfocus();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FullPhotoPage(
+                                                        url:
+                                                        currentMessage
+                                                            .text!,
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            style: ButtonStyle(
+                                                padding: MaterialStateProperty
+                                                    .all<EdgeInsets>(
+                                                    EdgeInsets
+                                                        .all(0))),
+                                          ),
+                                          margin: EdgeInsets.only(
+                                              bottom: 10, right: 10),
+                                        ),
+                                        SizedBox(
+                                          height: 5.h,
+                                        ),
+                                        Text(
+                                          DateFormat.jm().format(
+                                              currentMessage
+                                                  .createdon!),
+                                          style: GoogleFonts.rubik(
+                                            fontSize: 10.sp,
+                                            color: AppColors.lgColor,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                      ],
                                     ),
                                   ],
-                                ),
-                              ],
-                            )
-                            // Audio
-                                : currentMessage.type == "audio"
-                                ? audioMessage(
-                                currentMessage, index, prov)*/
-                      : const SizedBox.shrink();
+                                )
+                                // Audio
+                                    : currentMessage.type == "audio"
+                                    ? audioMessage(
+                                    currentMessage, index, prov)*/
+                          : const SizedBox.shrink();
 
-                    },
-                  );
+                        },
+                      );
 
 
-                } else if (snapshot.hasError) {
-                  return const Center(
-                    child: Text(
-                        "An error occurred! Please check your internet connection."),
-                  );
-                } else {
-                  return const Center(
-                      child: Text(
-                        "Say hi to your new friend",
-                      )
-                  );
-                }
-              } else {
-                return const Center();
-              }
-            },
-          ),
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                        child: Text(
+                            "An error occurred! Please check your internet connection."),
+                      );
+                    } else {
+                      return const Center(
+                          child: Text(
+                            "Say hi to your new friend",
+                          )
+                      );
+                    }
+                  } else {
+                    return const Center();
+                  }
+                },
+              ),
+            ),
 
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding:const EdgeInsets.only(left: 20,bottom: 10,top: 10,right: 20),
-              height: 60,
-              width: double.infinity,
-              color: Colors.white,
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: (){
-                    },
-                    child: Image.asset(camera,width: 26.w,height: 26.h,),
-                  ),
-                  const SizedBox(width: 15,),
-                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(color: AppColors.redcolor,width: 1.w)
-                      ),
-                      child: TextField(
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: InputDecoration(
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(mic),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                padding:const EdgeInsets.only(left: 20,bottom: 10,top: 10,right: 20),
+                height: 60,
+                width: double.infinity,
+                color: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: (){
+                      },
+                      child: Image.asset(camera,width: 26.w,height: 26.h,),
+                    ),
+                    const SizedBox(width: 15,),
+                     Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: AppColors.redcolor,width: 1.w)
+                        ),
+                        child: TextFormField(
+                          controller: msgController,
+                          textAlignVertical: TextAlignVertical.top,
+                          decoration: InputDecoration(
+                            suffixIcon:/*msgController.text.isNotEmpty?*/
+                            GestureDetector(
+                              onTap: (){
+                                if (_formKey.currentState!.validate()) {
+                                  sendMsg("text", msgController.text.trim().toString());
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(FontAwesomeIcons.paperPlane,size: 25.sp,color: AppColors.redcolor,),
+                              ),
+                            ),/*:Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(mic),
+                            ),*/
+                            contentPadding: const EdgeInsets.only(left: 10,bottom: 10),
+                              hintText: "Message...",
+                              hintStyle: TextStyle(color:const Color(0xFF636363),fontFamily: 'Poppins-Regular',fontSize: 16.sp),
+                              border: InputBorder.none
                           ),
-                          contentPadding: const EdgeInsets.only(left: 10,bottom: 10),
-                            hintText: "Message...",
-                            hintStyle: TextStyle(color:const Color(0xFF636363),fontFamily: 'Poppins-Regular',fontSize: 16.sp),
-                            border: InputBorder.none
                         ),
                       ),
                     ),
-                  ),
 
-                ],
+                  ],
 
+                ),
               ),
             ),
-          ),
 
-        ],
+          ],
+        ),
       ),
     );
   }
