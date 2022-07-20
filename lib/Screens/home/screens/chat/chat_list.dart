@@ -370,7 +370,7 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
                                             Column(
                                               children: [
                                                 Text(dateString.toString(),style: TextStyle(fontSize: 12.sp,fontFamily: 'Poppins-Medium',color: chatRoomModel.read==true?AppColors.darkGrey:AppColors.lightGrey)),
-                                                chatRoomModel.idFrom != uid ? chatRoomModel.read == false && chatRoomModel.count.toString() != "0" ?
+                                                chatRoomModel.idFrom != auth.currentUser!.uid ? chatRoomModel.read == false && chatRoomModel.count.toString() != "0" ?
                                                 Container(
                                                   decoration:const BoxDecoration(
                                                       shape: BoxShape.circle,
