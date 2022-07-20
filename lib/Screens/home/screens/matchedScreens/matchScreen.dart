@@ -289,7 +289,7 @@ class _MatchScreenState extends State<MatchScreen> {
                           builder: (BuildContext context) {
                             return ConfirmDialog(
                                 message:
-                                    "For furthur matching you have to pay \$2",
+                                    "For furthur matching you have to pay \$1.99",
                                 press: () {});
                           });
                     } else {

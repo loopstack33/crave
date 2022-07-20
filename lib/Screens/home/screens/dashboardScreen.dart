@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/settings.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
+import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -201,6 +202,23 @@ class _DashboardState extends State<Dashboard> {
                                             child: InkWell(
                                               onTap: () {
                                                 //dialouge box
+                                                // PopupMenuButton(
+                                                //     itemBuilder: (BuildContext
+                                                //             context) =>
+                                                //         <PopupMenuEntry>[
+                                                //           const PopupMenuItem(
+                                                //             child:
+                                                //                 Text('Option1'),
+                                                //           ),
+                                                //           const PopupMenuItem(
+                                                //             child:
+                                                //                 Text('Option2'),
+                                                //           ),
+                                                //           const PopupMenuItem(
+                                                //             child:
+                                                //                 Text('Option3'),
+                                                //           ),
+                                                //         ]);
                                                 log(docs[index]["uid"]);
                                               },
                                               child: Image.asset(
@@ -290,21 +308,29 @@ class _DashboardState extends State<Dashboard> {
                                                   filter: ImageFilter.blur(
                                                       sigmaX: 10, sigmaY: 10),
                                                   child: Container(
-                                                    color: AppColors
-                                                        .containerborder
-                                                        .withOpacity(0.6),
-                                                    child: IconButton(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                          FontAwesomeIcons
-                                                              .commentDots,
-                                                          size: 28.sp,
-                                                          color:
-                                                              AppColors.white,
-                                                        )),
-                                                  ),
+                                                      color: AppColors
+                                                          .containerborder
+                                                          .withOpacity(0.6),
+                                                      child: InkWell(
+                                                        onTap: () {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return ConfirmDialog(
+                                                                    message:
+                                                                        "For chating you have to pay \$1.99",
+                                                                    press:
+                                                                        () {});
+                                                              });
+                                                        },
+                                                        child: Image.asset(
+                                                          lockedchat,
+                                                          width: 48,
+                                                          height: 48,
+                                                        ),
+                                                      )),
                                                 ),
                                               ),
                                               SizedBox(height: 10.h),
