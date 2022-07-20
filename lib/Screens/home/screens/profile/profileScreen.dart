@@ -659,18 +659,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      text(context, "Disable Account", 20.sp,
-                          color: AppColors.black,
-                          boldText: FontWeight.w400,
-                          fontFamily: "Poppins-Medium"),
-                    ],
-                  ),
+
                   SizedBox(
                     height: 10.h,
                   ),

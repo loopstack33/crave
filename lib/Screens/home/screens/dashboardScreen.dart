@@ -17,6 +17,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../../widgets/custom_toast.dart';
 
+// This is the type used by the popup menu below.
+enum Menu { BlockForever, Report }
+
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
@@ -42,6 +45,7 @@ class _DashboardState extends State<Dashboard> {
   String id = '';
   List<dynamic> photoUrl = [];
   String name = 'Name';
+
   getData() async {
     String uid = _auth.currentUser!.uid;
     await firebaseFirestore.collection('users').doc(uid).get().then((value) {
@@ -52,6 +56,10 @@ class _DashboardState extends State<Dashboard> {
       });
     });
   }
+
+  String _selectedMenu = '';
+  TextEditingController reportController = TextEditingController();
+  bool feedLoad = false;
 
   @override
   Widget build(BuildContext context) {
@@ -109,16 +117,15 @@ class _DashboardState extends State<Dashboard> {
                         cravesHalf.clear();
                         if (craves.length > 3) {
                           for (int i = 0; i < 3; i++) {
-                            //log(cravesHalf.length.toString());
                             String temp;
                             temp = craves[i].toString();
                             cravesHalf.add(temp);
                           }
                         }
-                        log(cravesHalf.toString());
 
                         List<dynamic> imgList =
                             List.from(docs[index]['imageUrl']);
+
                         return Container(
                           margin: const EdgeInsets.all(10),
                           padding: const EdgeInsets.only(top: 10, left: 10),
@@ -199,60 +206,252 @@ class _DashboardState extends State<Dashboard> {
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 20),
-                                            child: InkWell(
-                                              onTap: () {
-                                                //dialouge box
-                                                // PopupMenuButton(
-                                                //     itemBuilder: (BuildContext
-                                                //             context) =>
-                                                //         <PopupMenuEntry>[
-                                                //           const PopupMenuItem(
-                                                //             child:
-                                                //                 Text('Option1'),
-                                                //           ),
-                                                //           const PopupMenuItem(
-                                                //             child:
-                                                //                 Text('Option2'),
-                                                //           ),
-                                                //           const PopupMenuItem(
-                                                //             child:
-                                                //                 Text('Option3'),
-                                                //           ),
-                                                //         ]);
-                                                log(docs[index]["uid"]);
-                                              },
-                                              child: Image.asset(
-                                                report,
-                                                width: 35.w,
-                                                height: 35.h,
-                                              ),
-                                            ),
+                                            child: PopupMenuButton<Menu>(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(10.r),
+                                                  ),
+                                                ),
+                                                child: Image.asset(
+                                                  report,
+                                                  width: 35.w,
+                                                  height: 35.h,
+                                                ),
+                                                onSelected: (Menu item) {
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      _selectedMenu = item.name;
+                                                    });
+                                                  }
+                                                  if (_selectedMenu
+                                                          .toString() ==
+                                                      "BlockForever") {
+                                                  } else if (_selectedMenu
+                                                          .toString() ==
+                                                      "Report") {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                            insetPadding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.r)),
+                                                            elevation: 10,
+                                                            backgroundColor:
+                                                                AppColors.white,
+                                                            child:
+                                                                SingleChildScrollView(
+                                                              child:
+                                                                  StatefulBuilder(
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    StateSetter
+                                                                        setter) {
+                                                                  return Column(
+                                                                    children: [
+                                                                      Container(
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius: BorderRadius.only(
+                                                                              topLeft: Radius.circular(20.r),
+                                                                              topRight: Radius.circular(20.r)),
+                                                                          gradient:
+                                                                              LinearGradient(
+                                                                            begin:
+                                                                                Alignment.topCenter,
+                                                                            end:
+                                                                                Alignment.bottomCenter,
+                                                                            colors: [
+                                                                              AppColors.redcolor.withOpacity(0.35),
+                                                                              AppColors.redcolor
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        padding:
+                                                                            const EdgeInsets.all(8),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Report User",
+                                                                              style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      Container(
+                                                                        margin:
+                                                                            const EdgeInsets.all(10),
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          border:
+                                                                              Border.all(
+                                                                            color:
+                                                                                const Color(0xFFB7B7B7),
+                                                                            width:
+                                                                                1, //                   <--- border width here
+                                                                          ),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(12.0.r),
+                                                                        ),
+                                                                        child:
+                                                                            TextFormField(
+                                                                          controller:
+                                                                              reportController,
+                                                                          maxLength:
+                                                                              400,
+                                                                          maxLines:
+                                                                              2,
+                                                                          style: TextStyle(
+                                                                              fontSize: 18.sp,
+                                                                              color: const Color(0xFF676060),
+                                                                              fontFamily: 'Poppins',
+                                                                              fontWeight: FontWeight.w300),
+                                                                          textAlignVertical:
+                                                                              TextAlignVertical.center,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            hintText:
+                                                                                "Write your report message here...",
+                                                                            hintStyle: TextStyle(
+                                                                                fontSize: 18.sp,
+                                                                                color: AppColors.textColor,
+                                                                                fontWeight: FontWeight.w300,
+                                                                                fontFamily: 'Poppins'),
+                                                                            fillColor:
+                                                                                const Color(0xFFFFFFFF),
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12.0.r),
+                                                                              borderSide: const BorderSide(
+                                                                                color: AppColors.white,
+                                                                              ),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12.0.r),
+                                                                              borderSide: BorderSide(
+                                                                                color: AppColors.white,
+                                                                                width: 1.0.r,
+                                                                              ),
+                                                                            ),
+                                                                            errorBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(12.0.r),
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.red,
+                                                                                width: 2.0.r,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10.h,
+                                                                      ),
+                                                                      feedLoad
+                                                                          ? const Center(
+                                                                              child: CircularProgressIndicator(
+                                                                                color: AppColors.redcolor,
+                                                                              ),
+                                                                            )
+                                                                          : GestureDetector(
+                                                                              onTap: () {
+                                                                                if (reportController.text.isEmpty) {
+                                                                                  ToastUtils.showCustomToast(context, "Please provide some message", Colors.amber);
+                                                                                } else {
+                                                                                  if (mounted) {
+                                                                                    setState(() {
+                                                                                      feedLoad = true;
+                                                                                    });
+                                                                                  }
+                                                                                  reportUser(docs[index]["name"].toString(), docs[index]["imageUrl"][0].toString(), docs[index]['uid'].toString(), reportController.text.toString());
+                                                                                }
+                                                                              },
+                                                                              child: Container(
+                                                                                width: 200.w,
+                                                                                height: 40.h,
+                                                                                decoration: BoxDecoration(
+                                                                                  gradient: LinearGradient(
+                                                                                    begin: Alignment.topCenter,
+                                                                                    end: Alignment.bottomCenter,
+                                                                                    colors: [
+                                                                                      AppColors.redcolor.withOpacity(0.35),
+                                                                                      AppColors.redcolor
+                                                                                    ],
+                                                                                  ),
+                                                                                  borderRadius: BorderRadius.circular(5.r),
+                                                                                ),
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    Icon(
+                                                                                      FontAwesomeIcons.checkCircle,
+                                                                                      color: AppColors.white,
+                                                                                      size: 25.sp,
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      width: 10.w,
+                                                                                    ),
+                                                                                    Text("Submit", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            20.h,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                                itemBuilder: (BuildContext
+                                                        context) =>
+                                                    <PopupMenuEntry<Menu>>[
+                                                      PopupMenuItem<Menu>(
+                                                        value:
+                                                            Menu.BlockForever,
+                                                        child: Text(
+                                                          'Block Forever',
+                                                          style: TextStyle(
+                                                              color: const Color(
+                                                                  0xFF2F2F48),
+                                                              fontFamily:
+                                                                  'Poppins-Regular',
+                                                              fontSize: 14.sp),
+                                                        ),
+                                                      ),
+                                                      PopupMenuItem<Menu>(
+                                                        value: Menu.Report,
+                                                        child: Text('Report',
+                                                            style: TextStyle(
+                                                                color: const Color(
+                                                                    0xFF2F2F48),
+                                                                fontFamily:
+                                                                    'Poppins-Regular',
+                                                                fontSize:
+                                                                    14.sp)),
+                                                      ),
+                                                    ]),
                                           ),
-                                          // Text.rich(
-                                          //   textAlign: TextAlign.end,
-                                          //   TextSpan(children: <TextSpan>[
-                                          //     TextSpan(
-                                          //       text:
-                                          //           '5 miI, ${docs[index]["status"] == "true" ? "Online" : "Offline"}\n',
-                                          //       style: TextStyle(
-                                          //           color: AppColors.white,
-                                          //           fontFamily:
-                                          //               'Poppins-Regular',
-                                          //           fontSize: 15.sp),
-                                          //     ),
-                                          //     TextSpan(
-                                          //       text: docs[index]["status"] ==
-                                          //               "true"
-                                          //           ? "Active"
-                                          //           : "InActive",
-                                          //       style: TextStyle(
-                                          //           color: AppColors.white,
-                                          //           fontFamily:
-                                          //               'Poppins-Regular',
-                                          //           fontSize: 15.sp),
-                                          //     ),
-                                          //   ]),
-                                          // )
                                         ],
                                       ),
                                     ),
@@ -348,67 +547,56 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-                                                            if (mounted) {
-                                                              setState(() {
-                                                                selectedIndex =
-                                                                    index;
-                                                                loading = true;
-                                                              });
-                                                            }
+                                                            // if (mounted) {
+                                                            //   setState(() {
+                                                            //     selectedIndex = index;
+                                                            //     loading = true;
+                                                            //   });
+                                                            // }
 
                                                             try {
                                                               await FirebaseFirestore
                                                                   .instance
                                                                   .collection(
                                                                       'users')
-                                                                  .doc(_auth
-                                                                      .currentUser!
-                                                                      .uid)
+                                                                  .doc(docs[index]['uid']
+                                                                  .toString())
                                                                   .collection(
                                                                       "likes")
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                likeUser(
-                                                                    name
-                                                                        .toString(),
-                                                                    photoUrl[0]
-                                                                        .toString(),
-                                                                    docs[index][
-                                                                            'uid']
-                                                                        .toString());
-                                                                /* if (value.docs[
-                                                                            index]
-                                                                        [
-                                                                        "likedId"] !=
-                                                                    docs[index][
-                                                                        "uid"]) {
-                                                                  likeUser(
-                                                                      docs[index]
-                                                                              [
-                                                                              'name']
-                                                                          .toString(),
-                                                                      docs[index]['imageUrl']
-                                                                              [
-                                                                              0]
-                                                                          .toString(),
-                                                                      docs[index]
-                                                                              [
-                                                                              'uid']
-                                                                          .toString());
-                                                                } else {
+                                                                // likeUser(
+                                                                //     name
+                                                                //         .toString(),
+                                                                //     photoUrl[0]
+                                                                //         .toString(),
+                                                                //     docs[index][
+                                                                //             'uid']
+                                                                //         .toString());
+                                                                        log(value.docs[index]["likedId"].toString());
+                                                                        log(_auth.currentUser!.uid.toString());
+                                                              /*  if (value.docs[index]["likedId"] == _auth.currentUser!.uid.toString()) {
+                                                                  log("HEEEEEEE");
                                                                   if (mounted) {
                                                                     setState(
-                                                                        () {
-                                                                      loading =
+                                                                            () {
+                                                                          loading =
                                                                           false;
-                                                                    });
+                                                                        });
                                                                   }
                                                                   ToastUtils.showCustomToast(
                                                                       context,
-                                                                      "Already Liked",
+                                                                      "Already liked this user",
                                                                       AppColors
                                                                           .redcolor);
+                                                                }
+                                                                else {
+                                                                  likeUser(docs[index]['name'].toString(),
+                                                                      docs[index]['imageUrl'][0].toString(),
+                                                                      docs[index]['uid'].toString());
+                                                                  log("HEEEEEERRRRRRRE");
+
                                                                 }*/
                                                               });
                                                             } catch (e) {
@@ -593,38 +781,6 @@ class _DashboardState extends State<Dashboard> {
                                                 ))
                                             .toList()),
                               ),
-
-                              /* Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  AppColors.redcolor),
-                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(
-                                                      18.0),
-                                                  side: const BorderSide(
-                                                      color: Colors.red)))),
-                                      onPressed: () {
-                                        if (mounted) {
-                                          setState(() {
-                                            viewMore = !viewMore;
-                                          });
-                                        }
-                                      },
-                                      child: text(
-                                          context,
-                                          viewMore == true
-                                              ? viewMoreButton
-                                              : "View Less",
-                                          12.sp,
-                                          color: Colors.white,
-                                          fontFamily: "Poppins-Medium")),
-                                ],
-                              ),*/
                               Padding(
                                 padding: const EdgeInsets.only(right: 10),
                                 child: Row(
@@ -706,5 +862,39 @@ class _DashboardState extends State<Dashboard> {
         loading = false;
       });
     }
+  }
+
+  reportUser(name, image, id, message) async {
+    var rnd = math.Random();
+    var next = rnd.nextDouble() * 1000000;
+    while (next < 100000) {
+      next *= 10;
+    }
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore
+        .collection("reports")
+        .doc(next.toInt().toString())
+        .set({
+      'reportedName': name.toString(),
+      'reportedImageUrl': image.toString(),
+      'reportedId': id.toString(),
+      'reportedBy': user!.uid.toString(),
+      'message': message,
+    }).then((text) {
+      ToastUtils.showCustomToast(context, "User Reported", Colors.green);
+      if (mounted) {
+        setState(() {
+          feedLoad = false;
+        });
+      }
+      Navigator.pop(context);
+    }).catchError((e) {
+      if (mounted) {
+        setState(() {
+          feedLoad = false;
+        });
+      }
+    });
   }
 }
