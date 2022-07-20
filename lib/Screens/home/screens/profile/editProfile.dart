@@ -141,6 +141,10 @@ class _ProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
+        leading: IconButton (
+          icon:  const Icon(Icons.arrow_back_ios, color: AppColors.redcolor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         backgroundColor: AppColors.white,
         title: text(context, "EditProfile", 24.sp,
             color: AppColors.black,

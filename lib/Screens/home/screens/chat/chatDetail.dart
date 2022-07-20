@@ -8,25 +8,16 @@ import '../../../../model/userModel.dart';
 import '../../../../utils/color_constant.dart';
 import '../../../../utils/images.dart';
 import 'dart:async';
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import '../../../../model/chat_room_model.dart';
 import '../../../../model/message_model.dart';
-import '../../../../model/userModel.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../../services/fcm_services.dart';
-import '../../../../utils/color_constant.dart';
 import '../../../../widgets/custom_toast.dart';
 
 

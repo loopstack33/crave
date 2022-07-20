@@ -86,6 +86,30 @@ class _ProfileState extends State<Profile> {
             boldText: FontWeight.w500,
             fontFamily: "Poppins-Medium"),
         centerTitle: true,
+        actions: [
+          InkWell(
+            onTap: () async {
+              final refresh = await Navigator.push(
+                  context,
+                  // Create the SelectionScreen in the next step.
+                  MaterialPageRoute(builder: (context) => const EditProfile()));
+
+              setState(() {
+                if (refresh == "Refresh") {
+                  getData();
+                }
+              });
+            },
+            child: Image.asset(
+              editProfile,
+              width: 24.w,
+              height: 24.h,
+            ),
+          ),
+          SizedBox(
+            width: 10.w,
+          )
+        ],
       ),
       body: ProgressHUD(
           inAsyncCall: isLoading,
@@ -97,30 +121,6 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () async {
-                      final refresh = await Navigator.push(
-                          context,
-                          // Create the SelectionScreen in the next step.
-                          MaterialPageRoute(
-                              builder: (context) => const EditProfile()));
-
-                      setState(() {
-                        if (refresh == "Refresh") {
-                          getData();
-                        }
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        text(context, "Edit Profile ---> ", 16.sp,
-                            color: AppColors.redcolor,
-                            boldText: FontWeight.w500,
-                            fontFamily: "Roboto-Medium"),
-                      ],
-                    ),
-                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -270,35 +270,35 @@ class _ProfileState extends State<Profile> {
                                 width: 114.w,
                                 height: 22.h,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  AppRoutes.push(
-                                      context,
-                                      PageTransitionType.fade,
-                                      const MyCraves());
-                                },
-                                child: Container(
-                                  height: 35.h,
-                                  width: 85.w,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.redcolor,
-                                    borderRadius: BorderRadius.circular(32),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      text(context, "Add", 16.sp,
-                                          color: AppColors.white,
-                                          boldText: FontWeight.w400,
-                                          fontFamily: "Poppins-Regular"),
-                                      const Icon(
-                                        Icons.add,
-                                        color: AppColors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              // InkWell(
+                              //   onTap: () {
+                              //     AppRoutes.push(
+                              //         context,
+                              //         PageTransitionType.fade,
+                              //         const MyCraves());
+                              //   },
+                              //   child: Container(
+                              //     height: 35.h,
+                              //     width: 85.w,
+                              //     decoration: BoxDecoration(
+                              //       color: AppColors.redcolor,
+                              //       borderRadius: BorderRadius.circular(32),
+                              //     ),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.center,
+                              //       children: [
+                              //         text(context, "Add", 16.sp,
+                              //             color: AppColors.white,
+                              //             boldText: FontWeight.w400,
+                              //             fontFamily: "Poppins-Regular"),
+                              //         const Icon(
+                              //           Icons.add,
+                              //           color: AppColors.white,
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                           SizedBox(
@@ -354,7 +354,11 @@ class _ProfileState extends State<Profile> {
                                           width: 19.w,
                                           height: 19.h,
                                         ),
-                                        onDeleted: () {},
+                                        onDeleted: () {
+                                          print("object");
+                                          print(e.toString());
+                                          deleteCrave(e.toString());
+                                        },
                                         backgroundColor: AppColors.chipCircle,
                                         padding: const EdgeInsets.all(6.0),
                                       ))
@@ -668,5 +672,13 @@ class _ProfileState extends State<Profile> {
             ),
           )),
     );
+  }
+
+  deleteCrave(String text) {
+    var collection = FirebaseFirestore.instance.collection('users');
+    collection.doc(_auth.currentUser!.uid).update({
+      'craves': FieldValue.arrayRemove([text]),
+    });
+    getData();
   }
 }
