@@ -561,24 +561,26 @@ class _DashboardState extends State<Dashboard> {
                                                                   .instance
                                                                   .collection(
                                                                       'users')
-                                                                  .doc(docs[index]['uid']
-                                                                  .toString())
+                                                                  .doc(docs[index]
+                                                                          [
+                                                                          'uid']
+                                                                      .toString())
                                                                   .collection(
                                                                       "likes")
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                // likeUser(
-                                                                //     name
-                                                                //         .toString(),
-                                                                //     photoUrl[0]
-                                                                //         .toString(),
-                                                                //     docs[index][
-                                                                //             'uid']
-                                                                //         .toString());
-                                                                        log(value.docs[index]["likedId"].toString());
-                                                                        log(_auth.currentUser!.uid.toString());
-                                                              /*  if (value.docs[index]["likedId"] == _auth.currentUser!.uid.toString()) {
+                                                                likeUser(
+                                                                    name
+                                                                        .toString(),
+                                                                    photoUrl[0]
+                                                                        .toString(),
+                                                                    docs[index][
+                                                                            'uid']
+                                                                        .toString());
+                                                                // log(value.docs[index]["likedId"].toString());
+                                                                // log(_auth.currentUser!.uid.toString());
+                                                                /*  if (value.docs[index]["likedId"] == _auth.currentUser!.uid.toString()) {
                                                                   log("HEEEEEEE");
                                                                   if (mounted) {
                                                                     setState(
@@ -852,11 +854,11 @@ class _DashboardState extends State<Dashboard> {
         .collection("users")
         .doc(id)
         .collection("likes")
-        .doc(next.toInt().toString())
+        .doc(user!.uid.toString())
         .set({
       'name': name.toString(),
       'imageUrl': image.toString(),
-      'likedId': user!.uid.toString()
+      'likedId': user.uid.toString()
     }).then((text) {
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {

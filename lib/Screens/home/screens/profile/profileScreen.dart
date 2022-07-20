@@ -355,8 +355,6 @@ class _ProfileState extends State<Profile> {
                                           height: 19.h,
                                         ),
                                         onDeleted: () {
-                                          print("object");
-                                          print(e.toString());
                                           deleteCrave(e.toString());
                                         },
                                         backgroundColor: AppColors.chipCircle,
