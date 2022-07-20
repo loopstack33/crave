@@ -2,6 +2,7 @@
 // ignore_for_file: file_names
 
 import 'package:crave/Screens/home/screens/chat/chatScreen.dart';
+import 'package:crave/Screens/home/screens/chat/chat_list.dart';
 import 'package:crave/Screens/home/screens/dashboardScreen.dart';
 import 'package:crave/Screens/home/screens/matchedScreens/matchScreen.dart';
 import 'package:crave/Screens/home/screens/profile/profileScreen.dart';
@@ -29,7 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final screens = [
     const Dashboard(),
     const MatchScreen(),
-    const Chat(),
+   // const Chat(),
+    UserChatList(),
     const Profile(),
   ];
 
