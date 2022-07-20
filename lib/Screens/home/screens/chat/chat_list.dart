@@ -241,70 +241,56 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
                                     var targetUser = userData.data as Map;
 
                                     return Container(
+
                                       padding:const EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(
                                             child: Row(
                                               children: <Widget>[
-                                                Badge(
-                                                  shape: BadgeShape.circle,
-                                                  badgeColor:
-                                                  targetUser['status'].toString() == "online"
-                                                      ? Colors.green
-                                                      : Colors.grey,
-                                                  borderRadius:
-                                                  BorderRadius.circular(5),
-                                                  position: BadgePosition.bottomEnd(
-                                                    bottom: 0,
-                                                    end: 0,
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: AppColors.redcolor,
+                                                          blurRadius: 15.r,
+                                                          offset:const Offset(0,1.5)
+                                                      )
+                                                    ],
                                                   ),
-                                                  padding: const EdgeInsets.all(2),
-                                                  badgeContent: Container(
-                                                      width: 10.w,
-                                                      height: 10.h,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: targetUser['status']
-                                                            .toString() ==
-                                                            "online"
-                                                            ? Colors.green
-                                                            : Colors.grey,
-                                                      )),
-                                                  child:  SizedBox(
-                                                    width: 50.w,
-                                                    height: 50.h,
-                                                    child: ClipOval(
-                                                      child: Image.network(
-                                                        targetUser['imageUrl'][0].toString(),
-                                                        width: double.infinity,
-                                                        fit: BoxFit.cover,
-                                                        loadingBuilder: (BuildContext ctx, Widget child,
-                                                            ImageChunkEvent? loadingProgress) {
-                                                          if (loadingProgress == null) {
-                                                            return child;
-                                                          }
-                                                          return Center(
-                                                            child: CircularProgressIndicator(
-                                                              value: loadingProgress.expectedTotalBytes !=
-                                                                  null
-                                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                                  loadingProgress.expectedTotalBytes!
-                                                                  : null,
-                                                            ),
-                                                          );
-                                                        },
-                                                        errorBuilder: (
-                                                            BuildContext context,
-                                                            Object exception,
-                                                            StackTrace? stackTrace,
-                                                            ) {
-                                                          return Text(
-                                                            'Oops!! An error occurred. 😢',
-                                                            style: TextStyle(fontSize: 16.sp),
-                                                          );
-                                                        },
-                                                      ),
+                                                  width: 50.w,
+                                                  height: 50.h,
+                                                  child: ClipOval(
+                                                    child: Image.network(
+                                                      targetUser['imageUrl'][0].toString(),
+                                                      width: double.infinity,
+                                                      fit: BoxFit.cover,
+                                                      loadingBuilder: (BuildContext ctx, Widget child,
+                                                          ImageChunkEvent? loadingProgress) {
+                                                        if (loadingProgress == null) {
+                                                          return child;
+                                                        }
+                                                        return Center(
+                                                          child: CircularProgressIndicator(
+                                                            value: loadingProgress.expectedTotalBytes !=
+                                                                null
+                                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                                loadingProgress.expectedTotalBytes!
+                                                                : null,
+                                                          ),
+                                                        );
+                                                      },
+                                                      errorBuilder: (
+                                                          BuildContext context,
+                                                          Object exception,
+                                                          StackTrace? stackTrace,
+                                                          ) {
+                                                        return Text(
+                                                          'Oops!! An error occurred. 😢',
+                                                          style: TextStyle(fontSize: 16.sp),
+                                                        );
+                                                      },
                                                     ),
                                                   ),
                                                 ),
