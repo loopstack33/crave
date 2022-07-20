@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -101,6 +103,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid);
       documentReference.update(<String, dynamic>{'read': true, 'count': 0});
       widget.chatRoom.count = 0;
+
+      final DocumentReference documentReference2 =
+      _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid).collection("messages").doc();
+      log(documentReference2.toString());
+      documentReference2.update(<String, dynamic>{'seen': true});
     } else {}
   }
 
@@ -582,7 +589,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     children: [
                                       Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
                                       SizedBox(width: 5.w),
-                                      Image.asset(tick,width: 15.w,height: 15.h,color:widget.chatRoom.read.toString() =="true"?null:AppColors.lightGrey ,)
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString() =="true"?null:AppColors.lightGrey ,)
                                     ],
                                   )
                                 ],
@@ -609,7 +616,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     children: [
                                       Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
                                       SizedBox(width: 5.w),
-                                      Image.asset(tick,width: 15.w,height: 15.h,color:widget.chatRoom.read.toString()=="true"?null:AppColors.lightGrey ,)
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString()=="true"?null:AppColors.lightGrey ,)
                                     ],
                                   )
                                 ],
