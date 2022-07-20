@@ -37,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     getData();
   }
+
   String id = '';
   List<dynamic> photoUrl = [];
   String name = 'Name';
@@ -119,7 +120,7 @@ class _DashboardState extends State<Dashboard> {
                             List.from(docs[index]['imageUrl']);
                         return Container(
                           margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.only(top: 10,left: 10),
+                          padding: const EdgeInsets.only(top: 10, left: 10),
                           decoration: BoxDecoration(
                               color: AppColors.black,
                               borderRadius: BorderRadius.circular(16.r)),
@@ -190,25 +191,10 @@ class _DashboardState extends State<Dashboard> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.end,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.end,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Image.asset(
-                                                location,
-                                                width: 15.w,
-                                                height: 15.h,
-                                              ),
-                                              SizedBox(width: 5.w),
-                                              text(context,
-                                                  docs[index]["country"], 15.sp,
-                                                  color: AppColors.white,
-                                                  fontFamily:
-                                                      'Poppins-Regular'),
-                                            ],
-                                          ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 20),
@@ -257,46 +243,46 @@ class _DashboardState extends State<Dashboard> {
                                       child: Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(5.0),
                                       child: Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          text(context, docs[index]['name'],
-                                              22.sp,
-                                              color: AppColors.white,
-                                              fontFamily: 'Poppins-Medium'),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset(
+                                                    location,
+                                                    width: 15.w,
+                                                    height: 15.h,
+                                                  ),
+                                                  SizedBox(width: 5.w),
+                                                  text(
+                                                      context,
+                                                      docs[index]["country"],
+                                                      15.sp,
+                                                      color: AppColors.white,
+                                                      fontFamily:
+                                                          'Poppins-Regular'),
+                                                ],
+                                              ),
+                                              text(context, docs[index]['name'],
+                                                  22.sp,
+                                                  color: AppColors.white,
+                                                  fontFamily: 'Poppins-Medium'),
+                                            ],
+                                          ),
                                           Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.r),
-                                                child: BackdropFilter(
-                                                  filter: ImageFilter.blur(
-                                                      sigmaX: 10, sigmaY: 10),
-                                                  child: Container(
-                                                    color: AppColors
-                                                        .containerborder
-                                                        .withOpacity(0.6),
-                                                    child: IconButton(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                          FontAwesomeIcons
-                                                              .circleInfo,
-                                                          size: 28.sp,
-                                                          color:
-                                                              AppColors.white,
-                                                        )),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(height: 10.h),
                                               ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(15.r),
@@ -357,11 +343,15 @@ class _DashboardState extends State<Dashboard> {
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                        likeUser(
-                                                                            name.toString(),
-                                                                           photoUrl[0].toString(),
-                                                                            docs[index]['uid'].toString());
-                                                               /* if (value.docs[
+                                                                likeUser(
+                                                                    name
+                                                                        .toString(),
+                                                                    photoUrl[0]
+                                                                        .toString(),
+                                                                    docs[index][
+                                                                            'uid']
+                                                                        .toString());
+                                                                /* if (value.docs[
                                                                             index]
                                                                         [
                                                                         "likedId"] !=
@@ -473,7 +463,59 @@ class _DashboardState extends State<Dashboard> {
                                 child: Wrap(
                                     spacing: 8.0, // gap between adjacent chips
                                     runSpacing: 4.0, // gap between lines
-                                    children: craves
+                                    children: viewMore == true
+                                        ? cravesHalf
+                                            .map((e) => Chip(
+                                                  labelPadding:
+                                                      const EdgeInsets.all(2.0),
+                                                  avatar: CircleAvatar(
+                                                    backgroundColor:
+                                                        AppColors.chipColor,
+                                                    child: Image.asset(
+                                                        e == "Casual Dating"
+                                                            ? casualdating
+                                                            : e == "No String Attached"
+                                                                ? nostring1
+                                                                : e == "In Person"
+                                                                    ? inperson
+                                                                    : e == "Sexting"
+                                                                        ? sexting2
+                                                                        : e == "Kinky"
+                                                                            ? kinky
+                                                                            : e == "Vanilla"
+                                                                                ? vanilla
+                                                                                : e == "Submissive"
+                                                                                    ? submissive
+                                                                                    : e == "Dominance"
+                                                                                        ? dominance
+                                                                                        : e == "Dress Up"
+                                                                                            ? dressup
+                                                                                            : e == "Blindfolding"
+                                                                                                ? blindfolding
+                                                                                                : e == "Bondage"
+                                                                                                    ? bondage
+                                                                                                    : e == "Butt Stuff"
+                                                                                                        ? buttstuff
+                                                                                                        : kinky,
+                                                        color: AppColors.white,
+                                                        width: 15,
+                                                        height: 15),
+                                                  ),
+                                                  label: Text(
+                                                    e.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        color: AppColors.white,
+                                                        fontFamily:
+                                                            "Poppins-Regular"),
+                                                  ),
+                                                  backgroundColor:
+                                                      AppColors.chipCircle,
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                ))
+                                            .toList()
+                                        : craves
                                             .map((e) => Chip(
                                                   labelPadding:
                                                       const EdgeInsets.all(2.0),
@@ -525,7 +567,8 @@ class _DashboardState extends State<Dashboard> {
                                                 ))
                                             .toList()),
                               ),
-                             /* Row(
+
+                              /* Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   ElevatedButton(
@@ -556,6 +599,40 @@ class _DashboardState extends State<Dashboard> {
                                           fontFamily: "Poppins-Medium")),
                                 ],
                               ),*/
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<Color>(
+                                                    AppColors.redcolor),
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(
+                                                        18.0),
+                                                    side: const BorderSide(
+                                                        color: Colors.red)))),
+                                        onPressed: () {
+                                          if (mounted) {
+                                            setState(() {
+                                              viewMore = !viewMore;
+                                            });
+                                          }
+                                        },
+                                        child: text(
+                                            context,
+                                            viewMore == true
+                                                ? viewMoreButton
+                                                : "View Less",
+                                            12.sp,
+                                            color: Colors.white,
+                                            fontFamily: "Poppins-Medium")),
+                                  ],
+                                ),
+                              ),
                               SizedBox(height: 10.h),
                             ],
                           ),
@@ -586,8 +663,11 @@ class _DashboardState extends State<Dashboard> {
         .doc(id)
         .collection("likes")
         .doc(next.toInt().toString())
-        .set({'name': name.toString(), 'imageUrl': image.toString(), 'likedId': user!.uid.toString()}).then(
-            (text) {
+        .set({
+      'name': name.toString(),
+      'imageUrl': image.toString(),
+      'likedId': user!.uid.toString()
+    }).then((text) {
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {
         setState(() {

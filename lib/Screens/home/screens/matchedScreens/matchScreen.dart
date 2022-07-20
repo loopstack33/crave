@@ -16,6 +16,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../widgets/custom_toast.dart';
 
@@ -39,7 +40,7 @@ class _MatchScreenState extends State<MatchScreen> {
   List<dynamic> matchedCraves = [];
   bool isLoad = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  DateTime now = DateTime.now();
   UsersModel? loggedInUser;
   UsersModel? allUsers;
   String? uid;
@@ -52,6 +53,76 @@ class _MatchScreenState extends State<MatchScreen> {
 
     currentuser();
     getAllUserData();
+    checkforCounter();
+  }
+
+  checkforCounter() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    DateTime date = DateTime(now.year, now.month, now.day);
+    if (preferences.containsKey("counter")) {
+      var countercheck = preferences.getBool("counter");
+      print(countercheck);
+      await firebaseFirestore
+          .collection("users")
+          .doc(_auth.currentUser!.uid)
+          .collection("matching_Attempt")
+          .doc(date.toString())
+          .get()
+          .then((value) {
+        if (mounted) {
+          setState(() {
+            counter = value.data()!["counter"];
+
+            isLoad = false;
+          });
+        }
+      }).catchError((e) {
+        log(e.toString());
+      });
+      // if (countercheck==false) {
+      //   print("created before");
+      //   await firebaseFirestore
+      //       .collection("users")
+      //       .doc(_auth.currentUser!.uid)
+      //       .collection("matching_Attempt")
+      //       .doc(date.toString())
+      //       .get()
+      //       .then((value) {
+      //     if (mounted) {
+      //       counter = value.data()!["counter"];
+      //       print(counter);
+      //       isLoad = false;
+      //     }
+      //   }).catchError((e) {
+      //     log(e.toString());
+      //   });
+      // } else {
+      //   if (mounted) {
+      //     setState(() {
+      //       isLoad = false;
+      //     });
+      //   }
+      // }
+    } else {
+      createcounterDb();
+    }
+  }
+
+  createcounterDb() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool("counter", false);
+    DateTime date = DateTime(now.year, now.month, now.day);
+    await firebaseFirestore
+        .collection("users")
+        .doc(uid)
+        .collection("matching_Attempt")
+        .doc(date.toString())
+        .set({'date': date.toString(), 'counter': 0}).then((text) {
+      setState(() {
+        isLoad = false;
+        counter = 0;
+      });
+    }).catchError((e) {});
   }
 
   String image = "";
@@ -69,7 +140,6 @@ class _MatchScreenState extends State<MatchScreen> {
       if (mounted) {
         setState(() {
           image = currentUsersData[0].imgUrl[0].toString();
-          isLoad = false;
         });
       }
     });
@@ -416,20 +486,30 @@ class _MatchScreenState extends State<MatchScreen> {
       loading = false;
     });
     ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
-    Timer(
-        const Duration(seconds: 2),
-        () => AppRoutes.push(
-            context, PageTransitionType.fade, const MatchedSuccessed()));
+    increment();
+    Timer(const Duration(seconds: 2), () async {
+      final refresh = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MatchedSuccessed(
+                    counter: counter,
+                    imagurl: image,
+                    img2url: matchedImageUrl,
+                    participantid: uid!,
+                    matchedid: CompleteUserData[0].userId,
+                    participantname: currentUsersData[0].userName,
+                    matchedname: CompleteUserData[0].userName,
+                  )));
+
+      setState(() {
+        if (refresh == "Refresh") {
+          //getData();
+          currentuser();
+          getAllUserData();
+          checkforCounter();
+        }
+      });
+    });
     print(matched);
-  }
-}
-
-class MyClip extends CustomClipper<Rect> {
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, 50, 50);
-  }
-
-  bool shouldReclip(oldClipper) {
-    return false;
   }
 }
