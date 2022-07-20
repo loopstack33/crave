@@ -578,30 +578,7 @@ class _DashboardState extends State<Dashboard> {
                                                                     docs[index][
                                                                             'uid']
                                                                         .toString());
-                                                                // log(value.docs[index]["likedId"].toString());
-                                                                // log(_auth.currentUser!.uid.toString());
-                                                                /*  if (value.docs[index]["likedId"] == _auth.currentUser!.uid.toString()) {
-                                                                  log("HEEEEEEE");
-                                                                  if (mounted) {
-                                                                    setState(
-                                                                            () {
-                                                                          loading =
-                                                                          false;
-                                                                        });
-                                                                  }
-                                                                  ToastUtils.showCustomToast(
-                                                                      context,
-                                                                      "Already liked this user",
-                                                                      AppColors
-                                                                          .redcolor);
-                                                                }
-                                                                else {
-                                                                  likeUser(docs[index]['name'].toString(),
-                                                                      docs[index]['imageUrl'][0].toString(),
-                                                                      docs[index]['uid'].toString());
-                                                                  log("HEEEEEERRRRRRRE");
-
-                                                                }*/
+                                                                
                                                               });
                                                             } catch (e) {
                                                               if (mounted) {
