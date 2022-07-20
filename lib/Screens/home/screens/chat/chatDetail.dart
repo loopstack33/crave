@@ -104,10 +104,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       documentReference.update(<String, dynamic>{'read': true, 'count': 0});
       widget.chatRoom.count = 0;
 
-      final DocumentReference documentReference2 =
-      _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid).collection("messages").doc();
-      log(documentReference2.toString());
-      documentReference2.update(<String, dynamic>{'seen': true});
+      FirebaseFirestore.instance.collection('chatrooms').doc(widget.chatRoom.chatroomid).collection("messages").get().then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.update({
+            'seen': true, //True or false
+          });
+        }
+      });
     } else {}
   }
 
@@ -443,7 +446,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 55.0),
+              padding: const EdgeInsets.only(bottom: 55.0,top: 30.0),
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("chatrooms")
