@@ -91,3 +91,4 @@ const String icon = "assets/images/icon.png";
 
 const String report = "assets/images/report.png";
 const String lockedchat = "assets/images/lockedchat.png";
+const String editProfile = "assets/images/editProfile.png";

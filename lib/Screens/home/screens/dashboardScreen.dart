@@ -33,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   int selectedIndex = 0;
   List<dynamic> cravesHalf = [];
+
   bool viewMore = true;
   String viewMoreButton = "View More";
 
@@ -122,6 +123,7 @@ class _DashboardState extends State<Dashboard> {
                             cravesHalf.add(temp);
                           }
                         }
+                        //log(cravesHalf.toString());
 
                         List<dynamic> imgList =
                             List.from(docs[index]['imageUrl']);
@@ -677,7 +679,8 @@ class _DashboardState extends State<Dashboard> {
                                 child: Wrap(
                                     spacing: 8.0, // gap between adjacent chips
                                     runSpacing: 4.0, // gap between lines
-                                    children: viewMore == true
+                                    children: selectedIndex == index &&
+                                            viewMore == true
                                         ? cravesHalf
                                             .map((e) => Chip(
                                                   labelPadding:
@@ -789,26 +792,31 @@ class _DashboardState extends State<Dashboard> {
                                     ElevatedButton(
                                         style: ButtonStyle(
                                             backgroundColor:
-                                                MaterialStateProperty.all<Color>(
-                                                    AppColors.redcolor),
-                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                MaterialStateProperty.all<
+                                                    Color>(AppColors.redcolor),
+                                            shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(
-                                                        18.0),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            18.0),
                                                     side: const BorderSide(
                                                         color: Colors.red)))),
                                         onPressed: () {
                                           if (mounted) {
                                             setState(() {
+                                              selectedIndex = index;
                                               viewMore = !viewMore;
                                             });
                                           }
                                         },
                                         child: text(
                                             context,
-                                            viewMore == true
+                                            selectedIndex == index && viewMore == true
                                                 ? viewMoreButton
-                                                : "View Less",
+                                                : selectedIndex == index && viewMore == false
+                                                    ? "View less"
+                                                    : viewMoreButton,
                                             12.sp,
                                             color: Colors.white,
                                             fontFamily: "Poppins-Medium")),
