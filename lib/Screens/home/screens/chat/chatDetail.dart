@@ -582,7 +582,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     children: [
                                       Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
                                       SizedBox(width: 5.w),
-                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString() =="true"?null:AppColors.lightGrey ,)
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:widget.chatRoom.read.toString() =="true"?null:AppColors.lightGrey ,)
                                     ],
                                   )
                                 ],
@@ -609,7 +609,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     children: [
                                       Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
                                       SizedBox(width: 5.w),
-                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString()=="true"?null:AppColors.lightGrey ,)
+                                      Image.asset(tick,width: 15.w,height: 15.h,color:widget.chatRoom.read.toString()=="true"?null:AppColors.lightGrey ,)
                                     ],
                                   )
                                 ],
