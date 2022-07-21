@@ -549,46 +549,30 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-                                                            // if (mounted) {
-                                                            //   setState(() {
-                                                            //     selectedIndex = index;
-                                                            //     loading = true;
-                                                            //   });
-                                                            // }
-
-                                                            try {
-                                                              await FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(docs[index]
-                                                                          [
+                                                            //check if exist //likes 
+                                                            bool exits =
+                                                                await isItems(docs[
+                                                                            index]
+                                                                        ['uid']
+                                                                    .toString());
+                                                            log(exits
+                                                                .toString());
+                                                            if (exits) {
+                                                              //check already likes
+                                                              //get all ids from likes
+                                                              getlikedIds(docs[
+                                                                          index]
+                                                                      ['uid']
+                                                                  .toString());
+                                                            } else {
+                                                              likeUser(
+                                                                  name
+                                                                      .toString(),
+                                                                  photoUrl[0]
+                                                                      .toString(),
+                                                                  docs[index][
                                                                           'uid']
-                                                                      .toString())
-                                                                  .collection(
-                                                                      "likes")
-                                                                  .get()
-                                                                  .then(
-                                                                      (value) {
-                                                                likeUser(
-                                                                    name
-                                                                        .toString(),
-                                                                    photoUrl[0]
-                                                                        .toString(),
-                                                                    docs[index][
-                                                                            'uid']
-                                                                        .toString());
-                                                                
-                                                              });
-                                                            } catch (e) {
-                                                              if (mounted) {
-                                                                setState(() {
-                                                                  loading =
-                                                                      false;
-                                                                });
-                                                              }
-                                                              debugPrint(
-                                                                  e.toString());
+                                                                      .toString());
                                                             }
                                                           },
                                                           icon: selectedIndex ==
@@ -882,6 +866,39 @@ class _DashboardState extends State<Dashboard> {
           feedLoad = false;
         });
       }
+    });
+  }
+
+  Future<bool> isItems(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("likes");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+    Future<bool> isReport(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("reported_By");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  getlikedIds(String id) async {
+    User? user = _auth.currentUser;
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("likes")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      print(value.data()!.length);
+      if (value.data()!.length > 0) {
+        ToastUtils.showCustomToast(context, "Already Liked", Colors.green);
+      } else {
+        likeUser(name.toString(), photoUrl[0].toString(), id);
+      }
+    }).catchError((e) {
+      log(e.toString());
     });
   }
 }

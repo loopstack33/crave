@@ -79,30 +79,7 @@ class _MatchScreenState extends State<MatchScreen> {
       }).catchError((e) {
         log(e.toString());
       });
-      // if (countercheck==false) {
-      //   print("created before");
-      //   await firebaseFirestore
-      //       .collection("users")
-      //       .doc(_auth.currentUser!.uid)
-      //       .collection("matching_Attempt")
-      //       .doc(date.toString())
-      //       .get()
-      //       .then((value) {
-      //     if (mounted) {
-      //       counter = value.data()!["counter"];
-      //       print(counter);
-      //       isLoad = false;
-      //     }
-      //   }).catchError((e) {
-      //     log(e.toString());
-      //   });
-      // } else {
-      //   if (mounted) {
-      //     setState(() {
-      //       isLoad = false;
-      //     });
-      //   }
-      // }
+     
     } else {
       createcounterDb();
     }
