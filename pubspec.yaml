@@ -61,6 +61,8 @@ dependencies:
   permission_handler: ^9.2.0
   flutter_webrtc: ^0.8.12
   awesome_notifications: ^0.6.21
+  agora_uikit: ^1.0.2
+  agora_rtc_engine: ^5.3.0
   
 
 dev_dependencies:

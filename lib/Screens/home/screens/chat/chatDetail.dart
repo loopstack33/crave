@@ -139,7 +139,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                   //Image.asset(video,width: 30.w,height: 30.h,),
                   GestureDetector(
                       onTap: (){
-                        AppRoutes.push(context, PageTransitionType.fade,const CallPage());
+                       // AppRoutes.push(context, PageTransitionType.fade,CallPage());
                       },
                       child: Icon(FontAwesomeIcons.phone,color: AppColors.redcolor,size: 25.sp,)),
                   SizedBox(width: 10.w),
