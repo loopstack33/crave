@@ -59,7 +59,8 @@ dependencies:
   flutter_sound: ^9.2.13
   audioplayers: ^1.0.1
   permission_handler: ^9.2.0
-
+  flutter_webrtc: ^0.8.12
+  awesome_notifications: ^0.6.21
   
 
 dev_dependencies:
