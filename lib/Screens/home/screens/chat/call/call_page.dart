@@ -1,109 +1,124 @@
-import 'dart:math';
+import 'package:crave/Screens/home/screens/chat/call/signaling.dart';
 import 'package:flutter/material.dart';
-
-import 'color.dart';
-import 'common_widgets.dart';
-import 'constants.dart';
-import 'home_widgets.dart';
-
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class CallPage extends StatefulWidget {
-  const CallPage({Key? key, required this.scrollController}) : super(key: key);
-
-  final ScrollController scrollController;
+  const CallPage({Key? key}) : super(key: key);
 
   @override
-  _CallPageState createState() => _CallPageState();
+  State<CallPage> createState() => _CallPageState();
 }
 
 class _CallPageState extends State<CallPage> {
-  bool isSearch = false;
-  TextEditingController controller = TextEditingController();
+  Signaling signaling = Signaling();
+  RTCVideoRenderer _localRenderer = RTCVideoRenderer();
+  RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
+  String? roomId;
+  TextEditingController textEditingController = TextEditingController(text: '');
+
+  @override
+  void initState() {
+    _localRenderer.initialize();
+    _remoteRenderer.initialize();
+
+    signaling.onAddRemoteStream = ((stream) {
+      _remoteRenderer.srcObject = stream;
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _localRenderer.dispose();
+    _remoteRenderer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.transparent,
-        child: gradientIconButton(
-            size: 55, iconData: Icons.phone_forwarded, context: context),
+      appBar: AppBar(
+        title: Text("Welcome to Flutter Explained - WebRTC"),
       ),
-      body: SafeArea(
-          child: Column(
+      body: Column(
+        children: [
+          SizedBox(height: 8),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 26,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text(
-                          "Calls",
-                          style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w800,
-                              color: blackColor(context).darkShade),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: Transform.rotate(
-                          angle: isSearch ? pi * (90 / 360) : 0,
-                          child: IconButton(
-                            icon:
-                            Icon(isSearch ? Icons.add : Icons.search, size: 32),
-                            splashRadius: 20,
-                            onPressed: () {
-                              setState(() {
-                                isSearch = !isSearch;
-                              });
-                            },
-                            color: greenColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  isSearch
-                      ? searchBar(context: context, controller: controller)
-                      : statusBar(
-                      addWidget: false, seeAllWidget: false, context: context)
-                ],
+              ElevatedButton(
+                onPressed: () {
+                  signaling.openUserMedia(_localRenderer, _remoteRenderer);
+                },
+                child: Text("Open camera & microphone"),
               ),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.only(top: 10),
-                  controller: widget.scrollController,
-                  itemCount: persons.length,
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      thickness: 0.3,
-                    );
-                  },
-                  itemBuilder: (context, index) => customListTile(
-                      context: context,
-                      imageUrl: persons[index]['picture'].toString(),
-                      title:
-                      "${persons[index]['first_name']} ${persons[index]['last_name']}",
-                      subTitle: "May 7, 6:29 PM",
-                      onTap: () {},
-                      numberOfCalls: 2,
-                      customListTileType: CustomListTileType.call,
-                      callStatus: CallStatus.accepted),
-                ),
+              SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  roomId = await signaling.createRoom(_remoteRenderer);
+                  textEditingController.text = roomId!;
+                  setState(() {});
+                },
+                child: Text("Create room"),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Add roomId
+                  signaling.joinRoom(
+                    textEditingController.text,
+                    _remoteRenderer,
+                  );
+                },
+                child: Text("Join room"),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  signaling.hangUp(_localRenderer);
+                },
+                child: Text("Hangup"),
               )
             ],
-          )),
+          ),
+          SizedBox(height: 8),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(child: RTCVideoView(_localRenderer, mirror: true)),
+                  Expanded(child: RTCVideoView(_remoteRenderer)),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Join the following Room: "),
+                Flexible(
+                  child: TextFormField(
+                    controller: textEditingController,
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: 8)
+        ],
+      ),
     );
   }
 }
