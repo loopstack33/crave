@@ -61,6 +61,7 @@ dependencies:
   permission_handler: ^9.2.0
   flutter_webrtc: ^0.8.12
   awesome_notifications: ^0.6.21
+  namefully: ^0.1.8
   
 
 dev_dependencies:

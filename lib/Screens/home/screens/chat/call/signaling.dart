@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-typedef void StreamStateCallback(MediaStream stream);
+typedef StreamStateCallback = void Function(MediaStream stream);
 
 class Signaling {
   Map<String, dynamic> configuration = {
@@ -89,7 +89,7 @@ class Signaling {
 
     // Listen for remote Ice candidates below
     roomRef.collection('calleeCandidates').snapshots().listen((snapshot) {
-      snapshot.docChanges.forEach((change) {
+      for (var change in snapshot.docChanges) {
         if (change.type == DocumentChangeType.added) {
           Map<String, dynamic> data = change.doc.data() as Map<String, dynamic>;
           print('Got new remote ICE candidate: ${jsonEncode(data)}');
@@ -101,7 +101,7 @@ class Signaling {
             ),
           );
         }
-      });
+      }
     });
     // Listen for remote ICE candidates above
 
@@ -110,7 +110,7 @@ class Signaling {
 
   Future<void> joinRoom(String roomId, RTCVideoRenderer remoteVideo) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference roomRef = db.collection('rooms').doc('$roomId');
+    DocumentReference roomRef = db.collection('rooms').doc(roomId);
     var roomSnapshot = await roomRef.get();
     print('Got room ${roomSnapshot.exists}');
 
@@ -165,7 +165,7 @@ class Signaling {
 
       // Listening for remote ICE candidates below
       roomRef.collection('callerCandidates').snapshots().listen((snapshot) {
-        snapshot.docChanges.forEach((document) {
+        for (var document in snapshot.docChanges) {
           var data = document.doc.data() as Map<String, dynamic>;
           print(data);
           print('Got new remote ICE candidate: $data');
@@ -176,7 +176,7 @@ class Signaling {
               data['sdpMLineIndex'],
             ),
           );
-        });
+        }
       });
     }
   }
@@ -196,9 +196,9 @@ class Signaling {
 
   Future<void> hangUp(RTCVideoRenderer localVideo) async {
     List<MediaStreamTrack> tracks = localVideo.srcObject!.getTracks();
-    tracks.forEach((track) {
+    for (var track in tracks) {
       track.stop();
-    });
+    }
 
     if (remoteStream != null) {
       remoteStream!.getTracks().forEach((track) => track.stop());
@@ -209,10 +209,14 @@ class Signaling {
       var db = FirebaseFirestore.instance;
       var roomRef = db.collection('rooms').doc(roomId);
       var calleeCandidates = await roomRef.collection('calleeCandidates').get();
-      calleeCandidates.docs.forEach((document) => document.reference.delete());
+      for (var document in calleeCandidates.docs) {
+        document.reference.delete();
+      }
 
       var callerCandidates = await roomRef.collection('callerCandidates').get();
-      callerCandidates.docs.forEach((document) => document.reference.delete());
+      for (var document in callerCandidates.docs) {
+        document.reference.delete();
+      }
 
       await roomRef.delete();
     }

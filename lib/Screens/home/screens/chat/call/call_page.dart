@@ -11,8 +11,8 @@ class CallPage extends StatefulWidget {
 
 class _CallPageState extends State<CallPage> {
   Signaling signaling = Signaling();
-  RTCVideoRenderer _localRenderer = RTCVideoRenderer();
-  RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
+  final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
+  final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
   TextEditingController textEditingController = TextEditingController(text: '');
 
@@ -40,11 +40,11 @@ class _CallPageState extends State<CallPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome to Flutter Explained - WebRTC"),
+        title: const Text("Welcome to Flutter Explained - WebRTC"),
       ),
       body: Column(
         children: [
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -52,9 +52,9 @@ class _CallPageState extends State<CallPage> {
                 onPressed: () {
                   signaling.openUserMedia(_localRenderer, _remoteRenderer);
                 },
-                child: Text("Open camera & microphone"),
+                child: const Text("Open camera & microphone"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
@@ -63,9 +63,9 @@ class _CallPageState extends State<CallPage> {
                   textEditingController.text = roomId!;
                   setState(() {});
                 },
-                child: Text("Create room"),
+                child: const Text("Create room"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
@@ -76,20 +76,20 @@ class _CallPageState extends State<CallPage> {
                     _remoteRenderer,
                   );
                 },
-                child: Text("Join room"),
+                child: const Text("Join room"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
                 onPressed: () {
                   signaling.hangUp(_localRenderer);
                 },
-                child: Text("Hangup"),
+                child: const Text("Hangup"),
               )
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -107,7 +107,7 @@ class _CallPageState extends State<CallPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Join the following Room: "),
+                const Text("Join the following Room: "),
                 Flexible(
                   child: TextFormField(
                     controller: textEditingController,
@@ -116,7 +116,7 @@ class _CallPageState extends State<CallPage> {
               ],
             ),
           ),
-          SizedBox(height: 8)
+          const SizedBox(height: 8)
         ],
       ),
     );

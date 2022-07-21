@@ -9,6 +9,7 @@ import 'package:crave/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:namefully/namefully.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MatchedSuccessed extends StatefulWidget {
@@ -39,9 +40,24 @@ class _MatchScreenState extends State<MatchedSuccessed> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   DateTime now = DateTime.now();
   String? uid;
+  String matchedname = "";
+  String participantname = "";
   @override
   void initState() {
     super.initState();
+    if (widget.participantname.characters.contains(" ")) {
+      var namP = Namefully(widget.participantname);
+      participantname = namP.zip().toString();
+    } else {
+      participantname = widget.participantname;
+    }
+    if (widget.participantname.characters.contains(" ")) {
+      var namM = Namefully(widget.matchedname);
+      matchedname = namM.zip().toString();
+    } else {
+      matchedname = widget.matchedname;
+    }
+
     uid = _auth.currentUser!.uid;
     addCountertodb();
   }
@@ -55,7 +71,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         .doc(uid)
         .collection("matching_Attempt")
         .doc(date.toString())
-        .update({"counter": widget.counter})
+        .set({"counter": widget.counter, "date": date.toString()})
         .then((text) {})
         .catchError((e) {});
   }

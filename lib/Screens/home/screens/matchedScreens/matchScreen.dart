@@ -29,6 +29,8 @@ class _MatchScreenState extends State<MatchScreen> {
   String matchedImageUrl = "";
   bool loading = false;
   bool matched = false;
+  String searching = "Searching...";
+  String finding = "We’re finding a great match for you!";
   int counter = 0;
   List<dynamic> allUserCraves = [];
   List<UsersModel> allUsersData = [];
@@ -68,16 +70,19 @@ class _MatchScreenState extends State<MatchScreen> {
           .get()
           .then((value) {
         if (mounted) {
+          log(counter.toString());
           setState(() {
             counter = value.data()!["counter"];
 
             isLoad = false;
           });
-        }
+        } else {}
       }).catchError((e) {
         log(e.toString());
+        setState(() {
+          isLoad = false;
+        });
       });
-     
     } else {
       createcounterDb();
     }
@@ -197,7 +202,7 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
                 SizedBox(height: 10.h),
                 //  const Spacer(flex: 1),
-                text(context, "Searching...", 19.sp,
+                text(context, searching, 19.sp,
                     color: Colors.white,
                     boldText: FontWeight.w200,
                     fontFamily: "Poppins-Regular"),
@@ -362,7 +367,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Text("We’re finding a great match for you!",
+                      child: Text(finding,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20.sp,
@@ -398,19 +403,27 @@ class _MatchScreenState extends State<MatchScreen> {
 
   matchedCraves1() {
     int temp = 0;
+
     for (int i = 0; i < allUsersData.length; i++) {
       var expectedList = currentUsersData[0]
           .craves
           .toSet()
           .intersection(allUsersData[i].craves.toSet())
           .toList();
-
-      //  log(expectedList.length.toString());
-
-      if (temp < expectedList.length) {
-        CompleteUserData.add(allUsersData[i]);
-        temp = expectedList.length;
-        //   log(allUsersData[i].userId.toString());
+      if (expectedList.isEmpty) {
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
+        ToastUtils.showCustomToast(
+            context, "No Match Found", AppColors.redcolor);
+      } else {
+        if (temp < expectedList.length) {
+          CompleteUserData.add(allUsersData[i]);
+          temp = expectedList.length;
+          //   log(allUsersData[i].userId.toString());
+        }
       }
     }
     // log(matchedGenes[0].genes.toString());
@@ -459,8 +472,11 @@ class _MatchScreenState extends State<MatchScreen> {
       matchedImageUrl = CompleteUserData[0].imgUrl[0];
       matched = true;
       loading = false;
+      searching = "Matched Successful";
+      finding = "Matched for You";
     });
     ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
+
     increment();
     Timer(const Duration(seconds: 2), () async {
       final refresh = await Navigator.push(
@@ -482,6 +498,9 @@ class _MatchScreenState extends State<MatchScreen> {
           currentuser();
           getAllUserData();
           checkforCounter();
+          searching = "Searching...";
+          finding = "We’re finding a great match for you!";
+          matchedImageUrl = "";
         }
       });
     });

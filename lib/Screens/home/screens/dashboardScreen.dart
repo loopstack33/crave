@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'dart:developer';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,7 +33,6 @@ class _DashboardState extends State<Dashboard> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   int selectedIndex = 0;
   List<dynamic> cravesHalf = [];
-
   bool viewMore = true;
   String viewMoreButton = "View More";
 
@@ -115,14 +115,16 @@ class _DashboardState extends State<Dashboard> {
                       itemBuilder: (context, index) {
                         List<dynamic> craves = List.from(docs[index]['craves']);
                         cravesHalf.clear();
-                        if (craves.length > 3) {
-                          for (int i = 0; i < 3; i++) {
+                        if (craves.length > 1) {
+                          for (int i = 0; i < craves.length / 2; i++) {
                             String temp;
                             temp = craves[i].toString();
                             cravesHalf.add(temp);
                           }
+                        } else {
+                          cravesHalf.add(craves[0].toString());
                         }
-                        //log(cravesHalf.toString());
+                        // math.log(cravesHalf.toString());
 
                         List<dynamic> imgList =
                             List.from(docs[index]['imageUrl']);
@@ -228,6 +230,146 @@ class _DashboardState extends State<Dashboard> {
                                                   if (_selectedMenu
                                                           .toString() ==
                                                       "BlockForever") {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                            insetPadding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.r)),
+                                                            elevation: 10,
+                                                            backgroundColor:
+                                                                AppColors.white,
+                                                            child:
+                                                                SingleChildScrollView(
+                                                              child:
+                                                                  StatefulBuilder(
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    StateSetter
+                                                                        setter) {
+                                                                  return Column(
+                                                                    children: [
+                                                                      Container(
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius: BorderRadius.only(
+                                                                              topLeft: Radius.circular(20.r),
+                                                                              topRight: Radius.circular(20.r)),
+                                                                          gradient:
+                                                                              LinearGradient(
+                                                                            begin:
+                                                                                Alignment.topCenter,
+                                                                            end:
+                                                                                Alignment.bottomCenter,
+                                                                            colors: [
+                                                                              AppColors.redcolor.withOpacity(0.35),
+                                                                              AppColors.redcolor
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        padding:
+                                                                            const EdgeInsets.all(8),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Block User",
+                                                                              style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Are you sure you want to block this\nuser forever?",
+                                                                              style: TextStyle(fontSize: 16.sp, color: AppColors.black, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10.h,
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () async {
+                                                                          //check if exist //blocks
+                                                                          bool
+                                                                              exits =
+                                                                              await isBlocked(docs[index]['uid'].toString());
+                                                                          // log(exits
+                                                                          //     .toString());
+                                                                          if (exits) {
+                                                                            //check already blocked
+                                                                            //get all ids from blocked
+                                                                            getBocksIds(docs[index]['uid'].toString());
+                                                                          } else {
+                                                                            blockUser(
+                                                                                name.toString(),
+                                                                                photoUrl[0].toString(),
+                                                                                docs[index]['uid'].toString());
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              150.w,
+                                                                          height:
+                                                                              40.h,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              begin: Alignment.topCenter,
+                                                                              end: Alignment.bottomCenter,
+                                                                              colors: [
+                                                                                AppColors.redcolor.withOpacity(0.35),
+                                                                                AppColors.redcolor
+                                                                              ],
+                                                                            ),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.r),
+                                                                          ),
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            20.h,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
                                                   } else if (_selectedMenu
                                                           .toString() ==
                                                       "Report") {
@@ -378,7 +520,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                       feedLoad = true;
                                                                                     });
                                                                                   }
-                                                                                  reportUser(docs[index]["name"].toString(), docs[index]["imageUrl"][0].toString(), docs[index]['uid'].toString(), reportController.text.toString());
+                                                                                  isReport(docs[index]['uid'].toString(), docs[index]["name"], docs[index]["imageUrl"][0].toString());
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -548,7 +690,6 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-
                                                             try {
                                                               await FirebaseFirestore
                                                                   .instance
@@ -571,7 +712,6 @@ class _DashboardState extends State<Dashboard> {
                                                                     docs[index][
                                                                             'uid']
                                                                         .toString());
-
                                                               });
                                                             } catch (e) {
                                                               if (mounted) {
@@ -628,14 +768,29 @@ class _DashboardState extends State<Dashboard> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
                                   Image.asset(
-                                    femaleGirl,
+                                    docs[index]["gender"] == "Man"
+                                        ? male
+                                        : docs[index]["gender"] == "Woman"
+                                            ? female
+                                            : other,
+                                    color: Colors.white,
                                     width: 20,
                                     height: 20,
                                   ),
-                                  SizedBox(width: 10.w),
+                                  SizedBox(width: 5.w),
                                   Image.asset(
-                                    gene1,
+                                    docs[index]["genes"] == "Hetero"
+                                        ? hetero
+                                        : docs[index]["genes"] == "Lesbian"
+                                            ? lesbian
+                                            : docs[index]["genes"] == "Gay"
+                                                ? gay
+                                                : bisexual,
+                                    color: Colors.white,
                                     width: 20,
                                     height: 20,
                                   ),
@@ -704,57 +859,115 @@ class _DashboardState extends State<Dashboard> {
                                                       const EdgeInsets.all(8.0),
                                                 ))
                                             .toList()
-                                        : craves
-                                            .map((e) => Chip(
-                                                  labelPadding:
-                                                      const EdgeInsets.all(2.0),
-                                                  avatar: CircleAvatar(
-                                                    backgroundColor:
-                                                        AppColors.chipColor,
-                                                    child: Image.asset(
-                                                        e == "Casual Dating"
-                                                            ? casualdating
-                                                            : e == "No String Attached"
-                                                                ? nostring1
-                                                                : e == "In Person"
-                                                                    ? inperson
-                                                                    : e == "Sexting"
-                                                                        ? sexting2
-                                                                        : e == "Kinky"
-                                                                            ? kinky
-                                                                            : e == "Vanilla"
-                                                                                ? vanilla
-                                                                                : e == "Submissive"
-                                                                                    ? submissive
-                                                                                    : e == "Dominance"
-                                                                                        ? dominance
-                                                                                        : e == "Dress Up"
-                                                                                            ? dressup
-                                                                                            : e == "Blindfolding"
-                                                                                                ? blindfolding
-                                                                                                : e == "Bondage"
-                                                                                                    ? bondage
-                                                                                                    : e == "Butt Stuff"
-                                                                                                        ? buttstuff
-                                                                                                        : kinky,
-                                                        color: AppColors.white,
-                                                        width: 15,
-                                                        height: 15),
-                                                  ),
-                                                  label: Text(
-                                                    e.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: AppColors.white,
-                                                        fontFamily:
-                                                            "Poppins-Regular"),
-                                                  ),
-                                                  backgroundColor:
-                                                      AppColors.chipCircle,
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                ))
-                                            .toList()),
+                                        : selectedIndex != index
+                                            ? cravesHalf
+                                                .map((e) => Chip(
+                                                      labelPadding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      avatar: CircleAvatar(
+                                                        backgroundColor:
+                                                            AppColors.chipColor,
+                                                        child: Image.asset(
+                                                            e == "Casual Dating"
+                                                                ? casualdating
+                                                                : e == "No String Attached"
+                                                                    ? nostring1
+                                                                    : e == "In Person"
+                                                                        ? inperson
+                                                                        : e == "Sexting"
+                                                                            ? sexting2
+                                                                            : e == "Kinky"
+                                                                                ? kinky
+                                                                                : e == "Vanilla"
+                                                                                    ? vanilla
+                                                                                    : e == "Submissive"
+                                                                                        ? submissive
+                                                                                        : e == "Dominance"
+                                                                                            ? dominance
+                                                                                            : e == "Dress Up"
+                                                                                                ? dressup
+                                                                                                : e == "Blindfolding"
+                                                                                                    ? blindfolding
+                                                                                                    : e == "Bondage"
+                                                                                                        ? bondage
+                                                                                                        : e == "Butt Stuff"
+                                                                                                            ? buttstuff
+                                                                                                            : kinky,
+                                                            color: AppColors.white,
+                                                            width: 15,
+                                                            height: 15),
+                                                      ),
+                                                      label: Text(
+                                                        e.toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color:
+                                                                AppColors.white,
+                                                            fontFamily:
+                                                                "Poppins-Regular"),
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.chipCircle,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                    ))
+                                                .toList()
+                                            : craves
+                                                .map((e) => Chip(
+                                                      labelPadding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      avatar: CircleAvatar(
+                                                        backgroundColor:
+                                                            AppColors.chipColor,
+                                                        child: Image.asset(
+                                                            e == "Casual Dating"
+                                                                ? casualdating
+                                                                : e == "No String Attached"
+                                                                    ? nostring1
+                                                                    : e == "In Person"
+                                                                        ? inperson
+                                                                        : e == "Sexting"
+                                                                            ? sexting2
+                                                                            : e == "Kinky"
+                                                                                ? kinky
+                                                                                : e == "Vanilla"
+                                                                                    ? vanilla
+                                                                                    : e == "Submissive"
+                                                                                        ? submissive
+                                                                                        : e == "Dominance"
+                                                                                            ? dominance
+                                                                                            : e == "Dress Up"
+                                                                                                ? dressup
+                                                                                                : e == "Blindfolding"
+                                                                                                    ? blindfolding
+                                                                                                    : e == "Bondage"
+                                                                                                        ? bondage
+                                                                                                        : e == "Butt Stuff"
+                                                                                                            ? buttstuff
+                                                                                                            : kinky,
+                                                            color: AppColors.white,
+                                                            width: 15,
+                                                            height: 15),
+                                                      ),
+                                                      label: Text(
+                                                        e.toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color:
+                                                                AppColors.white,
+                                                            fontFamily:
+                                                                "Poppins-Regular"),
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.chipCircle,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                    ))
+                                                .toList()),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 10),
@@ -844,23 +1057,49 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  blockUser(name, image, id) async {
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("blocked_By")
+        .doc(user!.uid.toString())
+        .set({
+      'name': name.toString(),
+      'imageUrl': image.toString(),
+      'blockedId': user.uid.toString()
+    }).then((text) {
+      ToastUtils.showCustomToast(context, "User Blocked", Colors.green);
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
   reportUser(name, image, id, message) async {
     var rnd = math.Random();
     var next = rnd.nextDouble() * 1000000;
     while (next < 100000) {
       next *= 10;
     }
+    var idreport = next.toInt().toString();
     User? user = _auth.currentUser;
 
-    await firebaseFirestore
-        .collection("reports")
-        .doc(next.toInt().toString())
-        .set({
+    await firebaseFirestore.collection("reports").doc(idreport).set({
       'reportedName': name.toString(),
       'reportedImageUrl': image.toString(),
       'reportedId': id.toString(),
       'reportedBy': user!.uid.toString(),
       'message': message,
+      'report_id': idreport,
     }).then((text) {
       ToastUtils.showCustomToast(context, "User Reported", Colors.green);
       if (mounted) {
@@ -875,6 +1114,126 @@ class _DashboardState extends State<Dashboard> {
           feedLoad = false;
         });
       }
+    });
+  }
+
+  Future<bool> isItems(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("likes");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  isReport(String uid, String name, String imgUrl) async {
+    await firebaseFirestore
+        .collection('reports')
+        .limit(1)
+        .get()
+        .then((snapshot) {
+      if (snapshot.size == 0) {
+        print("0");
+        reportUser(name.toString(), imgUrl.toString(), uid.toString(),
+            reportController.text.toString());
+      } else {
+        //check if already reported
+        //getall data
+
+        getallreports(uid, name, imgUrl);
+      }
+    });
+  }
+
+  getallreports(String reportId, String name, String imgurl) async {
+    print("getallme hun bae");
+    String uid = _auth.currentUser!.uid;
+    //bool notfound = false;
+    if (mounted) {
+      setState(() {
+        feedLoad = false;
+      });
+    }
+    print("invalue");
+    await firebaseFirestore
+        .collection('reports')
+        .where("reportedId", isEqualTo: reportId)
+        .where("reportedBy", isEqualTo: uid)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        Navigator.pop(context);
+        ToastUtils.showCustomToast(context, "Already Reported", Colors.red);
+      } else if (value.docs.isEmpty) {
+        reportUser(name, imgurl, reportId, reportController.text.toString());
+      }
+    });
+
+    // QuerySnapshot querySnapshot =
+    //     await firebaseFirestore.collection("reports").get();
+    // for (int i = 0; i < querySnapshot.docs.length; i++) {
+    //   if (reportId == querySnapshot.docs[i]["reportedId"] &&
+    //       uid == querySnapshot.docs[i]["reportedBy"]) {
+    //     // Navigator.pop(context);
+    //     ToastUtils.showCustomToast(context, "Already Reported", Colors.red);
+    //   } else {
+    //     print("nae hoa  match bae");
+    //     reportUser(name, imgurl, reportId, reportController.text.toString());
+    //   }
+    // }
+  }
+
+  Future<bool> ismatched(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> isBlocked(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  getlikedIds(String id) async {
+    User? user = _auth.currentUser;
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("likes")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      print(value.data()!.length);
+      if (value.data()!.isNotEmpty) {
+        ToastUtils.showCustomToast(context, "Already Liked", Colors.green);
+      } else {
+        likeUser(name.toString(), photoUrl[0].toString(), id);
+      }
+    }).catchError((e) {
+      log(e.toString());
+    });
+  }
+
+  getBocksIds(String id) async {
+    User? user = _auth.currentUser;
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("blocked_By")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      print(value.data()!.length);
+      if (value.data()!.isNotEmpty) {
+        Navigator.pop(context);
+        ToastUtils.showCustomToast(
+            context, "Already Blocked", AppColors.redcolor);
+      } else {
+        blockUser(name.toString(), photoUrl[0].toString(), id);
+      }
+    }).catchError((e) {
+      log(e.toString());
     });
   }
 }
