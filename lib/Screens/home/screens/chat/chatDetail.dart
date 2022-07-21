@@ -1,11 +1,9 @@
 // ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api
 import 'package:crave/Screens/home/screens/chat/messagesWidgets/videoWidget.dart';
 import 'package:crave/Screens/home/screens/chat/widgets/bottom_field_widget.dart';
-import 'package:crave/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:page_transition/page_transition.dart';
 import '../../../../model/chat_room_model.dart';
 import '../../../../model/userModel.dart';
 import '../../../../utils/color_constant.dart';
@@ -13,7 +11,6 @@ import '../../../../utils/images.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../../../../model/message_model.dart';
-import 'call/call_page.dart';
 import 'messagesWidgets/display_text_gif.dart';
 
 class ChatDetailPage extends StatefulWidget{
