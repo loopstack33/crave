@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../model/messageModel.dart';
 
 class FavoriteContacts extends StatefulWidget {
   const FavoriteContacts({Key? key}) : super(key: key);
@@ -96,7 +95,9 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                     QueryDocumentSnapshot<Map<String, dynamic>>> docs = snapshot
                     .data!.docs;
 
+
                 return docs.isNotEmpty ?
+
                 ListView.builder(
                   shrinkWrap: true,
                   padding:const EdgeInsets.only(left: 10.0),

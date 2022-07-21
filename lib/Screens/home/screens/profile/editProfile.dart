@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,7 +7,6 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
-import 'package:crave/widgets/custom_toast.dart';
 import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -448,7 +446,7 @@ class _ProfileState extends State<EditProfile> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: text(
-                                context, "Selected  ${craveCounter}/3", 14.sp,
+                                context, "Selected  $craveCounter/3", 14.sp,
                                 color: AppColors.black,
                                 boldText: FontWeight.w400,
                                 fontFamily: "Poppins-Medium"),
@@ -515,7 +513,7 @@ class _ProfileState extends State<EditProfile> {
             ),
           ),
           backgroundColor:
-              company.status == false ? Color(0xffFAFAFA) : AppColors.redcolor,
+              company.status == false ? const Color(0xffFAFAFA) : AppColors.redcolor,
           label: text(context, company.name, 12.sp,
               color: company.status == false ? Colors.black : AppColors.white,
               boldText: FontWeight.w400,

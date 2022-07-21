@@ -1,5 +1,4 @@
 // ignore_for_file: file_names
-import 'dart:developer';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -549,12 +548,6 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-                                                            // if (mounted) {
-                                                            //   setState(() {
-                                                            //     selectedIndex = index;
-                                                            //     loading = true;
-                                                            //   });
-                                                            // }
 
                                                             try {
                                                               await FirebaseFirestore
@@ -578,30 +571,7 @@ class _DashboardState extends State<Dashboard> {
                                                                     docs[index][
                                                                             'uid']
                                                                         .toString());
-                                                                // log(value.docs[index]["likedId"].toString());
-                                                                // log(_auth.currentUser!.uid.toString());
-                                                                /*  if (value.docs[index]["likedId"] == _auth.currentUser!.uid.toString()) {
-                                                                  log("HEEEEEEE");
-                                                                  if (mounted) {
-                                                                    setState(
-                                                                            () {
-                                                                          loading =
-                                                                          false;
-                                                                        });
-                                                                  }
-                                                                  ToastUtils.showCustomToast(
-                                                                      context,
-                                                                      "Already liked this user",
-                                                                      AppColors
-                                                                          .redcolor);
-                                                                }
-                                                                else {
-                                                                  likeUser(docs[index]['name'].toString(),
-                                                                      docs[index]['imageUrl'][0].toString(),
-                                                                      docs[index]['uid'].toString());
-                                                                  log("HEEEEEERRRRRRRE");
 
-                                                                }*/
                                                               });
                                                             } catch (e) {
                                                               if (mounted) {

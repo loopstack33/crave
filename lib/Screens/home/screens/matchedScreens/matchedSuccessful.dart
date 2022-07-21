@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -113,15 +112,15 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: RotationTransition(
-                        turns: new AlwaysStoppedAnimation(-15 / 360),
+                        turns: const AlwaysStoppedAnimation(-15 / 360),
                         child: Container(
                           width: 150.w,
                           height: 190.h,
-                          padding: EdgeInsets.all(8), // Border width
+                          padding: const EdgeInsets.all(8), // Border width
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 5,
-                                  color: Color.fromARGB(255, 103, 102, 102)),
+                                  color: const Color.fromARGB(255, 103, 102, 102)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: ClipRRect(
@@ -168,7 +167,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                   top: 165,
                   left: 75,
                   child: RotationTransition(
-                    turns: new AlwaysStoppedAnimation(-15 / 360),
+                    turns: const AlwaysStoppedAnimation(-15 / 360),
                     child: text(context, widget.participantname, 20.sp,
                         color: Colors.white, fontFamily: "Poppins-Medium"),
                   ),
@@ -180,15 +179,15 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: RotationTransition(
-                        turns: new AlwaysStoppedAnimation(15 / 360),
+                        turns: const AlwaysStoppedAnimation(15 / 360),
                         child: Container(
                           width: 150.w,
                           height: 190.h,
-                          padding: EdgeInsets.all(8), // Border width
+                          padding: const EdgeInsets.all(8), // Border width
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 5,
-                                  color: Color.fromARGB(255, 103, 102, 102)),
+                                  color: const Color.fromARGB(255, 103, 102, 102)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: ClipRRect(
@@ -234,7 +233,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                   top: 200,
                   left: 185,
                   child: RotationTransition(
-                    turns: new AlwaysStoppedAnimation(15 / 360),
+                    turns: const AlwaysStoppedAnimation(15 / 360),
                     child: text(context, widget.matchedname, 20.sp,
                         color: Colors.white, fontFamily: "Poppins-Medium"),
                   ),

@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/profile/editProfile.dart';
-import 'package:crave/Screens/home/screens/profile/mycraves.dart';
-import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
@@ -13,7 +11,6 @@ import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:page_transition/page_transition.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);

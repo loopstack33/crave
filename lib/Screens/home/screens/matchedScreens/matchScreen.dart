@@ -6,7 +6,6 @@ import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/matchedScreens/matchedSuccessful.dart';
 import 'package:crave/model/userModel.dart';
-import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
@@ -15,7 +14,6 @@ import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../widgets/custom_toast.dart';
@@ -190,7 +188,7 @@ class _MatchScreenState extends State<MatchScreen> {
                         style: TextStyle(
                             fontFamily: 'Poppins-Medium',
                             fontSize: 14.sp,
-                            color: Color(0xff7A008F))),
+                            color: const Color(0xff7A008F))),
                   ),
                 ])
               ],

@@ -4,7 +4,6 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../Screens/home/screens/chat/chatDetail.dart';
 
 class ConversationList extends StatefulWidget{
   String name;

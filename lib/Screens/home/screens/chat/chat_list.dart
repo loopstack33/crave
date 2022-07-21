@@ -1,60 +1,35 @@
-// ignore_for_file: use_build_context_synchronously
-
+// ignore_for_file: use_build_context_synchronously, prefer_typing_uninitialized_variables
 import 'dart:developer';
-
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../../model/chat_room_model.dart';
-import '../../../../model/chat_users.dart';
 import '../../../../model/userModel.dart';
 import '../../../../services/fcm_services.dart';
 import '../../../../utils/color_constant.dart';
-import '../../../../widgets/conversationList.dart';
 import '../../../../widgets/custom_toast.dart';
 import 'chatDetail.dart';
 import 'chat_helper.dart';
-import 'chat_room.dart';
 import 'favoriteChat.dart';
 
 
 class UserChatList extends StatefulWidget {
-  UserChatList({Key? key}) : super(key: key);
+  const UserChatList({Key? key}) : super(key: key);
 
   @override
   State<UserChatList> createState() => _UserChatListState();
 }
 
 class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver {
-  TextEditingController searchController = TextEditingController();
-  
-  // List<MyUserModel> supportManList = [
-  //   MyUserModel(
-  //       uid: "",
-  //       username: "Select Counselor",
-  //       phone: "",
-  //       status: 'online',
-  //       bio: '',
-  //       facebook: '',
-  //       linkedIn: '',
-  //       dribble: '',
-  //       twitter: '',
-  //       deviceToken: ''),
-  // ];
-  
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-   // getPref();
     getData();
     super.initState();
   }
@@ -75,22 +50,16 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
   FirebaseAuth auth = FirebaseAuth.instance;
 
   getData() async {
-    //log("Getting Data________________");
     currentUser = await FirebaseHelper.getUserModelById(auth.currentUser!.uid);
- //   log('currentUser: $currentUser');
-
     FirebaseHelper.updateUserStatus(auth.currentUser!.uid, 'online');
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) return;
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.detached) return;
     final isBackground = state == AppLifecycleState.paused;
-
     if (isBackground) {
-      log('isBackground____________________________________________________: $isBackground');
       FirebaseHelper.updateUserStatus(auth.currentUser!.uid, 'offline');
     } else {
       FirebaseHelper.updateUserStatus(auth.currentUser!.uid, 'online');
@@ -109,16 +78,16 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where(
-      "participants.${userID}",
+      "participants.$userID",
       isEqualTo: "user",
     )
         .where(
-      "participants.${targetID}",
+      "participants.$targetID",
       isEqualTo: "admin",
     )
         .get();
 
-    if (snapshot.docs.length > 0) {
+    if (snapshot.docs.isNotEmpty) {
       log("ChatRoom Available");
 
       var docData = snapshot.docs[0].data();
@@ -130,7 +99,7 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
       chatRoom = existingChatRoom;
 
       ToastUtils.showCustomToast(
-          context, "Counsoler Already Assign ", Colors.red);
+          context, "Counselor Already Assign ", Colors.red);
     } else {
       log("ChatRoom Not Available");
 
@@ -164,10 +133,8 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    log(uid.toString());
 
     return Scaffold(
-
       body: SingleChildScrollView(
         physics:const BouncingScrollPhysics(),
         child: SafeArea(
@@ -331,31 +298,15 @@ class _UserChatListState extends State<UserChatList> with WidgetsBindingObserver
                                                         children: <Widget>[
                                                           Text(targetUser['name'].toString(), style: TextStyle(fontSize: 18.sp,fontFamily: 'Poppins-Medium',color: AppColors.black),),
                                                           (chatRoomModel.lastMessage.toString() != "") ? chatRoomModel.lastMessage.toString() == "Image File"
-                                                          ? Row(
-                                                            children: [
-                                                              Icon(FontAwesomeIcons.image,
-                                                                  size: 15.sp),
-                                                              SizedBox(
-                                                                width: 5.w,
-                                                              ),
-                                                               Text("Photo",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
-                                                            ],
-                                                          )
+                                                          ? Text("📷 Photo",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
                                                               : chatRoomModel.lastMessage
                                                               .toString() ==
-                                                              "audioFile"
-                                                              ? Row(
-                                                            children: [
-                                                              Icon(
-                                                                FontAwesomeIcons.microphone,
-                                                                size: 15.sp,
-                                                              ),
-                                                              SizedBox(
-                                                                width: 5.w,
-                                                              ),
-                                                               Text("Audio message",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
-                                                            ],
-                                                          )
+                                                              "Audio"
+                                                              ?   Text("🎵 Audio",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),):
+                                                          chatRoomModel.lastMessage
+                                                              .toString() ==
+                                                              "Video"
+                                                              ? Text("📸 Video",style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),)
                                                               : Text(chatRoomModel
                                                               .lastMessage
                                                               .toString(),style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),):

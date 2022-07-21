@@ -5,7 +5,7 @@ class FirebaseHelper {
   
   static Future getUserModelById(String uid) async {
     //log(' getUserModelById uid: $uid');
-    var data;
+    Object? data;
     DocumentSnapshot docSnap =
     await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
@@ -20,7 +20,7 @@ class FirebaseHelper {
   }
 
   static Future getFromAllDatabase(String uid) async {
-    var data;
+    Object? data;
     DocumentSnapshot docSnap = await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
     if (docSnap.data() != null) {

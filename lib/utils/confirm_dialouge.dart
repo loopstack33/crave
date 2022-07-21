@@ -2,7 +2,6 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 
 // ignore: must_be_immutable
 class ConfirmDialog extends StatefulWidget {

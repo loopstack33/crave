@@ -12,16 +12,16 @@ class ChatHandler {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where(
-      "participants.${userID}",
+      "participants.$userID",
       isEqualTo: "user",
     )
         .where(
-      "participants.${targetID}",
+      "participants.$targetID",
       isEqualTo: "admin",
     )
         .get();
 
-    if (snapshot.docs.length > 0) {
+    if (snapshot.docs.isNotEmpty) {
       print("ChatRoom Available");
 
       var docData = snapshot.docs[0].data();
