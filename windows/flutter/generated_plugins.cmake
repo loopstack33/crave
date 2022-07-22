@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   agora_rtc_engine
   audioplayers_windows
-  flutter_webrtc
   permission_handler_windows
   smart_auth
 )

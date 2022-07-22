@@ -8,7 +8,7 @@ class ChatRoomModel {
   String? idTo;
   int? count;
 
-  ChatRoomModel({this.chatroomid, this.participants, this.lastMessage});
+  ChatRoomModel({this.chatroomid, this.participants, this.lastMessage,this.read,this.timeStamp,this.count,this.idFrom,this.idTo});
 
   ChatRoomModel.fromMap(Map<dynamic, dynamic> map) {
     chatroomid = map["chatroomid"];

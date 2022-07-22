@@ -1,4 +1,5 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, use_build_context_synchronously
+import 'dart:developer';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,10 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:pay/pay.dart';
+import 'package:uuid/uuid.dart';
+import '../../../model/chat_room_model.dart';
+import '../../../services/fcm_services.dart';
 import '../../../widgets/custom_toast.dart';
 
 // This is the type used by the popup menu below.
@@ -32,7 +37,6 @@ class _DashboardState extends State<Dashboard> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   int selectedIndex = 0;
   List<dynamic> cravesHalf = [];
-
   bool viewMore = true;
   String viewMoreButton = "View More";
 
@@ -60,6 +64,69 @@ class _DashboardState extends State<Dashboard> {
   String _selectedMenu = '';
   TextEditingController reportController = TextEditingController();
   bool feedLoad = false;
+
+
+
+  static ChatRoomModel? chatRoom;
+
+  Future<ChatRoomModel?> assignChatRoom(BuildContext context, targetID, userID) async {
+    log('userID: $userID');
+    log('targetID: $targetID');
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("chatrooms")
+        .where(
+      "participants.$userID",
+      isEqualTo: userID,
+    )
+        .where(
+      "participants.$targetID",
+      isEqualTo: targetID,
+    )
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      log("ChatRoom Available");
+
+      var docData = snapshot.docs[0].data();
+
+      ChatRoomModel existingChatRoom =
+      ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+      log("Exiting chat Room : ${existingChatRoom.chatroomid}");
+      log("Exiting chat participants : ${existingChatRoom.participants}");
+      chatRoom = existingChatRoom;
+
+      ToastUtils.showCustomToast(context, "Chat room already assigned", Colors.red);
+    } else {
+      log("ChatRoom Not Available");
+
+      ChatRoomModel newChatRoom = ChatRoomModel(
+        chatroomid: const Uuid().v1(),
+        lastMessage: "",
+        read: false,
+        idFrom: "",
+        idTo: "",
+        count: 0,
+        timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
+        participants: {
+          targetID.toString(): targetID.toString(),
+          userID.toString(): userID.toString(),
+        },
+
+      );
+
+      await FirebaseFirestore.instance
+          .collection('chatrooms')
+          .doc(newChatRoom.chatroomid)
+          .set(newChatRoom.toMap());
+      chatRoom = newChatRoom;
+
+     // FCMServices.sendFCM("crave", targetID.toString(), "New Refer", "You add a new chat as a Counselor kindly proceed");
+      ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
+    }
+
+    return chatRoom;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,14 +182,16 @@ class _DashboardState extends State<Dashboard> {
                       itemBuilder: (context, index) {
                         List<dynamic> craves = List.from(docs[index]['craves']);
                         cravesHalf.clear();
-                        if (craves.length > 3) {
-                          for (int i = 0; i < 3; i++) {
+                        if (craves.length > 1) {
+                          for (int i = 0; i < craves.length / 2; i++) {
                             String temp;
                             temp = craves[i].toString();
                             cravesHalf.add(temp);
                           }
+                        } else {
+                          cravesHalf.add(craves[0].toString());
                         }
-                        //log(cravesHalf.toString());
+                        // math.log(cravesHalf.toString());
 
                         List<dynamic> imgList =
                             List.from(docs[index]['imageUrl']);
@@ -228,6 +297,146 @@ class _DashboardState extends State<Dashboard> {
                                                   if (_selectedMenu
                                                           .toString() ==
                                                       "BlockForever") {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                            insetPadding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.r)),
+                                                            elevation: 10,
+                                                            backgroundColor:
+                                                                AppColors.white,
+                                                            child:
+                                                                SingleChildScrollView(
+                                                              child:
+                                                                  StatefulBuilder(
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    StateSetter
+                                                                        setter) {
+                                                                  return Column(
+                                                                    children: [
+                                                                      Container(
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius: BorderRadius.only(
+                                                                              topLeft: Radius.circular(20.r),
+                                                                              topRight: Radius.circular(20.r)),
+                                                                          gradient:
+                                                                              LinearGradient(
+                                                                            begin:
+                                                                                Alignment.topCenter,
+                                                                            end:
+                                                                                Alignment.bottomCenter,
+                                                                            colors: [
+                                                                              AppColors.redcolor.withOpacity(0.35),
+                                                                              AppColors.redcolor
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        padding:
+                                                                            const EdgeInsets.all(8),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Block User",
+                                                                              style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Text(
+                                                                              "Are you sure you want to block this\nuser forever?",
+                                                                              style: TextStyle(fontSize: 16.sp, color: AppColors.black, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10.h,
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () async {
+                                                                          //check if exist //blocks
+                                                                          bool
+                                                                              exits =
+                                                                              await isBlocked(docs[index]['uid'].toString());
+                                                                          // log(exits
+                                                                          //     .toString());
+                                                                          if (exits) {
+                                                                            //check already blocked
+                                                                            //get all ids from blocked
+                                                                            getBocksIds(docs[index]['uid'].toString());
+                                                                          } else {
+                                                                            blockUser(
+                                                                                name.toString(),
+                                                                                photoUrl[0].toString(),
+                                                                                docs[index]['uid'].toString());
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              150.w,
+                                                                          height:
+                                                                              40.h,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              begin: Alignment.topCenter,
+                                                                              end: Alignment.bottomCenter,
+                                                                              colors: [
+                                                                                AppColors.redcolor.withOpacity(0.35),
+                                                                                AppColors.redcolor
+                                                                              ],
+                                                                            ),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(5.r),
+                                                                          ),
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            20.h,
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
                                                   } else if (_selectedMenu
                                                           .toString() ==
                                                       "Report") {
@@ -378,7 +587,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                       feedLoad = true;
                                                                                     });
                                                                                   }
-                                                                                  reportUser(docs[index]["name"].toString(), docs[index]["imageUrl"][0].toString(), docs[index]['uid'].toString(), reportController.text.toString());
+                                                                                  isReport(docs[index]['uid'].toString(), docs[index]["name"], docs[index]["imageUrl"][0].toString());
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -513,16 +722,143 @@ class _DashboardState extends State<Dashboard> {
                                                           .withOpacity(0.6),
                                                       child: InkWell(
                                                         onTap: () {
+                                                          const _paymentItems = [
+                                                            PaymentItem(
+                                                              label: 'Crave ChatPay',
+                                                              amount: '1.99',
+                                                              status: PaymentItemStatus.final_price,
+                                                            )
+                                                          ];
                                                           showDialog(
                                                               context: context,
                                                               builder:
                                                                   (BuildContext
                                                                       context) {
-                                                                return ConfirmDialog(
-                                                                    message:
-                                                                        "For chating you have to pay \$1.99",
-                                                                    press:
-                                                                        () {});
+                                                                return Dialog(
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                  ),
+                                                                  elevation: 0.0,
+                                                                  backgroundColor: Colors.transparent,
+                                                                  child: Container(
+                                                                    width: 515.w,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.white,
+                                                                      borderRadius: BorderRadius.circular(14.r),
+                                                                    ),
+                                                                    child: SingleChildScrollView(
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Container(
+                                                                            padding: const EdgeInsets.only(
+                                                                                left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                                                            width: 515.w,
+                                                                            decoration: BoxDecoration(
+                                                                              color: AppColors.redcolor,
+                                                                              borderRadius: BorderRadius.only(
+                                                                                  topLeft: Radius.circular(14.r),
+                                                                                  topRight: Radius.circular(14.r)),
+                                                                            ),
+                                                                            child: Align(
+                                                                              alignment: Alignment.center,
+                                                                              child: Text(
+                                                                                "Action Required",
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight.w600,
+                                                                                    color: Colors.white,
+                                                                                    fontFamily: 'Poppins-Medium',
+                                                                                    fontSize: 22.sp),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(height: 10.h),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Container(
+                                                                                  width: 50.w,
+                                                                                  height: 50.h,
+                                                                                  decoration: const BoxDecoration(
+                                                                                    shape: BoxShape.circle,
+                                                                                    color: AppColors.redcolor,
+                                                                                  ),
+                                                                                  child: Image.asset(icon)),
+                                                                              SizedBox(
+                                                                                width: 20.w,
+                                                                              ),
+                                                                              Text(
+                                                                                "Confirm",
+                                                                                style: TextStyle(
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.black,
+                                                                                    fontFamily: 'Poppins-Medium',
+                                                                                    fontSize: 20.sp),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(height: 10.h),
+                                                                          Text(
+                                                                            "For chatting without liking pay 1.99 \$.",
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight.w300,
+                                                                                color: Colors.black,
+                                                                                fontFamily: 'Poppins-Regular',
+                                                                                fontSize: 18.sp),
+                                                                            textAlign: TextAlign.center,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 10.h,
+                                                                          ),
+                                                                          ElevatedButton(onPressed: (){
+                                                                            assignChatRoom(
+                                                                              context,
+                                                                              docs[index]["uid"],
+                                                                              _auth.currentUser!.uid,
+                                                                            );
+
+                                                                          }, child: Text("CHAT")),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
+                                                                              ApplePayButton(
+                                                                                width: 200,
+                                                                                height: 50,
+                                                                                paymentConfigurationAsset: 'files/applepay.json',
+                                                                                paymentItems: _paymentItems,
+                                                                                style: ApplePayButtonStyle.black,
+                                                                                type: ApplePayButtonType.buy,
+                                                                                margin: const EdgeInsets.only(top: 15.0),
+                                                                                onPaymentResult: (data){
+                                                                                  print(data);
+                                                                                },
+                                                                                loadingIndicator: const Center(
+                                                                                  child: CircularProgressIndicator(),
+                                                                                ),
+                                                                              ),
+
+                                                                              GooglePayButton(
+                                                                                width: 200,
+                                                                                height: 50,
+                                                                                paymentConfigurationAsset: 'files/gpay.json',
+                                                                                paymentItems: _paymentItems,
+                                                                                style: GooglePayButtonStyle.black,
+                                                                                type: GooglePayButtonType.pay,
+                                                                                margin: const EdgeInsets.only(top: 15.0),
+                                                                                onPaymentResult:  (data){
+                                                                                  print(data);
+                                                                                },
+                                                                                loadingIndicator: const Center(
+                                                                                  child: CircularProgressIndicator(),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(height: 20.h)
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
                                                               });
                                                         },
                                                         child: Image.asset(
@@ -548,7 +884,6 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-
                                                             try {
                                                               await FirebaseFirestore
                                                                   .instance
@@ -571,7 +906,6 @@ class _DashboardState extends State<Dashboard> {
                                                                     docs[index][
                                                                             'uid']
                                                                         .toString());
-
                                                               });
                                                             } catch (e) {
                                                               if (mounted) {
@@ -628,14 +962,29 @@ class _DashboardState extends State<Dashboard> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
                                   Image.asset(
-                                    femaleGirl,
+                                    docs[index]["gender"] == "Man"
+                                        ? male
+                                        : docs[index]["gender"] == "Woman"
+                                            ? female
+                                            : other,
+                                    color: Colors.white,
                                     width: 20,
                                     height: 20,
                                   ),
-                                  SizedBox(width: 10.w),
+                                  SizedBox(width: 5.w),
                                   Image.asset(
-                                    gene1,
+                                    docs[index]["genes"] == "Hetero"
+                                        ? hetero
+                                        : docs[index]["genes"] == "Lesbian"
+                                            ? lesbian
+                                            : docs[index]["genes"] == "Gay"
+                                                ? gay
+                                                : bisexual,
+                                    color: Colors.white,
                                     width: 20,
                                     height: 20,
                                   ),
@@ -704,57 +1053,115 @@ class _DashboardState extends State<Dashboard> {
                                                       const EdgeInsets.all(8.0),
                                                 ))
                                             .toList()
-                                        : craves
-                                            .map((e) => Chip(
-                                                  labelPadding:
-                                                      const EdgeInsets.all(2.0),
-                                                  avatar: CircleAvatar(
-                                                    backgroundColor:
-                                                        AppColors.chipColor,
-                                                    child: Image.asset(
-                                                        e == "Casual Dating"
-                                                            ? casualdating
-                                                            : e == "No String Attached"
-                                                                ? nostring1
-                                                                : e == "In Person"
-                                                                    ? inperson
-                                                                    : e == "Sexting"
-                                                                        ? sexting2
-                                                                        : e == "Kinky"
-                                                                            ? kinky
-                                                                            : e == "Vanilla"
-                                                                                ? vanilla
-                                                                                : e == "Submissive"
-                                                                                    ? submissive
-                                                                                    : e == "Dominance"
-                                                                                        ? dominance
-                                                                                        : e == "Dress Up"
-                                                                                            ? dressup
-                                                                                            : e == "Blindfolding"
-                                                                                                ? blindfolding
-                                                                                                : e == "Bondage"
-                                                                                                    ? bondage
-                                                                                                    : e == "Butt Stuff"
-                                                                                                        ? buttstuff
-                                                                                                        : kinky,
-                                                        color: AppColors.white,
-                                                        width: 15,
-                                                        height: 15),
-                                                  ),
-                                                  label: Text(
-                                                    e.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: AppColors.white,
-                                                        fontFamily:
-                                                            "Poppins-Regular"),
-                                                  ),
-                                                  backgroundColor:
-                                                      AppColors.chipCircle,
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                ))
-                                            .toList()),
+                                        : selectedIndex != index
+                                            ? cravesHalf
+                                                .map((e) => Chip(
+                                                      labelPadding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      avatar: CircleAvatar(
+                                                        backgroundColor:
+                                                            AppColors.chipColor,
+                                                        child: Image.asset(
+                                                            e == "Casual Dating"
+                                                                ? casualdating
+                                                                : e == "No String Attached"
+                                                                    ? nostring1
+                                                                    : e == "In Person"
+                                                                        ? inperson
+                                                                        : e == "Sexting"
+                                                                            ? sexting2
+                                                                            : e == "Kinky"
+                                                                                ? kinky
+                                                                                : e == "Vanilla"
+                                                                                    ? vanilla
+                                                                                    : e == "Submissive"
+                                                                                        ? submissive
+                                                                                        : e == "Dominance"
+                                                                                            ? dominance
+                                                                                            : e == "Dress Up"
+                                                                                                ? dressup
+                                                                                                : e == "Blindfolding"
+                                                                                                    ? blindfolding
+                                                                                                    : e == "Bondage"
+                                                                                                        ? bondage
+                                                                                                        : e == "Butt Stuff"
+                                                                                                            ? buttstuff
+                                                                                                            : kinky,
+                                                            color: AppColors.white,
+                                                            width: 15,
+                                                            height: 15),
+                                                      ),
+                                                      label: Text(
+                                                        e.toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color:
+                                                                AppColors.white,
+                                                            fontFamily:
+                                                                "Poppins-Regular"),
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.chipCircle,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                    ))
+                                                .toList()
+                                            : craves
+                                                .map((e) => Chip(
+                                                      labelPadding:
+                                                          const EdgeInsets.all(
+                                                              2.0),
+                                                      avatar: CircleAvatar(
+                                                        backgroundColor:
+                                                            AppColors.chipColor,
+                                                        child: Image.asset(
+                                                            e == "Casual Dating"
+                                                                ? casualdating
+                                                                : e == "No String Attached"
+                                                                    ? nostring1
+                                                                    : e == "In Person"
+                                                                        ? inperson
+                                                                        : e == "Sexting"
+                                                                            ? sexting2
+                                                                            : e == "Kinky"
+                                                                                ? kinky
+                                                                                : e == "Vanilla"
+                                                                                    ? vanilla
+                                                                                    : e == "Submissive"
+                                                                                        ? submissive
+                                                                                        : e == "Dominance"
+                                                                                            ? dominance
+                                                                                            : e == "Dress Up"
+                                                                                                ? dressup
+                                                                                                : e == "Blindfolding"
+                                                                                                    ? blindfolding
+                                                                                                    : e == "Bondage"
+                                                                                                        ? bondage
+                                                                                                        : e == "Butt Stuff"
+                                                                                                            ? buttstuff
+                                                                                                            : kinky,
+                                                            color: AppColors.white,
+                                                            width: 15,
+                                                            height: 15),
+                                                      ),
+                                                      label: Text(
+                                                        e.toString(),
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            color:
+                                                                AppColors.white,
+                                                            fontFamily:
+                                                                "Poppins-Regular"),
+                                                      ),
+                                                      backgroundColor:
+                                                          AppColors.chipCircle,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                    ))
+                                                .toList()),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(right: 10),
@@ -844,23 +1251,49 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  blockUser(name, image, id) async {
+    User? user = _auth.currentUser;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("blocked_By")
+        .doc(user!.uid.toString())
+        .set({
+      'name': name.toString(),
+      'imageUrl': image.toString(),
+      'blockedId': user.uid.toString()
+    }).then((text) {
+      ToastUtils.showCustomToast(context, "User Blocked", Colors.green);
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
   reportUser(name, image, id, message) async {
     var rnd = math.Random();
     var next = rnd.nextDouble() * 1000000;
     while (next < 100000) {
       next *= 10;
     }
+    var idreport = next.toInt().toString();
     User? user = _auth.currentUser;
 
-    await firebaseFirestore
-        .collection("reports")
-        .doc(next.toInt().toString())
-        .set({
+    await firebaseFirestore.collection("reports").doc(idreport).set({
       'reportedName': name.toString(),
       'reportedImageUrl': image.toString(),
       'reportedId': id.toString(),
       'reportedBy': user!.uid.toString(),
       'message': message,
+      'report_id': idreport,
     }).then((text) {
       ToastUtils.showCustomToast(context, "User Reported", Colors.green);
       if (mounted) {
@@ -875,6 +1308,126 @@ class _DashboardState extends State<Dashboard> {
           feedLoad = false;
         });
       }
+    });
+  }
+
+  Future<bool> isItems(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("likes");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  isReport(String uid, String name, String imgUrl) async {
+    await firebaseFirestore
+        .collection('reports')
+        .limit(1)
+        .get()
+        .then((snapshot) {
+      if (snapshot.size == 0) {
+        print("0");
+        reportUser(name.toString(), imgUrl.toString(), uid.toString(),
+            reportController.text.toString());
+      } else {
+        //check if already reported
+        //getall data
+
+        getallreports(uid, name, imgUrl);
+      }
+    });
+  }
+
+  getallreports(String reportId, String name, String imgurl) async {
+    print("getallme hun bae");
+    String uid = _auth.currentUser!.uid;
+    //bool notfound = false;
+    if (mounted) {
+      setState(() {
+        feedLoad = false;
+      });
+    }
+    print("invalue");
+    await firebaseFirestore
+        .collection('reports')
+        .where("reportedId", isEqualTo: reportId)
+        .where("reportedBy", isEqualTo: uid)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        Navigator.pop(context);
+        ToastUtils.showCustomToast(context, "Already Reported", Colors.red);
+      } else if (value.docs.isEmpty) {
+        reportUser(name, imgurl, reportId, reportController.text.toString());
+      }
+    });
+
+    // QuerySnapshot querySnapshot =
+    //     await firebaseFirestore.collection("reports").get();
+    // for (int i = 0; i < querySnapshot.docs.length; i++) {
+    //   if (reportId == querySnapshot.docs[i]["reportedId"] &&
+    //       uid == querySnapshot.docs[i]["reportedBy"]) {
+    //     // Navigator.pop(context);
+    //     ToastUtils.showCustomToast(context, "Already Reported", Colors.red);
+    //   } else {
+    //     print("nae hoa  match bae");
+    //     reportUser(name, imgurl, reportId, reportController.text.toString());
+    //   }
+    // }
+  }
+
+  Future<bool> ismatched(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> isBlocked(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  getlikedIds(String id) async {
+    User? user = _auth.currentUser;
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("likes")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      print(value.data()!.length);
+      if (value.data()!.isNotEmpty) {
+        ToastUtils.showCustomToast(context, "Already Liked", Colors.green);
+      } else {
+        likeUser(name.toString(), photoUrl[0].toString(), id);
+      }
+    }).catchError((e) {
+      log(e.toString());
+    });
+  }
+
+  getBocksIds(String id) async {
+    User? user = _auth.currentUser;
+    await firebaseFirestore
+        .collection("users")
+        .doc(id)
+        .collection("blocked_By")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      print(value.data()!.length);
+      if (value.data()!.isNotEmpty) {
+        Navigator.pop(context);
+        ToastUtils.showCustomToast(
+            context, "Already Blocked", AppColors.redcolor);
+      } else {
+        blockUser(name.toString(), photoUrl[0].toString(), id);
+      }
+    }).catchError((e) {
+      log(e.toString());
     });
   }
 }

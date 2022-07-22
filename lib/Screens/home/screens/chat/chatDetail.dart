@@ -1,9 +1,13 @@
-// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api
+// ignore_for_file: file_names, must_be_immutable, library_private_types_in_public_api, use_build_context_synchronously
 import 'package:crave/Screens/home/screens/chat/messagesWidgets/videoWidget.dart';
 import 'package:crave/Screens/home/screens/chat/widgets/bottom_field_widget.dart';
+import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uuid/uuid.dart';
+import '../../../../model/call.dart';
 import '../../../../model/chat_room_model.dart';
 import '../../../../model/userModel.dart';
 import '../../../../utils/color_constant.dart';
@@ -11,6 +15,7 @@ import '../../../../utils/images.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../../../../model/message_model.dart';
+import 'call/screen/call_screen.dart';
 import 'messagesWidgets/display_text_gif.dart';
 
 class ChatDetailPage extends StatefulWidget{
@@ -29,7 +34,8 @@ class ChatDetailPage extends StatefulWidget{
 
 class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObserver{
   final ScrollController controller = ScrollController();
-
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -136,6 +142,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                   //Image.asset(video,width: 30.w,height: 30.h,),
                   GestureDetector(
                       onTap: (){
+                        makeCall(context, widget.targetUser.userName.toString(), widget.targetUser.userId.toString(), widget.targetUser.imgUrl[0].toString(), false);
                        // AppRoutes.push(context, PageTransitionType.fade,CallPage());
                       },
                       child: Icon(FontAwesomeIcons.phone,color: AppColors.redcolor,size: 25.sp,)),
@@ -412,5 +419,53 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
         ],
       ),
     );
+  }
+
+  void makeCall(BuildContext context, String receiverName, String receiverUid, String receiverProfilePic, bool isGroupChat) async{
+    String callId = const Uuid().v1();
+    Call senderCallData = Call(
+      callerId: auth.currentUser!.uid,
+      callerName: widget.userModel.userName,
+      callerPic:widget.userModel.imgUrl[0].toString(),
+      receiverId: receiverUid,
+      receiverName: receiverName,
+      receiverPic: receiverProfilePic,
+      callId: callId,
+      hasDialled: true,
+    );
+
+    Call recieverCallData = Call(
+      callerId: auth.currentUser!.uid,
+      callerName: widget.userModel.userName,
+      callerPic:widget.userModel.imgUrl[0].toString(),
+      receiverId: receiverUid,
+      receiverName: receiverName,
+      receiverPic: receiverProfilePic,
+      callId: callId,
+      hasDialled: false,
+    );
+    try {
+      await firebaseFirestore
+          .collection('call')
+          .doc(senderCallData.callerId)
+          .set(senderCallData.toMap());
+      await firebaseFirestore
+          .collection('call')
+          .doc(senderCallData.receiverId)
+          .set(recieverCallData.toMap());
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallScreen(
+            channelId: senderCallData.callId,
+            call: senderCallData,
+            isGroupChat: false,
+          ),
+        ),
+      );
+    } catch (e) {
+      ToastUtils.showCustomToast(context,e.toString(),AppColors.redcolor);
+    }
   }
 }

@@ -14,6 +14,7 @@ import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pay/pay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../widgets/custom_toast.dart';
@@ -29,6 +30,8 @@ class _MatchScreenState extends State<MatchScreen> {
   String matchedImageUrl = "";
   bool loading = false;
   bool matched = false;
+  String searching = "Searching...";
+  String finding = "We’re finding a great match for you!";
   int counter = 0;
   List<dynamic> allUserCraves = [];
   List<UsersModel> allUsersData = [];
@@ -68,16 +71,19 @@ class _MatchScreenState extends State<MatchScreen> {
           .get()
           .then((value) {
         if (mounted) {
+          log(counter.toString());
           setState(() {
             counter = value.data()!["counter"];
 
             isLoad = false;
           });
-        }
+        } else {}
       }).catchError((e) {
         log(e.toString());
+        setState(() {
+          isLoad = false;
+        });
       });
-     
     } else {
       createcounterDb();
     }
@@ -197,7 +203,7 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
                 SizedBox(height: 10.h),
                 //  const Spacer(flex: 1),
-                text(context, "Searching...", 19.sp,
+                text(context, searching, 19.sp,
                     color: Colors.white,
                     boldText: FontWeight.w200,
                     fontFamily: "Poppins-Regular"),
@@ -259,13 +265,135 @@ class _MatchScreenState extends State<MatchScreen> {
                   onTap: () {
                     if (counter > 1) {
                       //dialogbox
+                      const _paymentItems = [
+                        PaymentItem(
+                          label: 'Crave MatchPay',
+                          amount: '1.99',
+                          status: PaymentItemStatus.final_price,
+                        )
+                      ];
                       showDialog(
                           context: context,
-                          builder: (BuildContext context) {
-                            return ConfirmDialog(
-                                message:
-                                    "For furthur matching you have to pay \$1.99",
-                                press: () {});
+                          builder:
+                              (BuildContext
+                          context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 0.0,
+                              backgroundColor: Colors.transparent,
+                              child: Container(
+                                width: 515.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14.r),
+                                ),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                        width: 515.w,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.redcolor,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(14.r),
+                                              topRight: Radius.circular(14.r)),
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Action Required",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                                fontFamily: 'Poppins-Medium',
+                                                fontSize: 22.sp),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                              width: 50.w,
+                                              height: 50.h,
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: AppColors.redcolor,
+                                              ),
+                                              child: Image.asset(icon)),
+                                          SizedBox(
+                                            width: 20.w,
+                                          ),
+                                          Text(
+                                            "Confirm",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontFamily: 'Poppins-Medium',
+                                                fontSize: 20.sp),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      Text(
+                                        "For further matching pay 1.99 \$.",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.black,
+                                            fontFamily: 'Poppins-Regular',
+                                            fontSize: 18.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          ApplePayButton(
+                                            width: 200,
+                                            height: 50,
+                                            paymentConfigurationAsset: 'files/applepay.json',
+                                            paymentItems: _paymentItems,
+                                            style: ApplePayButtonStyle.black,
+                                            type: ApplePayButtonType.buy,
+                                            margin: const EdgeInsets.only(top: 15.0),
+                                            onPaymentResult: (data){
+                                              print(data);
+                                            },
+                                            loadingIndicator: const Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          ),
+
+                                          GooglePayButton(
+                                            width: 200,
+                                            height: 50,
+                                            paymentConfigurationAsset: 'files/gpay.json',
+                                            paymentItems: _paymentItems,
+                                            style: GooglePayButtonStyle.black,
+                                            type: GooglePayButtonType.pay,
+                                            margin: const EdgeInsets.only(top: 15.0),
+                                            onPaymentResult:  (data){
+                                              print(data);
+                                            },
+                                            loadingIndicator: const Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20.h)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
                           });
                     } else {
                       // log(currentUsersData[0].genes.toString());
@@ -362,7 +490,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Text("We’re finding a great match for you!",
+                      child: Text(finding,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20.sp,
@@ -390,27 +518,35 @@ class _MatchScreenState extends State<MatchScreen> {
         matchedGenes.add(allUsersData[i]);
       }
     }
-    log(matchedGenes[0].genes.toString());
-    log(allUsersData[0].userName.toString());
+    // log(matchedGenes[0].genes.toString());
+    // log(allUsersData[0].userName.toString());
 
     matchedCraves1();
   }
 
   matchedCraves1() {
     int temp = 0;
+
     for (int i = 0; i < allUsersData.length; i++) {
       var expectedList = currentUsersData[0]
           .craves
           .toSet()
           .intersection(allUsersData[i].craves.toSet())
           .toList();
-
-      //  log(expectedList.length.toString());
-
-      if (temp < expectedList.length) {
-        CompleteUserData.add(allUsersData[i]);
-        temp = expectedList.length;
-        //   log(allUsersData[i].userId.toString());
+      if (expectedList.isEmpty) {
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
+        ToastUtils.showCustomToast(
+            context, "No Match Found", AppColors.redcolor);
+      } else {
+        if (temp < expectedList.length) {
+          CompleteUserData.add(allUsersData[i]);
+          temp = expectedList.length;
+          //   log(allUsersData[i].userId.toString());
+        }
       }
     }
     // log(matchedGenes[0].genes.toString());
@@ -459,8 +595,11 @@ class _MatchScreenState extends State<MatchScreen> {
       matchedImageUrl = CompleteUserData[0].imgUrl[0];
       matched = true;
       loading = false;
+      searching = "Matched Successful";
+      finding = "Matched for You";
     });
     ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
+
     increment();
     Timer(const Duration(seconds: 2), () async {
       final refresh = await Navigator.push(
@@ -482,6 +621,9 @@ class _MatchScreenState extends State<MatchScreen> {
           currentuser();
           getAllUserData();
           checkforCounter();
+          searching = "Searching...";
+          finding = "We’re finding a great match for you!";
+          matchedImageUrl = "";
         }
       });
     });

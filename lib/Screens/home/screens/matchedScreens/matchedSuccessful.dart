@@ -1,7 +1,10 @@
 // ignore_for_file: file_names
 
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
@@ -9,7 +12,13 @@ import 'package:crave/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../../../model/chat_room_model.dart';
+import '../../../../widgets/custom_toast.dart';
+import '../chat/chat_list.dart';
 
 class MatchedSuccessed extends StatefulWidget {
   String imagurl,
@@ -39,11 +48,76 @@ class _MatchScreenState extends State<MatchedSuccessed> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   DateTime now = DateTime.now();
   String? uid;
+  String matchedname = "";
+  String participantname = "";
   @override
   void initState() {
     super.initState();
+
     uid = _auth.currentUser!.uid;
     addCountertodb();
+  }
+
+
+  static ChatRoomModel? chatRoom;
+
+  Future<ChatRoomModel?> assignChatRoom(BuildContext context, targetID, userID) async {
+    log('userID: $userID');
+    log('targetID: $targetID');
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("chatrooms")
+        .where(
+      "participants.$userID",
+      isEqualTo: userID,
+    )
+        .where(
+      "participants.$targetID",
+      isEqualTo: targetID,
+    )
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      log("ChatRoom Available");
+
+      var docData = snapshot.docs[0].data();
+
+      ChatRoomModel existingChatRoom =
+      ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+      log("Exiting chat Room : ${existingChatRoom.chatroomid}");
+      log("Exiting chat participants : ${existingChatRoom.participants}");
+      chatRoom = existingChatRoom;
+
+      ToastUtils.showCustomToast(context, "Chat room already assigned", Colors.red);
+      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+    } else {
+      log("ChatRoom Not Available");
+
+      ChatRoomModel newChatRoom = ChatRoomModel(
+        chatroomid: const Uuid().v1(),
+        lastMessage: "",
+        read: false,
+        idFrom: "",
+        idTo: "",
+        count: 0,
+        timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
+        participants: {
+          targetID.toString(): targetID.toString(),
+          userID.toString(): userID.toString(),
+        },
+
+      );
+
+      await FirebaseFirestore.instance
+          .collection('chatrooms')
+          .doc(newChatRoom.chatroomid)
+          .set(newChatRoom.toMap());
+      chatRoom = newChatRoom;
+      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+      // FCMServices.sendFCM("crave", targetID.toString(), "New Refer", "You add a new chat as a Counselor kindly proceed");
+      ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
+    }
+
+    return chatRoom;
   }
 
   addCountertodb() async {
@@ -55,7 +129,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         .doc(uid)
         .collection("matching_Attempt")
         .doc(date.toString())
-        .update({"counter": widget.counter})
+        .set({"counter": widget.counter, "date": date.toString()})
         .then((text) {})
         .catchError((e) {});
   }
@@ -241,7 +315,13 @@ class _MatchScreenState extends State<MatchedSuccessed> {
               ],
             ),
             const Spacer(flex: 1),
-            DefaultButton(text: "START CHAT", press: () {}),
+            DefaultButton(text: "START CHAT", press: () {
+              assignChatRoom(
+                context,
+                widget.matchedid.toString(),
+                _auth.currentUser!.uid,
+              );
+            }),
             SizedBox(
               height: 20.h,
             ),
