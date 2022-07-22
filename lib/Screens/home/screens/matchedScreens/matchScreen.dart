@@ -395,8 +395,7 @@ class _MatchScreenState extends State<MatchScreen> {
         matchedGenes.add(allUsersData[i]);
       }
     }
-    log(matchedGenes[0].genes.toString());
-    log(allUsersData[0].userName.toString());
+ 
 
     matchedCraves1();
   }

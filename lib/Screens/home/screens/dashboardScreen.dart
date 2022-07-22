@@ -4,11 +4,13 @@ import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/settings.dart';
+import 'package:crave/model/userModel.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/confirm_dialouge.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
@@ -28,6 +30,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  bool isLoad = true;
   bool loading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -35,11 +38,14 @@ class _DashboardState extends State<Dashboard> {
   List<dynamic> cravesHalf = [];
   bool viewMore = true;
   String viewMoreButton = "View More";
+  UsersModel? allUsers;
+  List<UsersModel> allUserexceptblocked = [];
 
   @override
   void initState() {
     super.initState();
     getData();
+    getDataalluserexcepcurrent();
   }
 
   String id = '';
@@ -57,6 +63,29 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  getDataalluserexcepcurrent() async {
+    allUserexceptblocked.clear();
+    await firebaseFirestore
+        .collection('users')
+        .where('uid', isNotEqualTo: _auth.currentUser!.uid)
+        .get()
+        .then((value) async {
+      for (int i = 0; i < value.docs.length; i++) {
+        bool checkblock = await testing(value.docs[i]["uid"]);
+        if (checkblock == false) {
+          allUsers = UsersModel.fromDocument(value.docs[i]);
+          allUserexceptblocked.add(allUsers!);
+        }
+      }
+    });
+    if (mounted) {
+      setState(() {
+        isLoad = false;
+      });
+    }
+    log(allUserexceptblocked.length.toString());
+  }
+
   String _selectedMenu = '';
   TextEditingController reportController = TextEditingController();
   bool feedLoad = false;
@@ -64,58 +93,52 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
         backgroundColor: AppColors.white,
-        automaticallyImplyLeading: false,
-        elevation: 1,
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: InkWell(
-              onTap: () {
-                AppRoutes.push(context, PageTransitionType.leftToRight,
-                    const SettingsScreen());
-              },
-              child: Image.asset(menu)),
-        ),
-        title: Image.asset(
-          hLogo,
-          width: 105.w,
-          height: 18.h,
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              bell,
-              width: 20.w,
-              height: 20.h,
-            ),
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+          automaticallyImplyLeading: false,
+          elevation: 1,
+          centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: InkWell(
+                onTap: () {
+                  AppRoutes.push(context, PageTransitionType.leftToRight,
+                      const SettingsScreen());
+                },
+                child: Image.asset(menu)),
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance
-              .collection("users")
-              .where('uid', isNotEqualTo: _auth.currentUser!.uid)
-              .snapshots(),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.data == null) {
-              return const Center(
-                  child: CircularProgressIndicator(color: AppColors.redcolor));
-            } else {
-              final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs =
-                  snapshot.data!.docs;
-              return docs.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: docs.length,
+          title: Image.asset(
+            hLogo,
+            width: 105.w,
+            height: 18.h,
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Image.asset(
+                bell,
+                width: 20.w,
+                height: 20.h,
+              ),
+            ),
+          ],
+        ),
+        body: ProgressHUD(
+          inAsyncCall: isLoad,
+          opacity: 0.1,
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: allUserexceptblocked.isEmpty
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.amber))
+                  : ListView.builder(
+                      itemCount: allUserexceptblocked.length,
                       itemBuilder: (context, index) {
-                        List<dynamic> craves = List.from(docs[index]['craves']);
+                        List<dynamic> craves =
+                            List.from(allUserexceptblocked[index].craves);
                         cravesHalf.clear();
-                        if (craves.length > 1) {
+                        if (craves.length > 3) {
                           for (int i = 0; i < craves.length / 2; i++) {
                             String temp;
                             temp = craves[i].toString();
@@ -124,10 +147,9 @@ class _DashboardState extends State<Dashboard> {
                         } else {
                           cravesHalf.add(craves[0].toString());
                         }
-                        // math.log(cravesHalf.toString());
 
                         List<dynamic> imgList =
-                            List.from(docs[index]['imageUrl']);
+                            List.from(allUserexceptblocked[index].imgUrl);
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -312,22 +334,10 @@ class _DashboardState extends State<Dashboard> {
                                                                       GestureDetector(
                                                                         onTap:
                                                                             () async {
-                                                                          //check if exist //blocks
-                                                                          bool
-                                                                              exits =
-                                                                              await isBlocked(docs[index]['uid'].toString());
-                                                                          // log(exits
-                                                                          //     .toString());
-                                                                          if (exits) {
-                                                                            //check already blocked
-                                                                            //get all ids from blocked
-                                                                            getBocksIds(docs[index]['uid'].toString());
-                                                                          } else {
-                                                                            blockUser(
-                                                                                name.toString(),
-                                                                                photoUrl[0].toString(),
-                                                                                docs[index]['uid'].toString());
-                                                                          }
+                                                                          blockUser(
+                                                                              name.toString(),
+                                                                              photoUrl[0].toString(),
+                                                                              allUserexceptblocked[index].userId.toString());
                                                                         },
                                                                         child:
                                                                             Container(
@@ -520,7 +530,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                       feedLoad = true;
                                                                                     });
                                                                                   }
-                                                                                  isReport(docs[index]['uid'].toString(), docs[index]["name"], docs[index]["imageUrl"][0].toString());
+                                                                                  isReport(allUserexceptblocked[index].userId.toString(), allUserexceptblocked[index].userName, allUserexceptblocked[index].imgUrl[0].toString());
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -616,24 +626,10 @@ class _DashboardState extends State<Dashboard> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    location,
-                                                    width: 15.w,
-                                                    height: 15.h,
-                                                  ),
-                                                  SizedBox(width: 5.w),
-                                                  text(
-                                                      context,
-                                                      docs[index]["country"],
-                                                      15.sp,
-                                                      color: AppColors.white,
-                                                      fontFamily:
-                                                          'Poppins-Regular'),
-                                                ],
-                                              ),
-                                              text(context, docs[index]['name'],
+                                              text(
+                                                  context,
+                                                  allUserexceptblocked[index]
+                                                      .userName,
                                                   22.sp,
                                                   color: AppColors.white,
                                                   fontFamily: 'Poppins-Medium'),
@@ -690,38 +686,28 @@ class _DashboardState extends State<Dashboard> {
                                                           padding:
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
-                                                            try {
-                                                              await FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'users')
-                                                                  .doc(docs[index]
-                                                                          [
-                                                                          'uid']
-                                                                      .toString())
-                                                                  .collection(
-                                                                      "likes")
-                                                                  .get()
-                                                                  .then(
-                                                                      (value) {
-                                                                likeUser(
-                                                                    name
-                                                                        .toString(),
-                                                                    photoUrl[0]
-                                                                        .toString(),
-                                                                    docs[index][
-                                                                            'uid']
-                                                                        .toString());
-                                                              });
-                                                            } catch (e) {
-                                                              if (mounted) {
-                                                                setState(() {
-                                                                  loading =
-                                                                      false;
-                                                                });
-                                                              }
-                                                              debugPrint(
-                                                                  e.toString());
+                                                            bool exits = await isItems(
+                                                                allUserexceptblocked[
+                                                                        index]
+                                                                    .userId
+                                                                    .toString());
+
+                                                            if (exits) {
+                                                              getlikedIds(
+                                                                  allUserexceptblocked[
+                                                                          index]
+                                                                      .userId
+                                                                      .toString());
+                                                            } else {
+                                                              likeUser(
+                                                                  name
+                                                                      .toString(),
+                                                                  photoUrl[0]
+                                                                      .toString(),
+                                                                  allUserexceptblocked[
+                                                                          index]
+                                                                      .userId
+                                                                      .toString());
                                                             }
                                                           },
                                                           icon: selectedIndex ==
@@ -772,9 +758,10 @@ class _DashboardState extends State<Dashboard> {
                                     width: 2.w,
                                   ),
                                   Image.asset(
-                                    docs[index]["gender"] == "Man"
+                                    allUserexceptblocked[index].gender == "Man"
                                         ? male
-                                        : docs[index]["gender"] == "Woman"
+                                        : allUserexceptblocked[index].gender ==
+                                                "Woman"
                                             ? female
                                             : other,
                                     color: Colors.white,
@@ -783,11 +770,15 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   SizedBox(width: 5.w),
                                   Image.asset(
-                                    docs[index]["genes"] == "Hetero"
+                                    allUserexceptblocked[index].genes ==
+                                            "Hetero"
                                         ? hetero
-                                        : docs[index]["genes"] == "Lesbian"
+                                        : allUserexceptblocked[index].genes ==
+                                                "Lesbian"
                                             ? lesbian
-                                            : docs[index]["genes"] == "Gay"
+                                            : allUserexceptblocked[index]
+                                                        .genes ==
+                                                    "Gay"
                                                 ? gay
                                                 : bisexual,
                                     color: Colors.white,
@@ -797,7 +788,8 @@ class _DashboardState extends State<Dashboard> {
                                 ],
                               ),
                               SizedBox(height: 10.h),
-                              text(context, docs[index]["bio"], 12.sp,
+                              text(context, allUserexceptblocked[index].bio,
+                                  12.sp,
                                   color: AppColors.white,
                                   fontFamily: 'Poppins-Regular'),
                               SizedBox(height: 10.h),
@@ -1013,16 +1005,8 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         );
                       },
-                    )
-                  : const Center(
-                      child: Text("Nothing to show",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500)));
-            }
-          },
-        ),
-      ),
-    );
+                    )),
+        ));
   }
 
   likeUser(name, image, id) async {
@@ -1077,9 +1061,14 @@ class _DashboardState extends State<Dashboard> {
         });
       }
     }).catchError((e) {});
+
     if (mounted) {
       setState(() {
         loading = false;
+        Navigator.pop(context);
+        isLoad = true;
+        getData();
+        getDataalluserexcepcurrent();
       });
     }
   }
@@ -1235,5 +1224,15 @@ class _DashboardState extends State<Dashboard> {
     }).catchError((e) {
       log(e.toString());
     });
+  }
+
+  userblockedByCurrentUser() {}
+
+  Future<bool> testing(String uid) async {
+    CollectionReference collectionReference =
+        firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
+    DocumentSnapshot documentSnapshot =
+        await collectionReference.doc(_auth.currentUser!.uid).get();
+    return documentSnapshot.exists;
   }
 }
