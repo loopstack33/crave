@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, use_build_context_synchronously
 
 
 import 'dart:developer';
@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../model/chat_room_model.dart';
+import '../../../../services/fcm_services.dart';
 import '../../../../widgets/custom_toast.dart';
 import '../chat/chat_list.dart';
 
@@ -96,6 +97,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         chatroomid: const Uuid().v1(),
         lastMessage: "",
         read: false,
+        paid: false,
         idFrom: "",
         idTo: "",
         count: 0,
@@ -113,7 +115,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
       AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
-      // FCMServices.sendFCM("crave", targetID.toString(), "New Refer", "You add a new chat as a Counselor kindly proceed");
+      FCMServices.sendFCM("crave", targetID.toString(), matchedname.toString(), "Want's to chat with you.");
       ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
     }
 

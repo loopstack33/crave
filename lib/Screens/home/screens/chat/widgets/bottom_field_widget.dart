@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../../model/chat_room_model.dart';
 import '../../../../../model/message_model.dart';
+import '../../../../../services/fcm_services.dart';
 import '../../../../../utils/color_constant.dart';
 import '../../../../../utils/images.dart';
 import '../../../../../widgets/custom_toast.dart';
@@ -331,11 +332,11 @@ class _BottomFieldState extends State<BottomField> {
             .doc(widget.chatRoom.chatroomid)
             .set(widget.chatRoom.toMap());
 
-        // FCMServices.sendFCM(
-        //     widget.targetUser.userToken,
-        //     widget.targetUser.userId.toString(),
-        //     widget.targetUser.userName.toString(),
-        //     "Image File");
+        FCMServices.sendFCM(
+            widget.targetUser.userToken,
+            widget.targetUser.userId.toString(),
+            widget.targetUser.userName.toString(),
+            "📷 New Image Message");
         if (mounted) {
           setState(() {
             isLoading = false;
@@ -372,6 +373,7 @@ class _BottomFieldState extends State<BottomField> {
   }
 
   void selectVideo() async{
+    Navigator.pop(context);
     File? video = await pickVideoFromGallery(context);
     if(video!=null){
       sendVideoMessage(video,"video");
@@ -432,11 +434,8 @@ class _BottomFieldState extends State<BottomField> {
             .doc(widget.chatRoom.chatroomid)
             .set(widget.chatRoom.toMap());
 
-        // FCMServices.sendFCM(
-        //     widget.targetUser.userToken,
-        //     widget.targetUser.userId.toString(),
-        //     widget.targetUser.userName.toString(),
-        //     "Image File");
+        FCMServices.sendFCM(widget.targetUser.userToken, widget.targetUser.userId.toString(), widget.targetUser.userName.toString(), "📸 New Video Message");
+
         if (mounted) {
           setState(() {
             isLoading2 = false;
@@ -511,11 +510,11 @@ class _BottomFieldState extends State<BottomField> {
             .doc(widget.chatRoom.chatroomid)
             .set(widget.chatRoom.toMap());
 
-        // FCMServices.sendFCM(
-        //     widget.targetUser.userToken,
-        //     widget.targetUser.userId.toString(),
-        //     widget.targetUser.userName.toString(),
-        //     "Image File");
+        FCMServices.sendFCM(
+            widget.targetUser.userToken,
+            widget.targetUser.userId.toString(),
+            widget.targetUser.userName.toString(),
+            "🎵 New Audio Message");
         if (mounted) {
           setState(() {
             isLoading2 = false;
@@ -569,12 +568,11 @@ class _BottomFieldState extends State<BottomField> {
         .doc(widget.chatRoom.chatroomid)
         .set(widget.chatRoom.toMap());
     updateStatus();
-
-    // FCMServices.sendFCM(
-    //     widget.targetUser.userToken,
-    //     widget.targetUser.userId.toString(),
-    //     widget.targetUser.userName.toString(),
-    //     widget.chatRoom.lastMessage.toString());
+    FCMServices.sendFCM(
+        widget.targetUser.userToken,
+        widget.targetUser.userId.toString(),
+        widget.targetUser.userName.toString(),
+        widget.chatRoom.lastMessage.toString());
     msgController.clear();
 
   }

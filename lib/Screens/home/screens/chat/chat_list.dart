@@ -25,64 +25,6 @@ class _UserChatListState extends State<UserChatList> {
   bool loading = true;
   bool dialogOpen = false;
 
-  static ChatRoomModel? chatRoom;
-
-  Future<ChatRoomModel?> assignCounselor(BuildContext context, targetID, userID) async {
-    log('userID: $userID');
-    log('targetID: $targetID');
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection("chatrooms")
-        .where(
-      "participants.$userID",
-      isEqualTo: "user",
-    )
-        .where(
-      "participants.$targetID",
-      isEqualTo: "admin",
-    )
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      log("ChatRoom Available");
-
-      var docData = snapshot.docs[0].data();
-
-      ChatRoomModel existingChatRoom =
-      ChatRoomModel.fromMap(docData as Map<String, dynamic>);
-      log("Exiting chat Room : ${existingChatRoom.chatroomid}");
-      log("Exiting chat participants : ${existingChatRoom.participants}");
-      chatRoom = existingChatRoom;
-
-      ToastUtils.showCustomToast(
-          context, "Counselor Already Assign ", Colors.red);
-    } else {
-      log("ChatRoom Not Available");
-
-      ChatRoomModel newChatRoom = ChatRoomModel(
-        chatroomid: const Uuid().v1(),
-        lastMessage: "",
-        participants: {
-          targetID.toString(): "admin",
-          userID.toString(): "user",
-        },
-      );
-
-      await FirebaseFirestore.instance
-          .collection('chatrooms')
-          .doc(newChatRoom.chatroomid)
-          .set(newChatRoom.toMap());
-      chatRoom = newChatRoom;
-
-      FCMServices.sendFCM("crave", targetID.toString(), "New Refer", "You add a new chat as a Counselor kindly proceed");
-      ToastUtils.showCustomToast(context, "Counselor Assign Success", Colors.green);
-    }
-    setState(() {
-      dialogOpen = false;
-    });
-
-    return chatRoom;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

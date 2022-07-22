@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:cached_video_preview/cached_video_preview.dart';
 
 class FullPhotoPage extends StatefulWidget {
   final String url;

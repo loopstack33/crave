@@ -10,16 +10,26 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission  android:name="android.permission.READ_PHONE_STATE"/>
-    <!-- The Agora SDK requires Bluetooth permissions in case users are using Bluetooth devices.-->
-    <uses-permission  android:name="android.permission.BLUETOOTH"  />
+
    <application
+           android:allowBackup="false"
+           android:usesCleartextTraffic="true"
+           android:hardwareAccelerated="false"
+       android:extractNativeLibs="true"
         android:label="crave"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+
+       <meta-data
+           android:name="com.google.firebase.messaging.default_notification_icon"
+           android:resource="@drawable/launcher_icon" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -47,4 +57,5 @@
            android:name="flutterEmbedding"
            android:value="2" />
     </application>
+
 </manifest>

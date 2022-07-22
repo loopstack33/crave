@@ -11,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
-import 'package:slide_countdown/slide_countdown.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../model/call.dart';
 import '../../../../model/chat_room_model.dart';
@@ -142,19 +141,15 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
 
                             ),
                           ]),
-                          SlideCountdown(
-                            decoration:const BoxDecoration(),
-                            textStyle:  TextStyle(fontFamily: 'Poppins-SemiBold', fontSize: 10.sp,color: AppColors.bbColor),
-                            duration: const Duration(days: 1),
-                          )
-                          // Text("00:15:31",style: TextStyle(fontFamily: 'Poppins-SemiBold', fontSize: 10.sp),),
+
+                           Text("00:15:31",style: TextStyle(fontFamily: 'Poppins-SemiBold', fontSize: 10.sp),),
                         ],
                       ),
                     ),
                     //Image.asset(video,width: 30.w,height: 30.h,),
                     GestureDetector(
                         onTap: (){
-                          const paymentItems = [
+                        /*  const paymentItems = [
                             PaymentItem(
                               label: 'Crave VideoCall',
                               amount: '1.99',
@@ -282,8 +277,8 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                     ),
                                   ),
                                 );
-                              });
-                      //    makeCall(context, widget.targetUser.userName.toString(), widget.targetUser.userId.toString(), widget.targetUser.imgUrl[0].toString(), false);
+                              });*/
+                          makeCall(context, widget.targetUser.userName.toString(), widget.targetUser.userId.toString(), widget.targetUser.imgUrl[0].toString(), false);
 
                         },
                         child: Icon(FontAwesomeIcons.video,color: AppColors.redcolor,size: 25.sp,)),

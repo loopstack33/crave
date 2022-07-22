@@ -121,19 +121,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               height: 10.h,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    handleSignOut();
-                  },
-                  child: text(context, "Log Out", 18.sp,
+            GestureDetector(
+              onTap: (){
+                handleSignOut();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  text(context, "Log Out", 18.sp,
                       color: AppColors.black,
                       boldText: FontWeight.w500,
                       fontFamily: "Poppins-Medium"),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               height: 10.h,

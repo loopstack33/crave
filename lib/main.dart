@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:crave/Screens/splash/splash.dart';
 import 'package:crave/services/fcm_services.dart';
 import 'package:crave/services/local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -26,38 +27,32 @@ Future main() async {
 }
 
 Future<void> _messageHandler(RemoteMessage event) async {
-  LocalNotificationsService.instance.showNotification(
-      title: '${event.notification?.title}',
-      body: '${event.notification?.body}');
 
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {});
- /* if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
+  if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
+    log('userId: ${event.data['id']}');
+    log('userId: ${event.data['id']}');
     LocalNotificationsService.instance.showNotification(
         title: '${event.notification?.title}',
         body: '${event.notification?.body}');
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {});
-  }*/
+  }
   log("Handling a background message: ${event.messageId}");
 }
 
 fcmListen() async {
   // var sfID = await AuthServices.getTraderID();
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-     log('event: $event');
-    /*if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid ||
-        event.data['id'].toString() == "all") {
+    log('userId: ${event.data['id']}');
+     log('userId: ${event.data['id']}');
+    if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
       LocalNotificationsService.instance.showNotification(
           title: '${event.notification?.title}',
           body: '${event.notification?.body}');
 
       FirebaseMessaging.onMessageOpenedApp.listen((message) {});
-    } else {}*/
-     LocalNotificationsService.instance.showNotification(
-         title: '${event.notification?.title}',
-         body: '${event.notification?.body}');
+    } else {}
 
-     FirebaseMessaging.onMessageOpenedApp.listen((message) {});
   });
 }
 

@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1089311314091-1bcct6b4nuun4ifn59rcjj3oss4v9jki.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crave.datingapp",
+            "certificate_hash": "6d17a660834d2f173a94cea017361892d4af2c47"
+          }
+        },
+        {
+          "client_id": "1089311314091-bu6lv09de1i32ppdehj06i8s1ett7jst.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.crave.datingapp",
+            "certificate_hash": "d4160f14efd0f1b4ad59f9e8689bc3fcaf305fac"
+          }
+        },
+        {
           "client_id": "1089311314091-9hsns3cfn7n59dj6uc7jlk80bnr8lnp3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +45,13 @@
             {
               "client_id": "1089311314091-9hsns3cfn7n59dj6uc7jlk80bnr8lnp3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1089311314091-uo88trf7qcc52tlunbdk6miuklr16tts.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.crave.datingapp"
+              }
             }
           ]
         }

@@ -10,6 +10,7 @@ import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
@@ -39,6 +40,7 @@ class CodeSignin extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<CodeSignin> {
+
   ///VARIABLES AND DECLARATION
   TextEditingController otpController = TextEditingController();
   bool verifyText = false;
@@ -52,6 +54,18 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   //Initialize a button color variable
   Color btnColor = const Color(0xFFE38282);
   bool isEnabled = false;
+  var deviceToken;
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  updateDeviceToken(id, collection) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+    var deviceT = await _firebaseMessaging.getToken();
+    log(' deviceToken: $deviceT');
+    await firebaseFirestore.collection(collection).doc(id).update({
+      'deviceToken': deviceT,
+    });
+  }
 
   var instance = FirebaseFirestore.instance;
 
@@ -98,14 +112,13 @@ class _SigninPhoneValidState extends State<CodeSignin> {
   @override
   void initState() {
     super.initState();
+    doesUserExist(widget.phone);
     myVerificationId = widget.verifyId;
     isTimeOut = widget.isTimeOut2;
     startTimer();
-    doesUserExist(widget.phone);
+
 
   }
-
-
 
   @override
   void dispose() {
@@ -530,15 +543,14 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Login Success", Colors.green);
+              updateDeviceToken(_auth.currentUser!.uid, 'users');
               preferences.setString("logStatus", "true");
               setState(() {
                 loading = false;
               });
               AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
-
             }
           }
-
         }
         else{
           postDetailsToFirestore(context, widget.phone.toString());
@@ -644,13 +656,15 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = auth.currentUser;
+    var deviceT = await _firebaseMessaging.getToken();
+    log(' deviceToken: $deviceT');
 
     await firebaseFirestore.collection("users").doc(user!.uid).set({
       'uid': user.uid,
       'phone': phone,
       'name': '',
       'showName': '',
-      'deviceToken': "",
+      'deviceToken': deviceT.toString(),
       'craves':[],
       'imageUrl':[],
       'country':'',

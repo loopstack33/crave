@@ -70,7 +70,8 @@ class _ChatListWidgetState extends State<ChatListWidget>  with WidgetsBindingObs
             QuerySnapshot chatRoomSnapshot =
             snapshot.data as QuerySnapshot;
 
-            return ListView.builder(
+            return chatRoomSnapshot.docs.isNotEmpty?
+            ListView.builder(
               shrinkWrap: true,
               itemCount: chatRoomSnapshot.docs.length,
               itemBuilder: (context, index) {
@@ -206,7 +207,7 @@ class _ChatListWidgetState extends State<ChatListWidget>  with WidgetsBindingObs
                                                   : Text(chatRoomModel
                                                   .lastMessage
                                                   .toString(),style: TextStyle(fontSize: 14.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'),):
-                                              const Text("H")
+                                               Text("Say hi✋ to your new friend",style: TextStyle(fontSize: 12.sp,color: AppColors.fontColor, fontFamily: 'Poppins-Regular'))
                                             ],
                                           ),
                                         ),
@@ -246,14 +247,33 @@ class _ChatListWidgetState extends State<ChatListWidget>  with WidgetsBindingObs
                   },
                 );
               },
+            )
+                :Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                  children: [
+                    Image.asset("assets/images/i3.png"),
+                    Text("No Chats Found",style: TextStyle(fontSize: 20.sp,fontFamily: 'Poppins-Regular'),)
+                  ],
+                ),
+              ),
             );
           } else if (snapshot.hasError) {
             return Center(
               child: Text(snapshot.error.toString()),
             );
           } else {
-            return const Center(
-              child: Text("No Chats"),
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                  children: [
+                    Image.asset("assets/images/i3.png"),
+                    Text("No Chats Found",style: TextStyle(fontSize: 20.sp,fontFamily: 'Poppins-Regular'),)
+                  ],
+                ),
+              ),
             );
           }
         } else {

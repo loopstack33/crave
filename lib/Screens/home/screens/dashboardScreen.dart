@@ -20,7 +20,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
 import 'package:uuid/uuid.dart';
 import '../../../model/chat_room_model.dart';
+import '../../../services/fcm_services.dart';
 import '../../../widgets/custom_toast.dart';
+import 'chat/chat_list.dart';
 
 // This is the type used by the popup menu below.
 enum Menu { BlockForever, Report }
@@ -97,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
 
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(BuildContext context, targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(BuildContext context,userName ,targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -132,6 +134,7 @@ class _DashboardState extends State<Dashboard> {
         lastMessage: "",
         read: false,
         idFrom: "",
+        paid: false,
         idTo: "",
         count: 0,
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -147,8 +150,8 @@ class _DashboardState extends State<Dashboard> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-
-     // FCMServices.sendFCM("crave", targetID.toString(), "New Refer", "You add a new chat as a Counselor kindly proceed");
+      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+      FCMServices.sendFCM("crave", targetID.toString(), name.toString(), "Want's to chat with you.");
       ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
     }
 
@@ -831,6 +834,7 @@ class _DashboardState extends State<Dashboard> {
                                                                           ElevatedButton(onPressed: (){
                                                                             assignChatRoom(
                                                                               context,
+                                                                              allUserexceptblocked[index].userName,
                                                                               allUserexceptblocked[index].userId,
                                                                               _auth.currentUser!.uid,
                                                                             );
