@@ -1,23 +1,22 @@
-/*
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crave/utils/color_constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../model/call.dart';
 import 'call_screen.dart';
 
 
-class CallPickUp extends StatefulWidget {
-  const CallPickUp({Key? key}) : super(key: key);
+class CallPickUp extends StatelessWidget {
+  Widget scaffold;
+   CallPickUp({Key? key,required this.scaffold}) : super(key: key);
 
-  @override
-  State<CallPickUp> createState() => _CallPickUpState();
-}
-
-class _CallPickUpState extends State<CallPickUp> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-      stream: ref.watch(callControllerProvider).callStream,
+      stream: FirebaseFirestore.instance.collection('call').doc(auth.currentUser!.uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.data() != null) {
           Call call = Call.fromMap(snapshot.data!.data() as Map<String, dynamic>);
@@ -25,15 +24,17 @@ class _CallPickUpState extends State<CallPickUp> {
           if (!call.hasDialled) {
             return Scaffold(
               body: Container(
+                color: AppColors.redcolor,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                     Text(
                       'Incoming Call',
                       style: TextStyle(
-                        fontSize: 30,
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: 30.sp,
                         color: Colors.white,
                       ),
                     ),
@@ -45,8 +46,9 @@ class _CallPickUpState extends State<CallPickUp> {
                     const SizedBox(height: 50),
                     Text(
                       call.callerName,
-                      style: const TextStyle(
-                        fontSize: 25,
+                      style:  TextStyle(
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: 25.sp,
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                       ),
@@ -55,28 +57,37 @@ class _CallPickUpState extends State<CallPickUp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.call_end,
-                              color: Colors.redAccent),
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor:AppColors.white,
+                          child: IconButton(
+
+                            onPressed: () {},
+                            icon: const Icon(Icons.call_end,
+                                color: Colors.redAccent),
+                          ),
                         ),
                         const SizedBox(width: 25),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CallScreen(
-                                  channelId: call.callId,
-                                  call: call,
-                                  isGroupChat: false,
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor:AppColors.white,
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CallScreen(
+                                    channelId: call.callId,
+                                    call: call,
+                                    isGroupChat: false,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.call,
-                            color: Colors.green,
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.call,
+                              color: Colors.green,
+                            ),
                           ),
                         ),
                       ],
@@ -92,4 +103,4 @@ class _CallPickUpState extends State<CallPickUp> {
     );
   }
 }
-*/
+

@@ -226,6 +226,7 @@ class _ProfileState extends State<Profile> {
                               color: const Color(0xff636363),
                               fontFamily: "Poppins-Regular"),
                           controller: controllerBio,
+                          readOnly: true,
                           maxLines: 2,
                           maxLength: 100,
                           textAlignVertical: TextAlignVertical.top,

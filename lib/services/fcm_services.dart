@@ -10,6 +10,7 @@ class FCMServices {
   static fcmGetTokenandSubscribe(topic) {
     FirebaseMessaging.instance.getToken().then((value) {
       FirebaseMessaging.instance.subscribeToTopic("$topic");
+      print("SUBSCRIBEDDDD");
     });
   }
 
