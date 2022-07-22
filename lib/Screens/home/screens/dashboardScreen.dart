@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
@@ -396,43 +397,67 @@ class _DashboardState extends State<Dashboard> {
                                                                         height:
                                                                             10.h,
                                                                       ),
-                                                                      GestureDetector(
-                                                                        onTap:
-                                                                            () async {
-                                                                          blockUser(
-                                                                              name.toString(),
-                                                                              photoUrl[0].toString(),
-                                                                              allUserexceptblocked[index].userId.toString());
-                                                                        },
-                                                                        child:
-                                                                            Container(
-                                                                          width:
-                                                                              150.w,
-                                                                          height:
-                                                                              40.h,
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                            gradient:
-                                                                                LinearGradient(
-                                                                              begin: Alignment.topCenter,
-                                                                              end: Alignment.bottomCenter,
-                                                                              colors: [
-                                                                                AppColors.redcolor.withOpacity(0.35),
-                                                                                AppColors.redcolor
-                                                                              ],
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceEvenly,
+                                                                        children: [
+                                                                          GestureDetector(
+                                                                            onTap:
+                                                                                () async {
+                                                                              blockUser(name.toString(), photoUrl[0].toString(), allUserexceptblocked[index].userId.toString());
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              width: 150.w,
+                                                                              height: 40.h,
+                                                                              decoration: BoxDecoration(
+                                                                                gradient: LinearGradient(
+                                                                                  begin: Alignment.topCenter,
+                                                                                  end: Alignment.bottomCenter,
+                                                                                  colors: [
+                                                                                    AppColors.redcolor.withOpacity(0.35),
+                                                                                    AppColors.redcolor
+                                                                                  ],
+                                                                                ),
+                                                                                borderRadius: BorderRadius.circular(5.r),
+                                                                              ),
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                ],
+                                                                              ),
                                                                             ),
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(5.r),
                                                                           ),
-                                                                          child:
-                                                                              Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
-                                                                            ],
+                                                                          GestureDetector(
+                                                                            onTap:
+                                                                                () async {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              width: 150.w,
+                                                                              height: 40.h,
+                                                                              decoration: BoxDecoration(
+                                                                                gradient: LinearGradient(
+                                                                                  begin: Alignment.topCenter,
+                                                                                  end: Alignment.bottomCenter,
+                                                                                  colors: [
+                                                                                    AppColors.redcolor.withOpacity(0.35),
+                                                                                    AppColors.redcolor
+                                                                                  ],
+                                                                                ),
+                                                                                borderRadius: BorderRadius.circular(5.r),
+                                                                              ),
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text("No", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                ],
+                                                                              ),
+                                                                            ),
                                                                           ),
-                                                                        ),
+                                                                        ],
                                                                       ),
                                                                       SizedBox(
                                                                         height:
@@ -1417,7 +1442,6 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  userblockedByCurrentUser() {}
 
   Future<bool> testing(String uid) async {
     CollectionReference collectionReference =

@@ -27,17 +27,19 @@ class MatchScreen extends StatefulWidget {
 }
 
 class _MatchScreenState extends State<MatchScreen> {
+  int next = 0;
   String matchedImageUrl = "";
   bool loading = false;
   bool matched = false;
   String searching = "Searching...";
   String finding = "We’re finding a great match for you!";
-  int counter = 0;
+  int counter = 2;
   List<dynamic> allUserCraves = [];
   List<UsersModel> allUsersData = [];
   List<UsersModel> currentUsersData = [];
   List<UsersModel> CompleteUserData = [];
   List<UsersModel> matchedGenes = [];
+  List<UsersModel> heteroCheck = [];
   List<dynamic> matchedCraves = [];
   bool isLoad = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -101,7 +103,7 @@ class _MatchScreenState extends State<MatchScreen> {
         .set({'date': date.toString(), 'counter': 0}).then((text) {
       setState(() {
         isLoad = false;
-        counter = 0;
+        counter = 2;
       });
     }).catchError((e) {});
   }
@@ -263,7 +265,7 @@ class _MatchScreenState extends State<MatchScreen> {
                 // const Spacer(flex: 1),
                 InkWell(
                   onTap: () {
-                    if (counter > 1) {
+                    if (counter == 0) {
                       //dialogbox
                       const _paymentItems = [
                         PaymentItem(
@@ -396,18 +398,12 @@ class _MatchScreenState extends State<MatchScreen> {
                             );
                           });
                     } else {
-                      // log(currentUsersData[0].genes.toString());
-                      // log(allUsersData[1].genes.toString());
-                      // log({currentUsersData[0].genes == allUsersData[1].genes}
-                      //     .toString());
                       if (mounted) {
                         setState(() {
                           loading = true;
                         });
                       }
                       matchedGenes1();
-
-                      // increment();
                     }
                   },
                   child: Container(
@@ -484,21 +480,18 @@ class _MatchScreenState extends State<MatchScreen> {
                   ],
                 ),
                 const Spacer(flex: 1),
-                InkWell(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(finding,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: Colors.white,
-                            fontFamily: "Poppins-Regular",
-                            fontWeight: FontWeight.w200,
-                          )),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(finding,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: Colors.white,
+                          fontFamily: "Poppins-Regular",
+                          fontWeight: FontWeight.w200,
+                        )),
                   ),
                 ),
               ],
@@ -509,10 +502,9 @@ class _MatchScreenState extends State<MatchScreen> {
     );
   }
 
+//matched genes
   matchedGenes1() {
-    setState(() {
-      loading = true;
-    });
+    CompleteUserData.clear();
     for (int i = 0; i < allUsersData.length; i++) {
       if (currentUsersData[0].genes == allUsersData[i].genes) {
         matchedGenes.add(allUsersData[i]);
@@ -520,15 +512,82 @@ class _MatchScreenState extends State<MatchScreen> {
     }
     // log(matchedGenes[0].genes.toString());
     // log(allUsersData[0].userName.toString());
-
-    matchedCraves1();
+    //if hetero
+    if (currentUsersData[0].genes == "Hetero") {
+      matchedgenderifhetero();
+    }
+    //otherwise
+    else {
+      matchedCraves1();
+    }
   }
 
-  matchedCraves1() {
-    int temp = 0;
+//if hetero
+  matchedgenderifhetero() {
+    for (int i = 0; i < matchedGenes.length; i++) {
+      if (currentUsersData[0].gender != matchedGenes[i].gender) {
+        heteroCheck.add(matchedGenes[i]);
+      }
+    }
 
-    for (int i = 0; i < allUsersData.length; i++) {
+    heteroOppositeGender();
+  }
+
+  heteroOppositeGender() async {
+    int temp = 0;
+    for (int i = 0; i < heteroCheck.length; i++) {
       var expectedList = currentUsersData[0]
+          .craves
+          .toSet()
+          .intersection(heteroCheck[i].craves.toSet())
+          .toList();
+      if (heteroCheck.isEmpty) {
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
+        ToastUtils.showCustomToast(
+            context, "No Match Found", AppColors.redcolor);
+      } else {
+        if (temp < expectedList.length) {
+          CompleteUserData.add(heteroCheck[i]);
+          temp = expectedList.length;
+        }
+      }
+    }
+    log("$next.toString()");
+    log(CompleteUserData.length.toString());
+    if (CompleteUserData.length == next) {
+      ToastUtils.showCustomToast(
+          context, "No Match Found, Try Agian", AppColors.redcolor);
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    } else {
+      bool checkData = await matchedCheck(CompleteUserData[next].userId);
+      log(checkData.toString());
+      if (checkData == false) {
+        addToFirebase();
+      } else if (checkData == true) {
+        if (mounted) {
+          setState(() {
+            increment();
+          });
+        }
+        log(next.toString());
+        matchedGenes1();
+      }
+    }
+  }
+
+//otherwise
+  matchedCraves1() async {
+    int temp = 0;
+    for (int i = 0; i < allUsersData.length; i++) {
+      var expectedList = currentUsersData[next]
           .craves
           .toSet()
           .intersection(allUsersData[i].craves.toSet())
@@ -545,54 +604,42 @@ class _MatchScreenState extends State<MatchScreen> {
         if (temp < expectedList.length) {
           CompleteUserData.add(allUsersData[i]);
           temp = expectedList.length;
-          //   log(allUsersData[i].userId.toString());
         }
       }
     }
-    // log(matchedGenes[0].genes.toString());
-    log(CompleteUserData[0].userName.toString());
-    log(CompleteUserData[0].imgUrl.toString());
-    addToFirebase();
-    // matchedCraves.add(expectedList);
+    // addToFirebase();
   }
 
   addToFirebase() async {
-    var rnd = math.Random();
-    var next = rnd.nextDouble() * 1000000;
-    while (next < 100000) {
-      next *= 10;
-    }
-
     await firebaseFirestore
         .collection("users")
         .doc(uid)
         .collection("matches")
-        .doc(next.toInt().toString())
+        .doc(CompleteUserData[next].userId)
         .set({
-      'name': CompleteUserData[0].userName,
-      'matchedId': CompleteUserData[0].userId,
-      'imageUrl': CompleteUserData[0].imgUrl
+      'name': CompleteUserData[next].userName,
+      'matchedId': CompleteUserData[next].userId,
+      'imageUrl': CompleteUserData[next].imgUrl
     }).then((text) {
-      print("in");
       Timer(const Duration(seconds: 2), () => getPicture());
-      // ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
-      // if (mounted) {
-      //   setState(() {
-      //     loading = false;
-      //   });
-      // }
     }).catchError((e) {});
+  }
+
+  decrement() {
+    setState(() {
+      counter = counter - 1;
+    });
   }
 
   increment() {
     setState(() {
-      counter = counter + 1;
+      next = next + 1;
     });
   }
 
   getPicture() {
     setState(() {
-      matchedImageUrl = CompleteUserData[0].imgUrl[0];
+      matchedImageUrl = CompleteUserData[next].imgUrl[0];
       matched = true;
       loading = false;
       searching = "Matched Successful";
@@ -600,7 +647,7 @@ class _MatchScreenState extends State<MatchScreen> {
     });
     ToastUtils.showCustomToast(context, "MATCH FOUND", Colors.green);
 
-    increment();
+    decrement();
     Timer(const Duration(seconds: 2), () async {
       final refresh = await Navigator.push(
           context,
@@ -610,9 +657,9 @@ class _MatchScreenState extends State<MatchScreen> {
                     imagurl: image,
                     img2url: matchedImageUrl,
                     participantid: uid!,
-                    matchedid: CompleteUserData[0].userId,
-                    participantname: currentUsersData[0].userName,
-                    matchedname: CompleteUserData[0].userName,
+                    matchedid: CompleteUserData[next].userId,
+                    participantname: currentUsersData[next].userName,
+                    matchedname: CompleteUserData[next].userName,
                   )));
 
       setState(() {
@@ -621,12 +668,24 @@ class _MatchScreenState extends State<MatchScreen> {
           currentuser();
           getAllUserData();
           checkforCounter();
+          next = next + 1;
           searching = "Searching...";
           finding = "We’re finding a great match for you!";
           matchedImageUrl = "";
         }
       });
     });
+
     print(matched);
+  }
+
+  Future<bool> matchedCheck(String uid) async {
+    CollectionReference collectionReference = firebaseFirestore
+        .collection("users")
+        .doc(_auth.currentUser!.uid)
+        .collection("matches");
+    DocumentSnapshot documentSnapshot =
+        await collectionReference.doc(uid).get();
+    return documentSnapshot.exists;
   }
 }
