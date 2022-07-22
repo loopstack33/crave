@@ -333,10 +333,12 @@ class _BottomFieldState extends State<BottomField> {
             .set(widget.chatRoom.toMap());
 
         FCMServices.sendFCM(
-            widget.targetUser.userToken,
+            'crave',
+           // widget.targetUser.userToken,
             widget.targetUser.userId.toString(),
             widget.targetUser.userName.toString(),
             "📷 New Image Message");
+
         if (mounted) {
           setState(() {
             isLoading = false;
@@ -434,7 +436,7 @@ class _BottomFieldState extends State<BottomField> {
             .doc(widget.chatRoom.chatroomid)
             .set(widget.chatRoom.toMap());
 
-        FCMServices.sendFCM(widget.targetUser.userToken, widget.targetUser.userId.toString(), widget.targetUser.userName.toString(), "📸 New Video Message");
+        FCMServices.sendFCM( 'crave', widget.targetUser.userId.toString(), widget.targetUser.userName.toString(), "📸 New Video Message");
 
         if (mounted) {
           setState(() {
@@ -511,7 +513,7 @@ class _BottomFieldState extends State<BottomField> {
             .set(widget.chatRoom.toMap());
 
         FCMServices.sendFCM(
-            widget.targetUser.userToken,
+            'crave',
             widget.targetUser.userId.toString(),
             widget.targetUser.userName.toString(),
             "🎵 New Audio Message");
@@ -569,7 +571,7 @@ class _BottomFieldState extends State<BottomField> {
         .set(widget.chatRoom.toMap());
     updateStatus();
     FCMServices.sendFCM(
-        widget.targetUser.userToken,
+        'crave',
         widget.targetUser.userId.toString(),
         widget.targetUser.userName.toString(),
         widget.chatRoom.lastMessage.toString());
