@@ -1306,7 +1306,8 @@ class _DashboardState extends State<Dashboard> {
       'likedId': user.uid.toString()
     }).then((text) async {
       saveDatainLikedBy(id);
-
+      getData();
+      getDataalluserexcepcurrent();
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {
         setState(() {
