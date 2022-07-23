@@ -8,9 +8,19 @@ class ChatRoomModel {
   String? idTo;
   int? count;
   bool? paid;
+  String? dateTime;
 
-  ChatRoomModel({this.chatroomid, this.participants, this.lastMessage,this.read,this.timeStamp,this.count,this.idFrom,this.idTo,
-  this.paid});
+  ChatRoomModel(
+      {this.chatroomid,
+      this.participants,
+      this.lastMessage,
+      this.read,
+      this.timeStamp,
+      this.count,
+      this.idFrom,
+      this.idTo,
+      this.dateTime,
+      this.paid});
 
   ChatRoomModel.fromMap(Map<dynamic, dynamic> map) {
     chatroomid = map["chatroomid"];
@@ -22,6 +32,7 @@ class ChatRoomModel {
     idFrom = map["idFrom"];
     idTo = map["idTo"];
     paid = map["paid"];
+     dateTime = map["dateTime"];
   }
 
   Map<String, dynamic> toMap() {
@@ -30,11 +41,12 @@ class ChatRoomModel {
       "participants": participants,
       "lastmessage": lastMessage,
       "read": read,
-      "time":timeStamp,
-      "count":count,
-      "idFrom":idFrom,
-      "idTo":idTo,
-      "paid":paid
+      "time": timeStamp,
+      "count": count,
+      "idFrom": idFrom,
+      "idTo": idTo,
+      "paid": paid,
+      "dateTime":dateTime
     };
   }
 }
