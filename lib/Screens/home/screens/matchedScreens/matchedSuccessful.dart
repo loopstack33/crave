@@ -103,6 +103,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         idFrom: "",
         idTo: "",
         count: 0,
+        dateTime: DateTime.now().toString(),
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
         participants: {
           targetID.toString(): targetID.toString(),

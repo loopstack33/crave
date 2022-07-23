@@ -93,6 +93,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
         paid: false,
         idTo: "",
         count: 0,
+        dateTime: DateTime.now().toString(),
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
         participants: {
           targetID.toString(): targetID.toString(),
