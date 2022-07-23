@@ -32,9 +32,9 @@ class FCMServices {
         "content_available": true,
         "priority": "high",
         "data": {
-          "android_channel_id": "crave",
+         // "android_channel_id": "crave",
           "id": id,
-          "userName": "craveUser",
+          "userName": "crave",
         }
       }),
     );
