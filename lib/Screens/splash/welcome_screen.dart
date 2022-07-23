@@ -1,17 +1,31 @@
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, use_build_context_synchronously
+import 'dart:io';
+
 import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_icon_btn.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/custom_toast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class Welcome_Screen extends StatelessWidget {
+class Welcome_Screen extends StatefulWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
+
+  @override
+  State<Welcome_Screen> createState() => _Welcome_ScreenState();
+}
+
+class _Welcome_ScreenState extends State<Welcome_Screen> {
+  bool loading= false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,18 +102,41 @@ class Welcome_Screen extends StatelessWidget {
             SizedBox(
               height: 10.h,
             ),
-            DefaultIconButton(
+          /*  DefaultIconButton(
                 iconColor: AppColors.black,
                 icon: FontAwesomeIcons.apple,
                 weight: FontWeight.w500,
                 color: AppColors.black,
                 fontFamily: "Roboto-Medium",
                 text: "Continue with Apple",
-                press: () {
+                press: () async{
+                 //  SharedPreferences prefs = await SharedPreferences.getInstance();
+                 // var id= prefs.setString("uid", "u6coYqu73tgQR59lXzyLngtyLJ42");
+                 // log(id.toString());
                   AppRoutes.push(context, PageTransitionType.topToBottom,
                       const SigninPhoneValid());
+                 // AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
                 },
-                size: 18.sp),
+                size: 18.sp),*/
+            (Platform.isIOS)
+                ? loading?Center(child: CircularProgressIndicator(color: AppColors.redcolor),):SizedBox(
+              width: 320.w,
+              height: 56.h,
+                  child: SignInWithAppleButton(
+                    borderRadius: BorderRadius.circular(10),
+              text: 'Continue with Apple',
+              onPressed: () async {
+                      if(mounted){
+                        setState((){
+                          loading = true;
+                        });
+                      }
+                signinApple(context);
+              },
+            ),
+                )
+                : Container(),
+
             SizedBox(height: 30.h),
             Text.rich(
               textAlign: TextAlign.center,
@@ -139,5 +176,64 @@ class Welcome_Screen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  signinApple(BuildContext context) async {
+    if (!await SignInWithApple.isAvailable()) {
+     ToastUtils.showCustomToast(context, "This Device is not eligible for Apple Sign in", Colors.red);
+      return null; //Break from the program
+    }
+
+    final res = await SignInWithApple.getAppleIDCredential(
+      scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName]
+    );
+
+    print(res.state);
+
+    if(mounted){
+      setState((){
+        loading = false;
+      });
+    }
+
+    /*switch (AuthorizationErrorCode) {
+      case AuthorizationErrorCode.canceled:
+        try {
+
+          await signinWithCredential(credential);
+
+
+        } on PlatformException catch (error) {
+          if(mounted){
+            setState((){
+              loading = false;
+            });
+          }
+
+        } on FirebaseAuthException catch (error) {
+          if(mounted){
+            setState((){
+              loading = false;
+            });
+          }
+        }
+        break;
+      case AuthorizationStatus.error:
+        if(mounted){
+          setState((){
+            loading = false;
+          });
+        }
+       ToastUtils.showCustomToast(context, 'Apple authorization failed', Colors.red);
+        break;
+      case AuthorizationStatus.cancelled:
+        if(mounted){
+          setState((){
+            loading = false;
+          });
+        }
+        ToastUtils.showCustomToast(context, 'Apple authorization cancelled', Colors.red);
+        break;
+    }*/
   }
 }

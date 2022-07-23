@@ -61,7 +61,7 @@ class _DashboardState extends State<Dashboard> {
   String name = 'Name';
 
   getData() async {
-    String uid = _auth.currentUser!.uid;
+   String uid = _auth.currentUser!.uid;
     await firebaseFirestore.collection('users').doc(uid).get().then((value) {
       setState(() {
         id = value.data()!["uid"];
@@ -116,8 +116,7 @@ class _DashboardState extends State<Dashboard> {
 
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(
-      BuildContext context, userName, targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(BuildContext context, userName, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -169,8 +168,7 @@ class _DashboardState extends State<Dashboard> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
       AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
-      FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
-          "Want's to chat with you.");
+      FCMServices.sendFCM("crave", targetID.toString(), name.toString(), "Want's to chat with you.");
       ToastUtils.showCustomToast(
           context, "ChatRoom Assigned Success", Colors.green);
     }
@@ -894,6 +892,20 @@ class _DashboardState extends State<Dashboard> {
                                                                                 margin: const EdgeInsets.only(top: 15.0),
                                                                                 onPaymentResult: (data) {
                                                                                   print(data);
+                                                                                  if(data["token"].toString() ==""){
+                                                                                    ToastUtils.showCustomToast(context, "Payment Success", Colors.green);
+                                                                                    Navigator.pop(context);
+                                                                                    assignChatRoom(
+                                                                                        context,
+                                                                                        allUserexceptblocked[index].userName,
+                                                                                        allUserexceptblocked[index].userId,
+                                                                                          _auth.currentUser!.uid,
+
+                                                                                    );
+                                                                                  }
+                                                                                },
+                                                                                onError: (error) {
+                                                                                 ToastUtils.showCustomToast(context, error.toString(), Colors.red);
                                                                                 },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
@@ -909,6 +921,20 @@ class _DashboardState extends State<Dashboard> {
                                                                                 margin: const EdgeInsets.only(top: 15.0),
                                                                                 onPaymentResult: (data) {
                                                                                   print(data);
+                                                                                  if(data["token"].toString() ==""){
+                                                                                    ToastUtils.showCustomToast(context, "Payment Success", Colors.green);
+                                                                                    Navigator.pop(context);
+                                                                                    assignChatRoom(
+                                                                                        context,
+                                                                                        allUserexceptblocked[index].userName,
+                                                                                        allUserexceptblocked[index].userId,
+                                                                                         _auth.currentUser!.uid,
+
+                                                                                    );
+                                                                                  }
+                                                                                },
+                                                                                onError: (error) {
+                                                                                  ToastUtils.showCustomToast(context, error.toString(), Colors.red);
                                                                                 },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
@@ -931,6 +957,7 @@ class _DashboardState extends State<Dashboard> {
                                                             allUserexceptblocked[index].userName,
                                                             allUserexceptblocked[index].userId,
                                                             _auth.currentUser!.uid,
+
                                                           );
                                                         }
                                                       },
@@ -1355,7 +1382,7 @@ class _DashboardState extends State<Dashboard> {
         .doc(id)
         .collection("blocked_By")
         .doc(user!.uid.toString())
-        .set({
+            .set({
       'name': name.toString(),
       'imageUrl': image.toString(),
       'blockedId': user.uid.toString()
@@ -1440,7 +1467,7 @@ class _DashboardState extends State<Dashboard> {
 
   getallreports(String reportId, String name, String imgurl) async {
     print("getallme hun bae");
-    String uid = _auth.currentUser!.uid;
+   String uid = _auth.currentUser!.uid;
     //bool notfound = false;
     if (mounted) {
       setState(() {

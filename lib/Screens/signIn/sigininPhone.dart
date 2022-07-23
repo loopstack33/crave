@@ -245,7 +245,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                               });
                             }
                             ToastUtils.showCustomToast(
-                                context, e.code.toString(), Colors.red);
+                                context, e.toString(), Colors.red);
                           },
                           codeSent: (String verificationId,
                               int? resendToken) {
