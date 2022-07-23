@@ -424,7 +424,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
       'steps':'4',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "Gender Added", Colors.green);
+        ToastUtils.showCustomToast(context, "Sexuality Added", Colors.green);
         setState(() {
           loading = false;
         });

@@ -18,14 +18,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   Future<void> handleSignOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString("logStatus", "null");
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const Welcome_Screen()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
     ToastUtils.showCustomToast(context, "Logout Successfully", Colors.green);
   }

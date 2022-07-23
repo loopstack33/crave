@@ -35,16 +35,19 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  bool alreadyLiked = false;
   bool isLoad = true;
   bool loading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   int selectedIndex = 0;
   List<dynamic> cravesHalf = [];
+  List<dynamic> currentUserlist = [];
   bool viewMore = true;
   String viewMoreButton = "View More";
   UsersModel? allUsers;
   List<UsersModel> allUserexceptblocked = [];
+  List<UsersModel> allUserexceptblockedChat = [];
 
   @override
   void initState() {
@@ -64,11 +67,13 @@ class _DashboardState extends State<Dashboard> {
         id = value.data()!["uid"];
         photoUrl = value.data()!["imageUrl"];
         name = value.data()!["name"];
+        currentUserlist.add(id.toString());
       });
     });
   }
 
   getDataalluserexcepcurrent() async {
+    allUserexceptblockedChat.clear();
     allUserexceptblocked.clear();
     await firebaseFirestore
         .collection('users')
@@ -83,35 +88,47 @@ class _DashboardState extends State<Dashboard> {
         }
       }
     });
+
+    log("this block one");
+    log(allUserexceptblocked.length.toString());
+    for (int i = 0; i < allUserexceptblocked.length; i++) {
+      bool checkblock1 = await testingChat(
+          _auth.currentUser!.uid, allUserexceptblocked[i].userId);
+      if (checkblock1 == false) {
+        allUserexceptblockedChat.add(allUserexceptblocked[i]);
+      }
+      log("$checkblock1.toString()");
+    }
+
     if (mounted) {
       setState(() {
         isLoad = false;
       });
     }
-    log(allUserexceptblocked.length.toString());
+    log("this block one");
+    log(allUserexceptblockedChat.length.toString());
   }
 
   String _selectedMenu = '';
   TextEditingController reportController = TextEditingController();
   bool feedLoad = false;
 
-
-
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(BuildContext context,userName ,targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(
+      BuildContext context, userName, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where(
-      "participants.$userID",
-      isEqualTo: userID,
-    )
+          "participants.$userID",
+          isEqualTo: userID,
+        )
         .where(
-      "participants.$targetID",
-      isEqualTo: targetID,
-    )
+          "participants.$targetID",
+          isEqualTo: targetID,
+        )
         .get();
 
     if (snapshot.docs.isNotEmpty) {
@@ -120,12 +137,13 @@ class _DashboardState extends State<Dashboard> {
       var docData = snapshot.docs[0].data();
 
       ChatRoomModel existingChatRoom =
-      ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+          ChatRoomModel.fromMap(docData as Map<String, dynamic>);
       log("Exiting chat Room : ${existingChatRoom.chatroomid}");
       log("Exiting chat participants : ${existingChatRoom.participants}");
       chatRoom = existingChatRoom;
 
-      ToastUtils.showCustomToast(context, "Chat room already assigned", Colors.red);
+      ToastUtils.showCustomToast(
+          context, "Chat room already assigned", Colors.red);
     } else {
       log("ChatRoom Not Available");
 
@@ -142,7 +160,6 @@ class _DashboardState extends State<Dashboard> {
           targetID.toString(): targetID.toString(),
           userID.toString(): userID.toString(),
         },
-
       );
 
       await FirebaseFirestore.instance
@@ -151,13 +168,14 @@ class _DashboardState extends State<Dashboard> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
       AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
-      FCMServices.sendFCM("crave", targetID.toString(), name.toString(), "Want's to chat with you.");
-      ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
+      FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
+          "Want's to chat with you.");
+      ToastUtils.showCustomToast(
+          context, "ChatRoom Assigned Success", Colors.green);
     }
 
     return chatRoom;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -182,30 +200,20 @@ class _DashboardState extends State<Dashboard> {
             width: 105.w,
             height: 18.h,
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Image.asset(
-                bell,
-                width: 20.w,
-                height: 20.h,
-              ),
-            ),
-          ],
         ),
         body: ProgressHUD(
           inAsyncCall: isLoad,
           opacity: 0.1,
           child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: allUserexceptblocked.isEmpty
+              child: allUserexceptblockedChat.isEmpty
                   ? const Center(
                       child: CircularProgressIndicator(color: Colors.amber))
                   : ListView.builder(
-                      itemCount: allUserexceptblocked.length,
+                      itemCount: allUserexceptblockedChat.length,
                       itemBuilder: (context, index) {
                         List<dynamic> craves =
-                            List.from(allUserexceptblocked[index].craves);
+                            List.from(allUserexceptblockedChat[index].craves);
                         cravesHalf.clear();
                         if (craves.length > 3) {
                           for (int i = 0; i < craves.length / 2; i++) {
@@ -218,7 +226,7 @@ class _DashboardState extends State<Dashboard> {
                         }
 
                         List<dynamic> imgList =
-                            List.from(allUserexceptblocked[index].imgUrl);
+                            List.from(allUserexceptblockedChat[index].imgUrl);
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -407,7 +415,7 @@ class _DashboardState extends State<Dashboard> {
                                                                           GestureDetector(
                                                                             onTap:
                                                                                 () async {
-                                                                              blockUser(name.toString(), photoUrl[0].toString(), allUserexceptblocked[index].userId.toString());
+                                                                              blockUser(name.toString(), photoUrl[0].toString(), allUserexceptblockedChat[index].userId.toString());
                                                                             },
                                                                             child:
                                                                                 Container(
@@ -623,7 +631,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                       feedLoad = true;
                                                                                     });
                                                                                   }
-                                                                                  isReport(allUserexceptblocked[index].userId.toString(), allUserexceptblocked[index].userName, allUserexceptblocked[index].imgUrl[0].toString());
+                                                                                  isReport(allUserexceptblockedChat[index].userId.toString(), allUserexceptblockedChat[index].userName, allUserexceptblockedChat[index].imgUrl[0].toString());
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -719,13 +727,21 @@ class _DashboardState extends State<Dashboard> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              text(
-                                                  context,
-                                                  allUserexceptblocked[index]
-                                                      .userName,
-                                                  22.sp,
-                                                  color: AppColors.white,
-                                                  fontFamily: 'Poppins-Medium'),
+                                              if (allUserexceptblockedChat[
+                                                          index]
+                                                      .showName
+                                                      .toString() ==
+                                                  "true") ...[
+                                                text(
+                                                    context,
+                                                    allUserexceptblockedChat[
+                                                            index]
+                                                        .userName,
+                                                    22.sp,
+                                                    color: AppColors.white,
+                                                    fontFamily:
+                                                        'Poppins-Medium'),
+                                              ]
                                             ],
                                           ),
                                           Column(
@@ -746,9 +762,12 @@ class _DashboardState extends State<Dashboard> {
                                                         onTap: () {
                                                           const paymentItems = [
                                                             PaymentItem(
-                                                              label: 'Crave ChatPay',
+                                                              label:
+                                                                  'Crave ChatPay',
                                                               amount: '1.99',
-                                                              status: PaymentItemStatus.final_price,
+                                                              status:
+                                                                  PaymentItemStatus
+                                                                      .final_price,
                                                             )
                                                           ];
                                                           showDialog(
@@ -757,45 +776,61 @@ class _DashboardState extends State<Dashboard> {
                                                                   (BuildContext
                                                                       context) {
                                                                 return Dialog(
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(10),
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
                                                                   ),
-                                                                  elevation: 0.0,
-                                                                  backgroundColor: Colors.transparent,
-                                                                  child: Container(
-                                                                    width: 515.w,
-                                                                    decoration: BoxDecoration(
-                                                                      color: Colors.white,
-                                                                      borderRadius: BorderRadius.circular(14.r),
+                                                                  elevation:
+                                                                      0.0,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  child:
+                                                                      Container(
+                                                                    width:
+                                                                        515.w,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              14.r),
                                                                     ),
-                                                                    child: SingleChildScrollView(
-                                                                      child: Column(
+                                                                    child:
+                                                                        SingleChildScrollView(
+                                                                      child:
+                                                                          Column(
                                                                         children: [
                                                                           Container(
                                                                             padding: const EdgeInsets.only(
-                                                                                left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
-                                                                            width: 515.w,
-                                                                            decoration: BoxDecoration(
+                                                                                left: 8.0,
+                                                                                right: 8.0,
+                                                                                top: 5.0,
+                                                                                bottom: 5.0),
+                                                                            width:
+                                                                                515.w,
+                                                                            decoration:
+                                                                                BoxDecoration(
                                                                               color: AppColors.redcolor,
-                                                                              borderRadius: BorderRadius.only(
-                                                                                  topLeft: Radius.circular(14.r),
-                                                                                  topRight: Radius.circular(14.r)),
+                                                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(14.r), topRight: Radius.circular(14.r)),
                                                                             ),
-                                                                            child: Align(
+                                                                            child:
+                                                                                Align(
                                                                               alignment: Alignment.center,
                                                                               child: Text(
                                                                                 "Action Required",
-                                                                                style: TextStyle(
-                                                                                    fontWeight: FontWeight.w600,
-                                                                                    color: Colors.white,
-                                                                                    fontFamily: 'Poppins-Medium',
-                                                                                    fontSize: 22.sp),
+                                                                                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins-Medium', fontSize: 22.sp),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                          SizedBox(height: 10.h),
+                                                                          SizedBox(
+                                                                              height: 10.h),
                                                                           Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
                                                                             children: [
                                                                               Container(
                                                                                   width: 50.w,
@@ -810,15 +845,12 @@ class _DashboardState extends State<Dashboard> {
                                                                               ),
                                                                               Text(
                                                                                 "Confirm",
-                                                                                style: TextStyle(
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.black,
-                                                                                    fontFamily: 'Poppins-Medium',
-                                                                                    fontSize: 20.sp),
+                                                                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'Poppins-Medium', fontSize: 20.sp),
                                                                               )
                                                                             ],
                                                                           ),
-                                                                          SizedBox(height: 10.h),
+                                                                          SizedBox(
+                                                                              height: 10.h),
                                                                           Text(
                                                                             "For chatting without liking pay 1.99 \$.",
                                                                             style: TextStyle(
@@ -826,22 +858,26 @@ class _DashboardState extends State<Dashboard> {
                                                                                 color: Colors.black,
                                                                                 fontFamily: 'Poppins-Regular',
                                                                                 fontSize: 18.sp),
-                                                                            textAlign: TextAlign.center,
+                                                                            textAlign:
+                                                                                TextAlign.center,
                                                                           ),
                                                                           SizedBox(
-                                                                            height: 10.h,
+                                                                            height:
+                                                                                10.h,
                                                                           ),
-                                                                          ElevatedButton(onPressed: (){
-                                                                            assignChatRoom(
-                                                                              context,
-                                                                              allUserexceptblocked[index].userName,
-                                                                              allUserexceptblocked[index].userId,
-                                                                              _auth.currentUser!.uid,
-                                                                            );
-
-                                                                          }, child: const Text("CHAT")),
+                                                                          ElevatedButton(
+                                                                              onPressed: () {
+                                                                                assignChatRoom(
+                                                                                  context,
+                                                                                  allUserexceptblocked[index].userName,
+                                                                                  allUserexceptblocked[index].userId,
+                                                                                  _auth.currentUser!.uid,
+                                                                                );
+                                                                              },
+                                                                              child: const Text("CHAT")),
                                                                           Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
                                                                             children: [
                                                                               ApplePayButton(
                                                                                 width: 200,
@@ -851,7 +887,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                 style: ApplePayButtonStyle.black,
                                                                                 type: ApplePayButtonType.buy,
                                                                                 margin: const EdgeInsets.only(top: 15.0),
-                                                                                onPaymentResult: (data){
+                                                                                onPaymentResult: (data) {
                                                                                   print(data);
                                                                                 },
                                                                                 loadingIndicator: const Center(
@@ -866,7 +902,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                 style: GooglePayButtonStyle.black,
                                                                                 type: GooglePayButtonType.pay,
                                                                                 margin: const EdgeInsets.only(top: 15.0),
-                                                                                onPaymentResult:  (data){
+                                                                                onPaymentResult: (data) {
                                                                                   print(data);
                                                                                 },
                                                                                 loadingIndicator: const Center(
@@ -875,7 +911,8 @@ class _DashboardState extends State<Dashboard> {
                                                                               ),
                                                                             ],
                                                                           ),
-                                                                          SizedBox(height: 20.h)
+                                                                          SizedBox(
+                                                                              height: 20.h)
                                                                         ],
                                                                       ),
                                                                     ),
@@ -907,24 +944,30 @@ class _DashboardState extends State<Dashboard> {
                                                               EdgeInsets.zero,
                                                           onPressed: () async {
                                                             bool exits = await isItems(
-                                                                allUserexceptblocked[
+                                                                allUserexceptblockedChat[
                                                                         index]
                                                                     .userId
                                                                     .toString());
+                                                            log(exits
+                                                                .toString());
 
                                                             if (exits) {
                                                               getlikedIds(
-                                                                  allUserexceptblocked[
+                                                                  allUserexceptblockedChat[
                                                                           index]
                                                                       .userId
                                                                       .toString());
+                                                              log(allUserexceptblockedChat[
+                                                                      index]
+                                                                  .userId
+                                                                  .toString());
                                                             } else {
                                                               likeUser(
                                                                   name
                                                                       .toString(),
                                                                   photoUrl[0]
                                                                       .toString(),
-                                                                  allUserexceptblocked[
+                                                                  allUserexceptblockedChat[
                                                                           index]
                                                                       .userId
                                                                       .toString());
@@ -950,15 +993,25 @@ class _DashboardState extends State<Dashboard> {
                                                                           .solidHeart,
                                                                       size:
                                                                           28.sp,
-                                                                      color: AppColors
-                                                                          .white,
+                                                                      color: (allUserexceptblockedChat[index].likedBy.any((item) => currentUserlist.contains(
+                                                                              item)))
+                                                                          ? AppColors
+                                                                              .redcolor
+                                                                          : AppColors
+                                                                              .white,
                                                                     )
                                                               : Icon(
                                                                   FontAwesomeIcons
                                                                       .solidHeart,
                                                                   size: 28.sp,
-                                                                  color:
-                                                                      AppColors
+                                                                  color: (allUserexceptblockedChat[
+                                                                              index]
+                                                                          .likedBy
+                                                                          .any((item) => currentUserlist.contains(
+                                                                              item)))
+                                                                      ? AppColors
+                                                                          .redcolor
+                                                                      : AppColors
                                                                           .white,
                                                                 ))),
                                                 ),
@@ -978,9 +1031,11 @@ class _DashboardState extends State<Dashboard> {
                                     width: 2.w,
                                   ),
                                   Image.asset(
-                                    allUserexceptblocked[index].gender == "Man"
+                                    allUserexceptblockedChat[index].gender ==
+                                            "Man"
                                         ? male
-                                        : allUserexceptblocked[index].gender ==
+                                        : allUserexceptblockedChat[index]
+                                                    .gender ==
                                                 "Woman"
                                             ? female
                                             : other,
@@ -990,13 +1045,14 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   SizedBox(width: 5.w),
                                   Image.asset(
-                                    allUserexceptblocked[index].genes ==
+                                    allUserexceptblockedChat[index].genes ==
                                             "Hetero"
                                         ? hetero
-                                        : allUserexceptblocked[index].genes ==
+                                        : allUserexceptblockedChat[index]
+                                                    .genes ==
                                                 "Lesbian"
                                             ? lesbian
-                                            : allUserexceptblocked[index]
+                                            : allUserexceptblockedChat[index]
                                                         .genes ==
                                                     "Gay"
                                                 ? gay
@@ -1008,7 +1064,7 @@ class _DashboardState extends State<Dashboard> {
                                 ],
                               ),
                               SizedBox(height: 10.h),
-                              text(context, allUserexceptblocked[index].bio,
+                              text(context, allUserexceptblockedChat[index].bio,
                                   12.sp,
                                   color: AppColors.white,
                                   fontFamily: 'Poppins-Regular'),
@@ -1230,11 +1286,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   likeUser(name, image, id) async {
-    var rnd = math.Random();
-    var next = rnd.nextDouble() * 1000000;
-    while (next < 100000) {
-      next *= 10;
-    }
     User? user = _auth.currentUser;
 
     await firebaseFirestore
@@ -1246,7 +1297,9 @@ class _DashboardState extends State<Dashboard> {
       'name': name.toString(),
       'imageUrl': image.toString(),
       'likedId': user.uid.toString()
-    }).then((text) {
+    }).then((text) async {
+      saveDatainLikedBy(id);
+
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {
         setState(() {
@@ -1259,6 +1312,15 @@ class _DashboardState extends State<Dashboard> {
         loading = false;
       });
     }
+  }
+
+  saveDatainLikedBy(String id) async {
+    var collection = FirebaseFirestore.instance.collection('users');
+    collection
+        .doc(id)
+        .update({'likedBy': FieldValue.arrayUnion(currentUserlist)})
+        .then((_) => print('Added'))
+        .catchError((error) => print('Add failed: $error'));
   }
 
   blockUser(name, image, id) async {
@@ -1310,7 +1372,7 @@ class _DashboardState extends State<Dashboard> {
       'message': message,
       'report_id': idreport,
     }).then((text) {
-      ToastUtils.showCustomToast(context, "User Reported", Colors.green);
+      ToastUtils.showCustomToast(context, "User Reported", Colors.red);
       if (mounted) {
         setState(() {
           feedLoad = false;
@@ -1404,22 +1466,30 @@ class _DashboardState extends State<Dashboard> {
     return querySnapshot.docs.isNotEmpty;
   }
 
-  getlikedIds(String id) async {
+  getlikedIds(String givenid) async {
     User? user = _auth.currentUser;
+
     await firebaseFirestore
         .collection("users")
-        .doc(id)
+        .doc(givenid)
         .collection("likes")
-        .doc(user!.uid)
+        .where("likedId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      print(value.data()!.length);
-      if (value.data()!.isNotEmpty) {
-        ToastUtils.showCustomToast(context, "Already Liked", Colors.green);
+      log(value.docs.length.toString());
+      if (value.docs.length == 1) {
+        if (mounted) {
+          setState(() {
+            alreadyLiked = true;
+          });
+        }
+
+        ToastUtils.showCustomToast(context, "Already Liked", Colors.red);
       } else {
-        likeUser(name.toString(), photoUrl[0].toString(), id);
+        likeUser(name.toString(), photoUrl[0].toString(), givenid);
       }
     }).catchError((e) {
+      log("here");
       log(e.toString());
     });
   }
@@ -1446,12 +1516,39 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-
   Future<bool> testing(String uid) async {
     CollectionReference collectionReference =
         firebaseFirestore.collection("users").doc(uid).collection("blocked_By");
     DocumentSnapshot documentSnapshot =
         await collectionReference.doc(_auth.currentUser!.uid).get();
     return documentSnapshot.exists;
+  }
+
+  Future<bool> testingChat(targetID, userID) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("chatrooms")
+        .where(
+          "participants.$userID",
+          isEqualTo: userID,
+        )
+        .where(
+          "participants.$targetID",
+          isEqualTo: targetID,
+        )
+        .get();
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> alreadyLikedUser(targetID) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(targetID)
+        .collection("likes")
+        .where(
+          "likedId",
+          isEqualTo: _auth.currentUser!.uid,
+        )
+        .get();
+    return snapshot.docs.isNotEmpty;
   }
 }

@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 
-
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,7 +26,8 @@ class MatchedSuccessed extends StatefulWidget {
       participantid,
       matchedid,
       participantname,
-      matchedname;
+      matchedname,
+      showName;
   int counter;
   MatchedSuccessed(
       {Key? key,
@@ -37,7 +37,8 @@ class MatchedSuccessed extends StatefulWidget {
       required this.participantid,
       required this.matchedname,
       required this.counter,
-      required this.participantname})
+      required this.participantname,
+      required this.showName})
       : super(key: key);
 
   @override
@@ -59,22 +60,22 @@ class _MatchScreenState extends State<MatchedSuccessed> {
     addCountertodb();
   }
 
-
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(BuildContext context, targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(
+      BuildContext context, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
         .where(
-      "participants.$userID",
-      isEqualTo: userID,
-    )
+          "participants.$userID",
+          isEqualTo: userID,
+        )
         .where(
-      "participants.$targetID",
-      isEqualTo: targetID,
-    )
+          "participants.$targetID",
+          isEqualTo: targetID,
+        )
         .get();
 
     if (snapshot.docs.isNotEmpty) {
@@ -83,12 +84,13 @@ class _MatchScreenState extends State<MatchedSuccessed> {
       var docData = snapshot.docs[0].data();
 
       ChatRoomModel existingChatRoom =
-      ChatRoomModel.fromMap(docData as Map<String, dynamic>);
+          ChatRoomModel.fromMap(docData as Map<String, dynamic>);
       log("Exiting chat Room : ${existingChatRoom.chatroomid}");
       log("Exiting chat participants : ${existingChatRoom.participants}");
       chatRoom = existingChatRoom;
 
-      ToastUtils.showCustomToast(context, "Chat room already assigned", Colors.red);
+      ToastUtils.showCustomToast(
+          context, "Chat room already assigned", Colors.red);
       AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
     } else {
       log("ChatRoom Not Available");
@@ -106,7 +108,6 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           targetID.toString(): targetID.toString(),
           userID.toString(): userID.toString(),
         },
-
       );
 
       await FirebaseFirestore.instance
@@ -196,7 +197,8 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 5,
-                                  color: const Color.fromARGB(255, 103, 102, 102)),
+                                  color:
+                                      const Color.fromARGB(255, 103, 102, 102)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: ClipRRect(
@@ -239,15 +241,17 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                       )),
                 ),
 
-                Positioned(
-                  top: 165,
-                  left: 75,
-                  child: RotationTransition(
-                    turns: const AlwaysStoppedAnimation(-15 / 360),
-                    child: text(context, widget.participantname, 20.sp,
-                        color: Colors.white, fontFamily: "Poppins-Medium"),
+                if (widget.showName.toString() == "true") ...[
+                  Positioned(
+                    top: 165,
+                    left: 75,
+                    child: RotationTransition(
+                      turns: const AlwaysStoppedAnimation(-15 / 360),
+                      child: text(context, widget.participantname, 20.sp,
+                          color: Colors.white, fontFamily: "Poppins-Medium"),
+                    ),
                   ),
-                ),
+                ],
 
                 Positioned(
                   top: 70,
@@ -263,7 +267,8 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                           decoration: BoxDecoration(
                               border: Border.all(
                                   width: 5,
-                                  color: const Color.fromARGB(255, 103, 102, 102)),
+                                  color:
+                                      const Color.fromARGB(255, 103, 102, 102)),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: ClipRRect(
@@ -317,13 +322,15 @@ class _MatchScreenState extends State<MatchedSuccessed> {
               ],
             ),
             const Spacer(flex: 1),
-            DefaultButton(text: "START CHAT", press: () {
-              assignChatRoom(
-                context,
-                widget.matchedid.toString(),
-                _auth.currentUser!.uid,
-              );
-            }),
+            DefaultButton(
+                text: "START CHAT",
+                press: () {
+                  assignChatRoom(
+                    context,
+                    widget.matchedid.toString(),
+                    _auth.currentUser!.uid,
+                  );
+                }),
             SizedBox(
               height: 20.h,
             ),
