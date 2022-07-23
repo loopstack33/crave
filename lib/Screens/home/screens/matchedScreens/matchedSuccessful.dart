@@ -116,8 +116,10 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
       AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
-      FCMServices.sendFCM("crave", targetID.toString(), matchedname.toString(), "Want's to chat with you.");
-      ToastUtils.showCustomToast(context, "ChatRoom Assigned Success", Colors.green);
+      FCMServices.sendFCM("crave", targetID.toString(), matchedname.toString(),
+          "Want's to chat with you.");
+      ToastUtils.showCustomToast(
+          context, "ChatRoom Assigned Success", Colors.green);
     }
 
     return chatRoom;
@@ -145,7 +147,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
-        //automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         flexibleSpace: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
@@ -155,11 +157,11 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                 Text("Random Matches",
                     style: TextStyle(
                         fontFamily: 'Poppins-Medium', fontSize: 22.sp)),
-                Image.asset(
-                  circle,
-                  width: 30.w,
-                  height: 30.h,
-                )
+                // Image.asset(
+                //   circle,
+                //   width: 30.w,
+                //   height: 30.h,
+                // )
               ],
             ),
           ),

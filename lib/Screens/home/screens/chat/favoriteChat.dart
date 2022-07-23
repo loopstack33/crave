@@ -30,6 +30,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   String name = 'Name';
   String id = '';
+  String? currentGender;
   List<dynamic> photoUrl = [];
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
         id = value.data()!["uid"];
         photoUrl = value.data()!["imageUrl"];
         name = value.data()!["name"];
+        currentGender = value.data()!["gender"];
       });
     });
   }
@@ -194,175 +196,182 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
-                              const paymentItems = [
-                                PaymentItem(
-                                  label: 'Crave ChatPay',
-                                  amount: '1.99',
-                                  status: PaymentItemStatus.final_price,
-                                )
-                              ];
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      elevation: 0.0,
-                                      backgroundColor: Colors.transparent,
-                                      child: Container(
-                                        width: 515.w,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
+                              if (currentGender == "Man") {
+                                const paymentItems = [
+                                  PaymentItem(
+                                    label: 'Crave ChatPay',
+                                    amount: '1.99',
+                                    status: PaymentItemStatus.final_price,
+                                  )
+                                ];
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(14.r),
+                                              BorderRadius.circular(10),
                                         ),
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    right: 8.0,
-                                                    top: 5.0,
-                                                    bottom: 5.0),
-                                                width: 515.w,
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.redcolor,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  14.r),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  14.r)),
-                                                ),
-                                                child: Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    "Action Required",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
-                                                        fontFamily:
-                                                            'Poppins-Medium',
-                                                        fontSize: 22.sp),
+                                        elevation: 0.0,
+                                        backgroundColor: Colors.transparent,
+                                        child: Container(
+                                          width: 515.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(14.r),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          right: 8.0,
+                                                          top: 5.0,
+                                                          bottom: 5.0),
+                                                  width: 515.w,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.redcolor,
+                                                    borderRadius: BorderRadius
+                                                        .only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    14.r),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    14.r)),
+                                                  ),
+                                                  child: Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      "Action Required",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              'Poppins-Medium',
+                                                          fontSize: 22.sp),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(height: 10.h),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      width: 50.w,
-                                                      height: 50.h,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color:
-                                                            AppColors.redcolor,
+                                                SizedBox(height: 10.h),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                        width: 50.w,
+                                                        height: 50.h,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: AppColors
+                                                              .redcolor,
+                                                        ),
+                                                        child:
+                                                            Image.asset(icon)),
+                                                    SizedBox(
+                                                      width: 20.w,
+                                                    ),
+                                                    Text(
+                                                      "Confirm",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black,
+                                                          fontFamily:
+                                                              'Poppins-Medium',
+                                                          fontSize: 20.sp),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10.h),
+                                                Text(
+                                                  "For chatting without liking pay 1.99 \$.",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      color: Colors.black,
+                                                      fontFamily:
+                                                          'Poppins-Regular',
+                                                      fontSize: 18.sp),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                SizedBox(
+                                                  height: 10.h,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    ApplePayButton(
+                                                      width: 200,
+                                                      height: 50,
+                                                      paymentConfigurationAsset:
+                                                          'files/applepay.json',
+                                                      paymentItems:
+                                                          paymentItems,
+                                                      style: ApplePayButtonStyle
+                                                          .black,
+                                                      type: ApplePayButtonType
+                                                          .buy,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 15.0),
+                                                      onPaymentResult: (data) {
+                                                        print(data);
+                                                      },
+                                                      loadingIndicator:
+                                                          const Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
                                                       ),
-                                                      child: Image.asset(icon)),
-                                                  SizedBox(
-                                                    width: 20.w,
-                                                  ),
-                                                  Text(
-                                                    "Confirm",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.black,
-                                                        fontFamily:
-                                                            'Poppins-Medium',
-                                                        fontSize: 20.sp),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(height: 10.h),
-                                              Text(
-                                                "For chatting without liking pay 1.99 \$.",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    color: Colors.black,
-                                                    fontFamily:
-                                                        'Poppins-Regular',
-                                                    fontSize: 18.sp),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              SizedBox(
-                                                height: 10.h,
-                                              ),
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    assignChatRoom(
-                                                      context,
-                                                      name,
-                                                      docs[index]["likedId"],
-                                                      id,
-                                                    );
-                                                  },
-                                                  child: const Text("CHAT")),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  ApplePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset:
-                                                        'files/applepay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: ApplePayButtonStyle
-                                                        .black,
-                                                    type:
-                                                        ApplePayButtonType.buy,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                    },
-                                                    loadingIndicator:
-                                                        const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
                                                     ),
-                                                  ),
-                                                  GooglePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset:
-                                                        'files/gpay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: GooglePayButtonStyle
-                                                        .black,
-                                                    type:
-                                                        GooglePayButtonType.pay,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                    },
-                                                    loadingIndicator:
-                                                        const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
+                                                    GooglePayButton(
+                                                      width: 200,
+                                                      height: 50,
+                                                      paymentConfigurationAsset:
+                                                          'files/gpay.json',
+                                                      paymentItems:
+                                                          paymentItems,
+                                                      style:
+                                                          GooglePayButtonStyle
+                                                              .black,
+                                                      type: GooglePayButtonType
+                                                          .pay,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 15.0),
+                                                      onPaymentResult: (data) {
+                                                        print(data);
+                                                      },
+                                                      loadingIndicator:
+                                                          const Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 20.h)
-                                            ],
+                                                  ],
+                                                ),
+                                                SizedBox(height: 20.h)
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  });
+                                      );
+                                    });
+                              } else {
+                                assignChatRoom(
+                                  context,
+                                  name,
+                                  docs[index]["likedId"],
+                                  id,
+                                );
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),

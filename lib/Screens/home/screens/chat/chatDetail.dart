@@ -23,29 +23,46 @@ import '../../../../model/message_model.dart';
 import 'call/screen/call_screen.dart';
 import 'messagesWidgets/display_text_gif.dart';
 
-class ChatDetailPage extends StatefulWidget{
+class ChatDetailPage extends StatefulWidget {
   final UsersModel targetUser;
   final ChatRoomModel chatRoom;
   final UsersModel userModel;
   final status;
-  const ChatDetailPage({Key? key,
+  const ChatDetailPage({
+    Key? key,
     required this.targetUser,
     required this.chatRoom,
     required this.userModel,
-    required this.status,}) : super(key: key);
+    required this.status,
+  }) : super(key: key);
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
-class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObserver{
+class _ChatDetailPageState extends State<ChatDetailPage>
+    with WidgetsBindingObserver {
   final ScrollController controller = ScrollController();
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
-
+  List<UsersModel> currentUsersData = [];
+  UsersModel? loggedInUser;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  currentuser() async {
+    //currentuserdata
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(auth.currentUser!.uid)
+        .get()
+        .then((value) {
+      loggedInUser = UsersModel.fromDocument(value);
+      currentUsersData.add(loggedInUser!);
+    });
   }
 
   @override
@@ -60,96 +77,104 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
     return CallPickUp(
       scaffold: Scaffold(
         backgroundColor: AppColors.white,
-          appBar: AppBar(
-            elevation: 1,
-            toolbarHeight: 80,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            flexibleSpace: SafeArea(
-              child: Container(
-                padding:const EdgeInsets.only(right: 16),
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: (){
-                        Navigator.pop(context);
-                      },
-                      icon:const Icon(
-                        Icons.arrow_back_ios,
-                        color: AppColors.redcolor,
-                      ),
+        appBar: AppBar(
+          elevation: 1,
+          toolbarHeight: 80,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          flexibleSpace: SafeArea(
+            child: Container(
+              padding: const EdgeInsets.only(right: 16),
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: AppColors.redcolor,
                     ),
-                    SizedBox(width: 2.w),
-                    SizedBox(
-                      width: 50.w,
-                      height: 50.h,
-                      child: ClipOval(
-                        child: Image.network(
-                          widget.targetUser.imgUrl[0].toString(),
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext ctx, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                    null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                    : null,
-                              ),
-                            );
-                          },
-                          errorBuilder: (
-                              BuildContext context,
-                              Object exception,
-                              StackTrace? stackTrace,
-                              ) {
-                            return Text(
-                              'Oops!! An error occurred. 😢',
-                              style: TextStyle(fontSize: 16.sp),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(widget.targetUser.userName,style: TextStyle( fontFamily: 'Poppins-Medium',fontSize: 13.sp),),
-                          Row(children: [
-                            Container(
-                              width: 6.w,
-                              height: 6.h,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: widget.status.toString() == "online"
-                                      ? Colors.lightGreenAccent
-                                      : Colors.grey),
+                  ),
+                  SizedBox(width: 2.w),
+                  SizedBox(
+                    width: 50.w,
+                    height: 50.h,
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.targetUser.imgUrl[0].toString(),
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext ctx, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
                             ),
-                            SizedBox(width: 5.w),
-                            Text(
+                          );
+                        },
+                        errorBuilder: (
+                          BuildContext context,
+                          Object exception,
+                          StackTrace? stackTrace,
+                        ) {
+                          return Text(
+                            'Oops!! An error occurred. 😢',
+                            style: TextStyle(fontSize: 16.sp),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          widget.targetUser.userName,
+                          style: TextStyle(
+                              fontFamily: 'Poppins-Medium', fontSize: 13.sp),
+                        ),
+                        Row(children: [
+                          Container(
+                            width: 6.w,
+                            height: 6.h,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: widget.status.toString() == "online"
+                                    ? Colors.lightGreenAccent
+                                    : Colors.grey),
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
                               widget.status.toString() == "online"
                                   ? "Active Now"
-                                  : "Offline",style: TextStyle(fontFamily: 'Poppins-Regular', fontSize: 10.sp)
-
-                            ),
-                          ]),
-
-                           Text("00:15:31",style: TextStyle(fontFamily: 'Poppins-SemiBold', fontSize: 10.sp),),
-                        ],
-                      ),
+                                  : "Offline",
+                              style: TextStyle(
+                                  fontFamily: 'Poppins-Regular',
+                                  fontSize: 10.sp)),
+                        ]),
+                        Text(
+                          "00:15:31",
+                          style: TextStyle(
+                              fontFamily: 'Poppins-SemiBold', fontSize: 10.sp),
+                        ),
+                      ],
                     ),
-                    //Image.asset(video,width: 30.w,height: 30.h,),
-                    GestureDetector(
-                        onTap: (){
-                        /*  const paymentItems = [
+                  ),
+                  //Image.asset(video,width: 30.w,height: 30.h,),
+                  GestureDetector(
+                      onTap: () {
+                        if (currentUsersData[0].gender == "Man") {
+                          const paymentItems = [
                             PaymentItem(
                               label: 'Crave VideoCall',
                               amount: '1.99',
@@ -158,9 +183,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                           ];
                           showDialog(
                               context: context,
-                              builder:
-                                  (BuildContext
-                              context) {
+                              builder: (BuildContext context) {
                                 return Dialog(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -178,13 +201,18 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                                left: 8.0,
+                                                right: 8.0,
+                                                top: 5.0,
+                                                bottom: 5.0),
                                             width: 515.w,
                                             decoration: BoxDecoration(
                                               color: AppColors.redcolor,
                                               borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(14.r),
-                                                  topRight: Radius.circular(14.r)),
+                                                  topLeft:
+                                                      Radius.circular(14.r),
+                                                  topRight:
+                                                      Radius.circular(14.r)),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
@@ -193,19 +221,22 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: Colors.white,
-                                                    fontFamily: 'Poppins-Medium',
+                                                    fontFamily:
+                                                        'Poppins-Medium',
                                                     fontSize: 22.sp),
                                               ),
                                             ),
                                           ),
                                           SizedBox(height: 10.h),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Container(
                                                   width: 50.w,
                                                   height: 50.h,
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     color: AppColors.redcolor,
                                                   ),
@@ -218,7 +249,8 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black,
-                                                    fontFamily: 'Poppins-Medium',
+                                                    fontFamily:
+                                                        'Poppins-Medium',
                                                     fontSize: 20.sp),
                                               )
                                             ],
@@ -237,36 +269,45 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                             height: 10.h,
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               ApplePayButton(
                                                 width: 200,
                                                 height: 50,
-                                                paymentConfigurationAsset: 'files/applepay.json',
+                                                paymentConfigurationAsset:
+                                                    'files/applepay.json',
                                                 paymentItems: paymentItems,
-                                                style: ApplePayButtonStyle.black,
+                                                style:
+                                                    ApplePayButtonStyle.black,
                                                 type: ApplePayButtonType.buy,
-                                                margin: const EdgeInsets.only(top: 15.0),
-                                                onPaymentResult: (data){
+                                                margin: const EdgeInsets.only(
+                                                    top: 15.0),
+                                                onPaymentResult: (data) {
                                                   print(data);
                                                 },
                                                 loadingIndicator: const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
                                               ),
                                               GooglePayButton(
                                                 width: 200,
                                                 height: 50,
-                                                paymentConfigurationAsset: 'files/gpay.json',
+                                                paymentConfigurationAsset:
+                                                    'files/gpay.json',
                                                 paymentItems: paymentItems,
-                                                style: GooglePayButtonStyle.black,
+                                                style:
+                                                    GooglePayButtonStyle.black,
                                                 type: GooglePayButtonType.pay,
-                                                margin: const EdgeInsets.only(top: 15.0),
-                                                onPaymentResult:  (data){
+                                                margin: const EdgeInsets.only(
+                                                    top: 15.0),
+                                                onPaymentResult: (data) {
                                                   print(data);
                                                 },
                                                 loadingIndicator: const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
                                               ),
                                             ],
@@ -277,33 +318,52 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                     ),
                                   ),
                                 );
-                              });*/
-                          makeCall(context, widget.targetUser.userName.toString(), widget.targetUser.userId.toString(), widget.targetUser.imgUrl[0].toString(), false);
+                              });
 
-                        },
-                        child: Icon(FontAwesomeIcons.video,color: AppColors.redcolor,size: 25.sp,)),
-                    SizedBox(width: 10.w),
-                 //   Icon(FontAwesomeIcons.ellipsisVertical,color: AppColors.black,size: 25.sp,),
-                  ],
-                ),
+                          // makeCall(context, widget.targetUser.userName.toString(), widget.targetUser.userId.toString(), widget.targetUser.imgUrl[0].toString(), false);
+
+                        } else {
+                          makeCall(
+                              context,
+                              widget.targetUser.userName.toString(),
+                              widget.targetUser.userId.toString(),
+                              widget.targetUser.imgUrl[0].toString(),
+                              false);
+                        }
+                      },
+                      child: Icon(
+                        FontAwesomeIcons.video,
+                        color: AppColors.redcolor,
+                        size: 25.sp,
+                      )),
+                  SizedBox(width: 10.w),
+                  //   Icon(FontAwesomeIcons.ellipsisVertical,color: AppColors.black,size: 25.sp,),
+                ],
               ),
             ),
           ),
+        ),
         body: Stack(
           children: <Widget>[
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                padding:const EdgeInsets.only(left: 20,right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 height: 30.h,
                 width: double.infinity,
                 color: Colors.black.withOpacity(0.03),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("This chat will self destruct soon.",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular'),),
+                    Text(
+                      "This chat will self destruct soon.",
+                      style: TextStyle(
+                          color: AppColors.shadeLight,
+                          fontSize: 11.sp,
+                          fontFamily: 'Poppins-Regular'),
+                    ),
                     GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           const paymentItems = [
                             PaymentItem(
                               label: 'Crave ChatPay',
@@ -313,9 +373,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                           ];
                           showDialog(
                               context: context,
-                              builder:
-                                  (BuildContext
-                              context) {
+                              builder: (BuildContext context) {
                                 return Dialog(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -333,13 +391,18 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.only(
-                                                left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                                left: 8.0,
+                                                right: 8.0,
+                                                top: 5.0,
+                                                bottom: 5.0),
                                             width: 515.w,
                                             decoration: BoxDecoration(
                                               color: AppColors.redcolor,
                                               borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(14.r),
-                                                  topRight: Radius.circular(14.r)),
+                                                  topLeft:
+                                                      Radius.circular(14.r),
+                                                  topRight:
+                                                      Radius.circular(14.r)),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
@@ -348,19 +411,22 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: Colors.white,
-                                                    fontFamily: 'Poppins-Medium',
+                                                    fontFamily:
+                                                        'Poppins-Medium',
                                                     fontSize: 22.sp),
                                               ),
                                             ),
                                           ),
                                           SizedBox(height: 10.h),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Container(
                                                   width: 50.w,
                                                   height: 50.h,
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     color: AppColors.redcolor,
                                                   ),
@@ -373,7 +439,8 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black,
-                                                    fontFamily: 'Poppins-Medium',
+                                                    fontFamily:
+                                                        'Poppins-Medium',
                                                     fontSize: 20.sp),
                                               )
                                             ],
@@ -392,36 +459,45 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                             height: 10.h,
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               ApplePayButton(
                                                 width: 200,
                                                 height: 50,
-                                                paymentConfigurationAsset: 'files/applepay.json',
+                                                paymentConfigurationAsset:
+                                                    'files/applepay.json',
                                                 paymentItems: paymentItems,
-                                                style: ApplePayButtonStyle.black,
+                                                style:
+                                                    ApplePayButtonStyle.black,
                                                 type: ApplePayButtonType.buy,
-                                                margin: const EdgeInsets.only(top: 15.0),
-                                                onPaymentResult: (data){
+                                                margin: const EdgeInsets.only(
+                                                    top: 15.0),
+                                                onPaymentResult: (data) {
                                                   print(data);
                                                 },
                                                 loadingIndicator: const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
                                               ),
                                               GooglePayButton(
                                                 width: 200,
                                                 height: 50,
-                                                paymentConfigurationAsset: 'files/gpay.json',
+                                                paymentConfigurationAsset:
+                                                    'files/gpay.json',
                                                 paymentItems: paymentItems,
-                                                style: GooglePayButtonStyle.black,
+                                                style:
+                                                    GooglePayButtonStyle.black,
                                                 type: GooglePayButtonType.pay,
-                                                margin: const EdgeInsets.only(top: 15.0),
-                                                onPaymentResult:  (data){
+                                                margin: const EdgeInsets.only(
+                                                    top: 15.0),
+                                                onPaymentResult: (data) {
                                                   print(data);
                                                 },
                                                 loadingIndicator: const Center(
-                                                  child: CircularProgressIndicator(),
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
                                               ),
                                             ],
@@ -434,15 +510,17 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                 );
                               });
                         },
-                        child: Text("turn off chat timer",style: TextStyle(color: AppColors.shadeLight,fontSize: 11.sp,fontFamily: 'Poppins-Regular')))
-
+                        child: Text("turn off chat timer",
+                            style: TextStyle(
+                                color: AppColors.shadeLight,
+                                fontSize: 11.sp,
+                                fontFamily: 'Poppins-Regular')))
                   ],
-
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 55.0,top: 30.0),
+              padding: const EdgeInsets.only(bottom: 55.0, top: 30.0),
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("chatrooms")
@@ -451,11 +529,10 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                     .orderBy("createdon", descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.active) {
+                  if (snapshot.connectionState == ConnectionState.active) {
                     if (snapshot.hasData) {
                       QuerySnapshot dataSnapshot =
-                      snapshot.data as QuerySnapshot;
+                          snapshot.data as QuerySnapshot;
 
                       // SchedulerBinding.instance.addPostFrameCallback((_) {
                       //   controller.jumpTo(controller.position.);
@@ -466,129 +543,195 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                         reverse: true,
                         itemCount: dataSnapshot.docs.length,
                         itemBuilder: (context, index) {
-                          MessageModel currentMessage = MessageModel.fromMap(dataSnapshot.docs[index].data() as Map<String, dynamic>);
+                          MessageModel currentMessage = MessageModel.fromMap(
+                              dataSnapshot.docs[index].data()
+                                  as Map<String, dynamic>);
                           // Text
-                          return  currentMessage.type == "text" ?
-                          Container(
-                            padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
-                            child: Align(
-                              alignment: ( (currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft),
-                              child: Column(
-                                crossAxisAlignment:  (currentMessage.sender == widget.userModel.userId)? CrossAxisAlignment.end: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: (currentMessage.sender == widget.userModel.userId)?
-                                      BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomLeft: Radius.circular(15.r)):BorderRadius.only(topLeft: Radius.circular(15.r),topRight: Radius.circular(15.r),bottomRight: Radius.circular(15.r)),
-                                      color: ( (currentMessage.sender == widget.userModel.userId)?AppColors.chatColor:Colors.grey.shade200),
+                          return currentMessage.type == "text"
+                              ? Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 14, right: 14, top: 10, bottom: 10),
+                                  child: Align(
+                                    alignment: ((currentMessage.sender ==
+                                            widget.userModel.userId)
+                                        ? Alignment.topRight
+                                        : Alignment.topLeft),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          (currentMessage.sender ==
+                                                  widget.userModel.userId)
+                                              ? CrossAxisAlignment.end
+                                              : CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: (currentMessage
+                                                        .sender ==
+                                                    widget.userModel.userId)
+                                                ? BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(15.r),
+                                                    topRight:
+                                                        Radius.circular(15.r),
+                                                    bottomLeft:
+                                                        Radius.circular(15.r))
+                                                : BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(15.r),
+                                                    topRight:
+                                                        Radius.circular(15.r),
+                                                    bottomRight:
+                                                        Radius.circular(15.r)),
+                                            color: ((currentMessage.sender ==
+                                                    widget.userModel.userId)
+                                                ? AppColors.chatColor
+                                                : Colors.grey.shade200),
+                                          ),
+                                          padding: const EdgeInsets.all(16),
+                                          child: Text(
+                                            currentMessage.text!,
+                                            style: TextStyle(
+                                                fontSize: 15.sp,
+                                                fontFamily: 'Poppins-Regular',
+                                                color: AppColors.shadeText),
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.h),
+                                        Row(
+                                          mainAxisAlignment:
+                                              (currentMessage.sender ==
+                                                      widget.userModel.userId)
+                                                  ? MainAxisAlignment.end
+                                                  : MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              DateFormat.jm().format(
+                                                  currentMessage.createdon!),
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins-Medium',
+                                                  fontSize: 10.sp,
+                                                  color: const Color(0xFF606060)
+                                                      .withOpacity(0.6)),
+                                            ),
+                                            SizedBox(width: 5.w),
+                                            Image.asset(
+                                              tick,
+                                              width: 15.w,
+                                              height: 15.h,
+                                              color: currentMessage.seen
+                                                          .toString() ==
+                                                      "true"
+                                                  ? null
+                                                  : AppColors.lightGrey,
+                                            )
+                                          ],
+                                        )
+                                      ],
                                     ),
-                                    padding: const EdgeInsets.all(16),
-                                    child: Text(currentMessage.text!, style: TextStyle(fontSize: 15.sp,fontFamily: 'Poppins-Regular',color: AppColors.shadeText),),
                                   ),
-                                  SizedBox(height: 5.h),
-                                  Row(
-                                    mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?  MainAxisAlignment.end:MainAxisAlignment.start,
-                                    children: [
-                                      Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
-                                      SizedBox(width: 5.w),
-                                      Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString() =="true"?null:AppColors.lightGrey ,)
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ):
-                          // Image
-                          currentMessage.type == "image" ?
-                          GestureDetector(
-                            onTap: (){
-                              AppRoutes.push(context, PageTransitionType.rightToLeft,  FullPhotoPage(type: true,url: currentMessage.text!),);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
-                              child: Align(
-                                alignment: (currentMessage.sender == widget.userModel.userId)?Alignment.topRight:Alignment.topLeft,
-                                child: Column(
-                                  crossAxisAlignment:  (currentMessage.sender == widget.userModel.userId)? CrossAxisAlignment.end: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius: BorderRadius.circular(15.r),
-                                        child:/* currentMessage
+                                )
+                              :
+                              // Image
+                              currentMessage.type == "image"
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        AppRoutes.push(
+                                          context,
+                                          PageTransitionType.rightToLeft,
+                                          FullPhotoPage(
+                                              type: true,
+                                              url: currentMessage.text!),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.only(
+                                            left: 14,
+                                            right: 14,
+                                            top: 10,
+                                            bottom: 10),
+                                        child: Align(
+                                          alignment: (currentMessage.sender ==
+                                                  widget.userModel.userId)
+                                              ? Alignment.topRight
+                                              : Alignment.topLeft,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                (currentMessage.sender ==
+                                                        widget.userModel.userId)
+                                                    ? CrossAxisAlignment.end
+                                                    : CrossAxisAlignment.start,
+                                            children: [
+                                              ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                  child: /* currentMessage
                                             .text !=
                                             ""
                                             ? */
-                                            Image.network(
-                                          currentMessage
-                                              .text!,
-                                          loadingBuilder: (BuildContext
-                                          context,
-                                              Widget
-                                              child,
-                                              ImageChunkEvent?
-                                              loadingProgress) {
-                                            if (loadingProgress ==
-                                                null) {
-                                              return child;
-                                            }
-                                            return Container(
-                                              decoration:
-                                              BoxDecoration(
-                                                color:
-                                                AppColors.white,
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                  Radius.circular(8.r),
-                                                ),
-                                              ),
-                                              width:
-                                              200.w,
-                                              height:
-                                              200.h,
-                                              child:
-                                              Center(
-                                                child:
-                                                CircularProgressIndicator(
-                                                  color:
-                                                  AppColors.redcolor,
-                                                  value: loadingProgress.expectedTotalBytes != null
-                                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                                      : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context,
-                                              object,
-                                              stackTrace) {
-                                            return Material(
-                                              borderRadius:
-                                              BorderRadius.all(
-                                                Radius.circular(
-                                                    8.r),
-                                              ),
-                                              clipBehavior:
-                                              Clip.hardEdge,
-                                              child: Image
-                                                  .asset(
-                                                'assets/images/icon.png',
-                                                width:
-                                                200.w,
-                                                height:
-                                                200.h,
-                                                fit: BoxFit
-                                                    .cover,
-                                              ),
-                                            );
-                                          },
-                                          width:
-                                          200.w,
-                                          height:
-                                          200.h,
-                                          fit: BoxFit
-                                              .cover,
-                                        )
-                                            /*: Center(
+                                                      Image.network(
+                                                    currentMessage.text!,
+                                                    loadingBuilder: (BuildContext
+                                                            context,
+                                                        Widget child,
+                                                        ImageChunkEvent?
+                                                            loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) {
+                                                        return child;
+                                                      }
+                                                      return Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              AppColors.white,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                8.r),
+                                                          ),
+                                                        ),
+                                                        width: 200.w,
+                                                        height: 200.h,
+                                                        child: Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: AppColors
+                                                                .redcolor,
+                                                            value: loadingProgress
+                                                                        .expectedTotalBytes !=
+                                                                    null
+                                                                ? loadingProgress
+                                                                        .cumulativeBytesLoaded /
+                                                                    loadingProgress
+                                                                        .expectedTotalBytes!
+                                                                : null,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (context,
+                                                        object, stackTrace) {
+                                                      return Material(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                          Radius.circular(8.r),
+                                                        ),
+                                                        clipBehavior:
+                                                            Clip.hardEdge,
+                                                        child: Image.asset(
+                                                          'assets/images/icon.png',
+                                                          width: 200.w,
+                                                          height: 200.h,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      );
+                                                    },
+                                                    width: 200.w,
+                                                    height: 200.h,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                  /*: Center(
                                           child: StreamBuilder<
                                               TaskSnapshot>(
                                               stream: uploadTask
@@ -632,43 +775,79 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                                               }),
                                         ),*/
 
+                                                  ),
+                                              SizedBox(height: 5.h),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    (currentMessage.sender ==
+                                                            widget.userModel
+                                                                .userId)
+                                                        ? MainAxisAlignment.end
+                                                        : MainAxisAlignment
+                                                            .start,
+                                                children: [
+                                                  Text(
+                                                    DateFormat.jm().format(
+                                                        currentMessage
+                                                            .createdon!),
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Poppins-Medium',
+                                                        fontSize: 10.sp,
+                                                        color: const Color(
+                                                                0xFF606060)
+                                                            .withOpacity(0.6)),
+                                                  ),
+                                                  SizedBox(width: 5.w),
+                                                  Image.asset(
+                                                    tick,
+                                                    width: 15.w,
+                                                    height: 15.h,
+                                                    color: currentMessage.seen
+                                                                .toString() ==
+                                                            "true"
+                                                        ? null
+                                                        : AppColors.lightGrey,
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    SizedBox(height: 5.h),
-                                    Row(
-                                      mainAxisAlignment:  (currentMessage.sender == widget.userModel.userId)?
-                                      MainAxisAlignment.end:  MainAxisAlignment.start,
-                                      children: [
-                                        Text(DateFormat.jm().format(currentMessage.createdon!),style: TextStyle(fontFamily: 'Poppins-Medium',fontSize: 10.sp,color:const Color(0xFF606060).withOpacity(0.6)),),
-                                        SizedBox(width: 5.w),
-                                        Image.asset(tick,width: 15.w,height: 15.h,color:currentMessage.seen.toString()=="true"?null:AppColors.lightGrey ,)
-                                      ],
                                     )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ):
-                         // Audio
-                          currentMessage.type == "Audio" ?
-                          DisplayTextImageGIF(
-                              message: currentMessage.text!,
-                              type: "Audio",
-                              currentMessage:currentMessage,userModel:widget.userModel
-                          ):
-                          // Video
-                          currentMessage.type == "video" ?
-                          GestureDetector(
-                              onTap: (){
-                                  AppRoutes.push(context, PageTransitionType.rightToLeft,  FullPhotoPage(type: false,url: currentMessage.text!),);
-                              },
-                              child: VideoWidget(videoUrl: currentMessage.text!.toString(),currentMessage:currentMessage,userModel:widget.userModel))
-                          : const SizedBox.shrink();
-
-
+                                  :
+                                  // Audio
+                                  currentMessage.type == "Audio"
+                                      ? DisplayTextImageGIF(
+                                          message: currentMessage.text!,
+                                          type: "Audio",
+                                          currentMessage: currentMessage,
+                                          userModel: widget.userModel)
+                                      :
+                                      // Video
+                                      currentMessage.type == "video"
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                AppRoutes.push(
+                                                  context,
+                                                  PageTransitionType
+                                                      .rightToLeft,
+                                                  FullPhotoPage(
+                                                      type: false,
+                                                      url:
+                                                          currentMessage.text!),
+                                                );
+                                              },
+                                              child: VideoWidget(
+                                                  videoUrl: currentMessage.text!
+                                                      .toString(),
+                                                  currentMessage:
+                                                      currentMessage,
+                                                  userModel: widget.userModel))
+                                          : const SizedBox.shrink();
                         },
                       );
-
-
                     } else if (snapshot.hasError) {
                       return const Center(
                         child: Text(
@@ -677,9 +856,8 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                     } else {
                       return const Center(
                           child: Text(
-                            "Say hi to your new friend",
-                          )
-                      );
+                        "Say hi to your new friend",
+                      ));
                     }
                   } else {
                     return const Center();
@@ -687,24 +865,26 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
                 },
               ),
             ),
-
             Align(
               alignment: Alignment.bottomLeft,
-              child: BottomField(usersModel: widget.userModel,chatRoom: widget.chatRoom,targetUser: widget.targetUser),
+              child: BottomField(
+                  usersModel: widget.userModel,
+                  chatRoom: widget.chatRoom,
+                  targetUser: widget.targetUser),
             ),
-
           ],
         ),
       ),
     );
   }
 
-  void makeCall(BuildContext context, String receiverName, String receiverUid, String receiverProfilePic, bool isGroupChat) async{
+  void makeCall(BuildContext context, String receiverName, String receiverUid,
+      String receiverProfilePic, bool isGroupChat) async {
     String callId = const Uuid().v1();
     Call senderCallData = Call(
       callerId: auth.currentUser!.uid,
       callerName: widget.userModel.userName,
-      callerPic:widget.userModel.imgUrl[0].toString(),
+      callerPic: widget.userModel.imgUrl[0].toString(),
       receiverId: receiverUid,
       receiverName: receiverName,
       receiverPic: receiverProfilePic,
@@ -715,7 +895,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
     Call recieverCallData = Call(
       callerId: auth.currentUser!.uid,
       callerName: widget.userModel.userName,
-      callerPic:widget.userModel.imgUrl[0].toString(),
+      callerPic: widget.userModel.imgUrl[0].toString(),
       receiverId: receiverUid,
       receiverName: receiverName,
       receiverPic: receiverProfilePic,
@@ -743,7 +923,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>  with WidgetsBindingObs
         ),
       );
     } catch (e) {
-      ToastUtils.showCustomToast(context,e.toString(),AppColors.redcolor);
+      ToastUtils.showCustomToast(context, e.toString(), AppColors.redcolor);
     }
   }
 }

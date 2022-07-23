@@ -27,11 +27,10 @@ Future main() async {
 }
 
 Future<void> _messageHandler(RemoteMessage event) async {
-  log('targetId: ${event.data['id']}');
-  log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
 
-  if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
-
+  if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
+    log('userId: ${event.data['id']}');
+    log('userId: ${event.data['id']}');
     LocalNotificationsService.instance.showNotification(
         title: '${event.notification?.title}',
         body: '${event.notification?.body}');
@@ -45,9 +44,9 @@ Future<void> _messageHandler(RemoteMessage event) async {
 fcmListen() async {
   // var sfID = await AuthServices.getTraderID();
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-    log('targetId: ${event.data['id']}');
-     log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
-    if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
+    log('userId: ${event.data['id']}');
+     log('userId: ${event.data['id']}');
+    if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
       LocalNotificationsService.instance.showNotification(
           title: '${event.notification?.title}',
           body: '${event.notification?.body}');

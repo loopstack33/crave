@@ -941,11 +941,6 @@ class _DashboardState extends State<Dashboard> {
                                                         padding:
                                                         EdgeInsets.zero,
                                                         onPressed: () async {
-                                                          if(mounted){
-                                                           setState((){
-                                                             loading = true;
-                                                           });
-                                                          }
                                                           bool exits = await isItems(
                                                               allUserexceptblockedChat[
                                                               index]
@@ -959,7 +954,7 @@ class _DashboardState extends State<Dashboard> {
                                                                 allUserexceptblockedChat[
                                                                 index]
                                                                     .userId
-                                                                    .toString(),allUserexceptblocked[index].userToken.toString());
+                                                                    .toString());
                                                             log(allUserexceptblockedChat[
                                                             index]
                                                                 .userId
@@ -973,9 +968,7 @@ class _DashboardState extends State<Dashboard> {
                                                                 allUserexceptblockedChat[
                                                                 index]
                                                                     .userId
-                                                                    .toString(),
-                                                                allUserexceptblockedChat[
-                                                                index].userToken.toString());
+                                                                    .toString());
                                                           }
                                                         },
                                                         icon: selectedIndex ==
@@ -1299,7 +1292,7 @@ class _DashboardState extends State<Dashboard> {
         ));
   }
 
-  likeUser(name, image, id,token) async {
+  likeUser(name, image, id) async {
     User? user = _auth.currentUser;
 
     await firebaseFirestore
@@ -1313,9 +1306,6 @@ class _DashboardState extends State<Dashboard> {
       'likedId': user.uid.toString()
     }).then((text) async {
       saveDatainLikedBy(id);
-      log(id.toString());
-      log(name.toString());
-      FCMServices.sendFCM("crave", id.toString(), name.toString(), "Liked your profile 💗");
 
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
       if (mounted) {
@@ -1483,7 +1473,7 @@ class _DashboardState extends State<Dashboard> {
     return querySnapshot.docs.isNotEmpty;
   }
 
-  getlikedIds(String givenid,String token) async {
+  getlikedIds(String givenid) async {
     User? user = _auth.currentUser;
 
     await firebaseFirestore
@@ -1498,13 +1488,12 @@ class _DashboardState extends State<Dashboard> {
         if (mounted) {
           setState(() {
             alreadyLiked = true;
-            loading = false;
           });
         }
 
         ToastUtils.showCustomToast(context, "Already Liked", Colors.red);
       } else {
-        likeUser(name.toString(), photoUrl[0].toString(), givenid,token);
+        likeUser(name.toString(), photoUrl[0].toString(), givenid);
       }
     }).catchError((e) {
       log("here");
