@@ -144,7 +144,7 @@ class _ProfileState extends State<EditProfile> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: AppColors.white,
-        title: text(context, "EditProfile", 24.sp,
+        title: text(context, "Edit Profile", 24.sp,
             color: AppColors.black,
             boldText: FontWeight.w500,
             fontFamily: "Poppins-Medium"),

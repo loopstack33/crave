@@ -15,21 +15,24 @@ class UsersModel {
   String package;
   List craves;
   List imgUrl;
+  String showName;
+  List likedBy;
 
-  UsersModel({
-    required this.userName,
-    required this.bio,
-    required this.phoneNumber,
-    required this.status,
-    required this.userId,
-    required this.gender,
-    required this.userToken,
-    required this.birthday,
-    required this.package,
-    required this.genes,
-    required this.craves,
-    required this.imgUrl,
-  });
+  UsersModel(
+      {required this.userName,
+      required this.bio,
+      required this.phoneNumber,
+      required this.status,
+      required this.userId,
+      required this.gender,
+      required this.userToken,
+      required this.birthday,
+      required this.package,
+      required this.genes,
+      required this.craves,
+      required this.imgUrl,
+      required this.likedBy,
+      required this.showName});
 
   Map<String, dynamic> toJson() => {
         'uid': userId,
@@ -43,7 +46,9 @@ class UsersModel {
         'bio': bio,
         'package': package,
         'craves': craves,
-        'imageUrl': imgUrl
+        'imageUrl': imgUrl,
+        'showName': showName,
+        'likedBy':likedBy
       };
 
   factory UsersModel.fromDocument(DocumentSnapshot doc) {
@@ -59,7 +64,16 @@ class UsersModel {
     String package = "";
     List craves = [];
     List imageUrl = [];
+    String showName = "";
+    List likedBy = [];
 
+    try {
+      likedBy = doc.get("likedBy");
+    } catch (e) {}
+
+    try {
+      showName = doc.get("showName");
+    } catch (e) {}
     try {
       uid = doc.get("uid");
     } catch (e) {}
@@ -115,6 +129,8 @@ class UsersModel {
         bio: bio,
         package: package,
         craves: craves,
+        showName: showName,
+        likedBy:likedBy,
         imgUrl: imageUrl);
   }
 }

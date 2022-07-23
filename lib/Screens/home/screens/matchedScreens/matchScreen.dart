@@ -31,7 +31,7 @@ class _MatchScreenState extends State<MatchScreen> {
   String matchedImageUrl = "";
   bool loading = false;
   bool matched = false;
-  String searching = "Searching...";
+  String searching = "Tap at the center to match";
   String finding = "We’re finding a great match for you!";
   int counter = 2;
   List<dynamic> allUserCraves = [];
@@ -276,9 +276,7 @@ class _MatchScreenState extends State<MatchScreen> {
                       ];
                       showDialog(
                           context: context,
-                          builder:
-                              (BuildContext
-                          context) {
+                          builder: (BuildContext context) {
                             return Dialog(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -296,7 +294,10 @@ class _MatchScreenState extends State<MatchScreen> {
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.only(
-                                            left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                            left: 8.0,
+                                            right: 8.0,
+                                            top: 5.0,
+                                            bottom: 5.0),
                                         width: 515.w,
                                         decoration: BoxDecoration(
                                           color: AppColors.redcolor,
@@ -318,7 +319,8 @@ class _MatchScreenState extends State<MatchScreen> {
                                       ),
                                       SizedBox(height: 10.h),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Container(
                                               width: 50.w,
@@ -355,37 +357,43 @@ class _MatchScreenState extends State<MatchScreen> {
                                         height: 10.h,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           ApplePayButton(
                                             width: 200,
                                             height: 50,
-                                            paymentConfigurationAsset: 'files/applepay.json',
+                                            paymentConfigurationAsset:
+                                                'files/applepay.json',
                                             paymentItems: _paymentItems,
                                             style: ApplePayButtonStyle.black,
                                             type: ApplePayButtonType.buy,
-                                            margin: const EdgeInsets.only(top: 15.0),
-                                            onPaymentResult: (data){
+                                            margin: const EdgeInsets.only(
+                                                top: 15.0),
+                                            onPaymentResult: (data) {
                                               print(data);
                                             },
                                             loadingIndicator: const Center(
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             ),
                                           ),
-
                                           GooglePayButton(
                                             width: 200,
                                             height: 50,
-                                            paymentConfigurationAsset: 'files/gpay.json',
+                                            paymentConfigurationAsset:
+                                                'files/gpay.json',
                                             paymentItems: _paymentItems,
                                             style: GooglePayButtonStyle.black,
                                             type: GooglePayButtonType.pay,
-                                            margin: const EdgeInsets.only(top: 15.0),
-                                            onPaymentResult:  (data){
+                                            margin: const EdgeInsets.only(
+                                                top: 15.0),
+                                            onPaymentResult: (data) {
                                               print(data);
                                             },
                                             loadingIndicator: const Center(
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             ),
                                           ),
                                         ],
@@ -510,15 +518,18 @@ class _MatchScreenState extends State<MatchScreen> {
         matchedGenes.add(allUsersData[i]);
       }
     }
-    // log(matchedGenes[0].genes.toString());
-    // log(allUsersData[0].userName.toString());
-    //if hetero
-    if (currentUsersData[0].genes == "Hetero") {
-      matchedgenderifhetero();
-    }
-    //otherwise
-    else {
-      matchedCraves1();
+    log(matchedGenes.length.toString());
+    if (matchedGenes.length == 0) {
+      ToastUtils.showCustomToast(context, "No Match Found", AppColors.redcolor);
+    } else {
+      //if hetero
+      if (currentUsersData[0].genes == "Hetero") {
+        matchedgenderifhetero();
+      }
+      //otherwise
+      else {
+        matchedCraves1();
+      }
     }
   }
 
@@ -587,12 +598,12 @@ class _MatchScreenState extends State<MatchScreen> {
   matchedCraves1() async {
     int temp = 0;
     for (int i = 0; i < allUsersData.length; i++) {
-      var expectedList = currentUsersData[next]
+      var expectedList = currentUsersData[0]
           .craves
           .toSet()
           .intersection(allUsersData[i].craves.toSet())
           .toList();
-      if (expectedList.isEmpty) {
+      if (allUsersData.isEmpty) {
         if (mounted) {
           setState(() {
             loading = false;
@@ -607,7 +618,30 @@ class _MatchScreenState extends State<MatchScreen> {
         }
       }
     }
-    // addToFirebase();
+
+    if (CompleteUserData.length == next) {
+      ToastUtils.showCustomToast(
+          context, "No Match Found, Try Agian", AppColors.redcolor);
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    } else {
+      bool checkData = await matchedCheck(CompleteUserData[next].userId);
+      log(checkData.toString());
+      if (checkData == false) {
+        addToFirebase();
+      } else if (checkData == true) {
+        if (mounted) {
+          setState(() {
+            increment();
+          });
+        }
+        log(next.toString());
+        matchedGenes1();
+      }
+    }
   }
 
   addToFirebase() async {
@@ -660,6 +694,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     matchedid: CompleteUserData[next].userId,
                     participantname: currentUsersData[next].userName,
                     matchedname: CompleteUserData[next].userName,
+                    showName: CompleteUserData[next].showName,
                   )));
 
       setState(() {
@@ -669,7 +704,7 @@ class _MatchScreenState extends State<MatchScreen> {
           getAllUserData();
           checkforCounter();
           next = next + 1;
-          searching = "Searching...";
+          searching = "Tap at the center to match";
           finding = "We’re finding a great match for you!";
           matchedImageUrl = "";
         }

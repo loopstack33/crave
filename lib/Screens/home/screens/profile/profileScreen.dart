@@ -186,21 +186,7 @@ class _ProfileState extends State<Profile> {
                           fontFamily: "Poppins-SemiBold"),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        locationicon,
-                        width: 16.w,
-                        height: 16.h,
-                      ),
-                      SizedBox(width: 5.w),
-                      text(context, country, 14.sp,
-                          color: const Color(0xff606060),
-                          boldText: FontWeight.w500,
-                          fontFamily: "Poppins-Medium"),
-                    ],
-                  ),
+
                   SizedBox(
                     height: 10.h,
                   ),
