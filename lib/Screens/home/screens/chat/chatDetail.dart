@@ -84,7 +84,14 @@ class _ChatDetailPageState extends State<ChatDetailPage>
         _start = int.parse(diff.inSeconds.toString());
         isLoad = false;
       });
-      startTimer();
+      log(_start.toString());
+      if (_start < 0 || _start == 0) {
+        setState(() {
+          timeup = true;
+        });
+      } else {
+        startTimer();
+      }
     });
   }
 
