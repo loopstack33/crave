@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -27,37 +28,34 @@ Future main() async {
 }
 
 Future<void> _messageHandler(RemoteMessage event) async {
+   if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
 
-  if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
-    log('userId: ${event.data['id']}');
-    log('userId: ${event.data['id']}');
+    log('target: ${event.data['id']}');
+    log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
     LocalNotificationsService.instance.showNotification(
         title: '${event.notification?.title}',
         body: '${event.notification?.body}');
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {});
-  }
-  else {}
+  } else {}
   log("Handling a background message: ${event.messageId}");
 }
 
 fcmListen() async {
   // var sfID = await AuthServices.getTraderID();
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-    log('userId: ${event.data['id']}');
-     log('userId: ${event.data['id']}');
-    if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
+    log('target: ${event.data['id']}');
+    log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
+     if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
+
       LocalNotificationsService.instance.showNotification(
           title: '${event.notification?.title}',
           body: '${event.notification?.body}');
 
       FirebaseMessaging.onMessageOpenedApp.listen((message) {});
     } else {}
-
   });
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
