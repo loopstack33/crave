@@ -206,10 +206,8 @@ class _DashboardState extends State<Dashboard> {
           opacity: 0.1,
           child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: allUserexceptblockedChat.isEmpty
-                  ? const Center(
-                  child: CircularProgressIndicator(color: Colors.amber))
-                  : ListView.builder(
+              child: allUserexceptblockedChat.isNotEmpty
+                  ?ListView.builder(
                 itemCount: allUserexceptblockedChat.length,
                 itemBuilder: (context, index) {
                   List<dynamic> craves =
@@ -1281,7 +1279,16 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   );
                 },
-              )),
+              ):
+              Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/craveLogo.png"),
+
+                    ],
+                  ))),
         ));
   }
 
