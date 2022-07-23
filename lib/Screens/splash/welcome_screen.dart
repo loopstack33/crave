@@ -1,6 +1,8 @@
 // ignore_for_file: camel_case_types, use_build_context_synchronously
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/signIn/sigininPhone.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
@@ -15,7 +17,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+import '../signIn/name.dart';
 
 class Welcome_Screen extends StatefulWidget {
   const Welcome_Screen({Key? key}) : super(key: key);
@@ -26,6 +31,7 @@ class Welcome_Screen extends StatefulWidget {
 
 class _Welcome_ScreenState extends State<Welcome_Screen> {
   bool loading= false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -178,20 +184,28 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
     );
   }
 
+
   signinApple(BuildContext context) async {
     if (!await SignInWithApple.isAvailable()) {
-     ToastUtils.showCustomToast(context, "This Device is not eligible for Apple Sign in", Colors.red);
+      ToastUtils.showCustomToast(context, "This Device is not eligible for Apple Sign in", Colors.red);
       return null; //Break from the program
     }
 
     final res = await SignInWithApple.getAppleIDCredential(
-      scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName]
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName]
     );
 
-    print(res.state);
+    final oAuthProvider = OAuthProvider('apple.com');
+    final credential = oAuthProvider.credential(
+     idToken:  res.identityToken,
+     accessToken: res.authorizationCode
+    );
 
-    if(mounted){
-      setState((){
+    signInWithPhoneAuthCredential(credential);
+
+    print(res.state);
+    if (mounted) {
+      setState(() {
         loading = false;
       });
     }
@@ -235,5 +249,75 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
         ToastUtils.showCustomToast(context, 'Apple authorization cancelled', Colors.red);
         break;
     }*/
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signInWithPhoneAuthCredential(OAuthCredential phoneAuthCredential) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        loading = true;
+      });
+    }
+    try {
+      final authCredential =
+      await _auth.signInWithCredential(phoneAuthCredential);
+      if (authCredential.user != null) {
+        postDetailsToFirestore(context, "");
+
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+      ToastUtils.showCustomToast(context, e.message.toString(), Colors.red);
+    }
+  }
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  void postDetailsToFirestore(BuildContext context, phone) async {
+    final auth = FirebaseAuth.instance;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = auth.currentUser;
+    var deviceT = await _firebaseMessaging.getToken();
+    log(' deviceToken: $deviceT');
+
+    await firebaseFirestore.collection("users").doc(user!.uid).set({
+      'uid': user.uid,
+      'phone': phone,
+      'name': '',
+      'showName': '',
+      'deviceToken': deviceT.toString(),
+      'craves':[],
+      'imageUrl':[],
+      'country':'',
+      'status': '',
+      'age': '',
+      'gender': '',
+      'birthday': '',
+      'genes': '',
+      'bio': '',
+      'likedBy':[],
+      'steps':'0'
+    }).then((value) {
+      if (mounted) {
+        ToastUtils.showCustomToast(
+            context, "Registration Success", Colors.green);
+        setState(() {
+          loading = false;
+        });
+        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+      }
+      preferences.setString("uid",user.uid.toString());
+    }).catchError((e) {});
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }
