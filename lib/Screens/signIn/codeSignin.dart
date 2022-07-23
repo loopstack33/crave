@@ -678,7 +678,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'birthday': '',
       'genes': '',
       'bio': '',
-      'reportedBy':[],
+      'likedBy':[],
        'steps':'0'
     }).then((value) {
       if (mounted) {
