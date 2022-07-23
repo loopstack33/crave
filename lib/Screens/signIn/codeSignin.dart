@@ -71,13 +71,16 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   var exists;
   doesUserExist(phone) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var id = prefs.getString("uid");
+    log(id.toString());
     try {
       await FirebaseFirestore.instance
           .collection('users')
           .where('phone', isEqualTo: phone)
           .get()
           .then((value) => value.size > 0 ? setState((){
-            getUser();
+            getUser(id!);
             exists = true;
       }) : setState((){
         exists = false;
@@ -88,11 +91,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     }
   }
   String step='';
-  getUser() async {
+  getUser(String id) async {
+    log(id.toString());
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_auth.currentUser!.uid)
+          .doc(id)
           .get()
           .then((value){
             if(mounted){
@@ -545,6 +549,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                   context, "Login Success", Colors.green);
               updateDeviceToken(_auth.currentUser!.uid, 'users');
               preferences.setString("logStatus", "true");
+              preferences.setString("uid",_auth.currentUser!.uid.toString());
               setState(() {
                 loading = false;
               });
@@ -589,8 +594,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     });
   }
 
-  Future<void> verifyPhoneNumber(
-      String phoneNumber, BuildContext context, Function setData) async {
+  Future<void> verifyPhoneNumber(String phoneNumber, BuildContext context, Function setData) async {
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
       ToastUtils.showCustomToast(
@@ -653,7 +657,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
 
   void postDetailsToFirestore(BuildContext context, phone) async {
     final auth = FirebaseAuth.instance;
-
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = auth.currentUser;
     var deviceT = await _firebaseMessaging.getToken();
@@ -685,7 +689,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         });
         AppRoutes.push(context, PageTransitionType.fade, const FirstName());
       }
-      // preferences.setString("logStatus", "true");
+       preferences.setString("uid",user.uid.toString());
     }).catchError((e) {});
     if (mounted) {
       setState(() {

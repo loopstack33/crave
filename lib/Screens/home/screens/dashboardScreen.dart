@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, use_build_context_synchronously
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -843,7 +844,7 @@ class _DashboardState extends State<Dashboard> {
                                                                           Row(
                                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                                             children: [
-                                                                              ApplePayButton(
+                                                                             Platform.isIOS? ApplePayButton(
                                                                                 width: 200,
                                                                                 height: 50,
                                                                                 paymentConfigurationAsset: 'files/applepay.json',
@@ -857,22 +858,22 @@ class _DashboardState extends State<Dashboard> {
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
                                                                                 ),
-                                                                              ),
-                                                                              GooglePayButton(
-                                                                                width: 200,
-                                                                                height: 50,
-                                                                                paymentConfigurationAsset: 'files/gpay.json',
-                                                                                paymentItems: paymentItems,
-                                                                                style: GooglePayButtonStyle.black,
-                                                                                type: GooglePayButtonType.pay,
-                                                                                margin: const EdgeInsets.only(top: 15.0),
-                                                                                onPaymentResult:  (data){
-                                                                                  print(data);
-                                                                                },
-                                                                                loadingIndicator: const Center(
-                                                                                  child: CircularProgressIndicator(),
-                                                                                ),
-                                                                              ),
+                                                                              ):GooglePayButton(
+                                                                               width: 200,
+                                                                               height: 50,
+                                                                               paymentConfigurationAsset: 'files/gpay.json',
+                                                                               paymentItems: paymentItems,
+                                                                               style: GooglePayButtonStyle.black,
+                                                                               type: GooglePayButtonType.pay,
+                                                                               margin: const EdgeInsets.only(top: 15.0),
+                                                                               onPaymentResult:  (data){
+                                                                                 print(data);
+                                                                               },
+                                                                               loadingIndicator: const Center(
+                                                                                 child: CircularProgressIndicator(),
+                                                                               ),
+                                                                             ),
+
                                                                             ],
                                                                           ),
                                                                           SizedBox(height: 20.h)
@@ -1248,6 +1249,7 @@ class _DashboardState extends State<Dashboard> {
       'likedId': user.uid.toString()
     }).then((text) {
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
+      FCMServices.sendFCM('crave', id.toString(), name.toString(), "Liked your profile 👍");
       if (mounted) {
         setState(() {
           loading = false;

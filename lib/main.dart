@@ -28,7 +28,7 @@ Future main() async {
 
 Future<void> _messageHandler(RemoteMessage event) async {
 
-  if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
+  if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
     log('userId: ${event.data['id']}');
     log('userId: ${event.data['id']}');
     LocalNotificationsService.instance.showNotification(
@@ -37,6 +37,7 @@ Future<void> _messageHandler(RemoteMessage event) async {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {});
   }
+  else {}
   log("Handling a background message: ${event.messageId}");
 }
 
@@ -45,7 +46,7 @@ fcmListen() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
     log('userId: ${event.data['id']}');
      log('userId: ${event.data['id']}');
-    if (event.data['id'] == FirebaseAuth.instance.currentUser?.uid) {
+    if (event.data['id'] != FirebaseAuth.instance.currentUser?.uid) {
       LocalNotificationsService.instance.showNotification(
           title: '${event.notification?.title}',
           body: '${event.notification?.body}');

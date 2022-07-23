@@ -571,7 +571,8 @@ class _BottomFieldState extends State<BottomField> {
         .set(widget.chatRoom.toMap());
     updateStatus();
     FCMServices.sendFCM(
-        'crave',
+      //  'crave',
+       widget.targetUser.userToken.toString(),
         widget.targetUser.userId.toString(),
         widget.targetUser.userName.toString(),
         widget.chatRoom.lastMessage.toString());

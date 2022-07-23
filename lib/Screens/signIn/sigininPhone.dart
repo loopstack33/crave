@@ -241,6 +241,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                             if (mounted) {
                               setState(() {
                                 loading = false;
+
                               });
                             }
                             ToastUtils.showCustomToast(

@@ -377,6 +377,7 @@ class _CreateProfileState extends State<CreateProfile> {
         AppRoutes.push(
             context, PageTransitionType.fade, const CreatingProfileScreen());
         preferences.setString("logStatus", "true");
+        preferences.setString("uid",user.uid.toString());
       }
     }).catchError((e) {});
     if (mounted) {
