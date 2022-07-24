@@ -370,49 +370,53 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  ApplePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset:
-                                                        'files/applepay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: ApplePayButtonStyle
-                                                        .black,
-                                                    type:
-                                                        ApplePayButtonType.buy,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                    },
-                                                    loadingIndicator:
-                                                        const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
-                                                  ),
-                                                  GooglePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset:
-                                                        'files/gpay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: GooglePayButtonStyle
-                                                        .black,
-                                                    type:
-                                                        GooglePayButtonType.pay,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                    },
-                                                    loadingIndicator:
-                                                        const Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    children: [
+                                                      ApplePayButton(
+                                                        width: 200,
+                                                        height: 50,
+                                                        paymentConfigurationAsset: 'files/applepay.json',
+                                                        paymentItems: paymentItems,
+                                                        style: ApplePayButtonStyle.black,
+                                                        type: ApplePayButtonType.buy,
+                                                        margin: const EdgeInsets.only(top: 15.0),
+                                                        onPaymentResult: (data) {
+                                                          print(data);
+                                                          makeCall(
+                                                              context,
+                                                              widget.targetUser.userName.toString(),
+                                                              widget.targetUser.userId.toString(),
+                                                              widget.targetUser.imgUrl[0].toString(),
+                                                              false);
+                                                        },
+                                                        loadingIndicator: const Center(
+                                                          child: CircularProgressIndicator(),
+                                                        ),
+                                                      ),
+                                                      GooglePayButton(
+                                                        width: 200,
+                                                        height: 50,
+                                                        paymentConfigurationAsset: 'files/gpay.json',
+                                                        paymentItems: paymentItems,
+                                                        style: GooglePayButtonStyle.black,
+                                                        type: GooglePayButtonType.pay,
+                                                        margin: const EdgeInsets.only(top: 15.0),
+                                                        onPaymentResult: (data) {
+                                                          print(data);
+                                                          makeCall(
+                                                              context,
+                                                              widget.targetUser.userName.toString(),
+                                                              widget.targetUser.userId.toString(),
+                                                              widget.targetUser.imgUrl[0].toString(),
+                                                              false);
+                                                        },
+                                                        loadingIndicator: const Center(
+                                                          child: CircularProgressIndicator(),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),

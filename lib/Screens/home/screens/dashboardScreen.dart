@@ -894,6 +894,12 @@ class _DashboardState extends State<Dashboard> {
                                                                                 margin: const EdgeInsets.only(top: 15.0),
                                                                                 onPaymentResult: (data) {
                                                                                   print(data);
+                                                                                  assignChatRoom(
+                                                                                    context,
+                                                                                    allUserexceptblocked[index].userName,
+                                                                                    allUserexceptblocked[index].userId,
+                                                                                    _auth.currentUser!.uid,
+                                                                                  );
                                                                                 },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
@@ -909,6 +915,12 @@ class _DashboardState extends State<Dashboard> {
                                                                                 margin: const EdgeInsets.only(top: 15.0),
                                                                                 onPaymentResult: (data) {
                                                                                   print(data);
+                                                                                  assignChatRoom(
+                                                                                    context,
+                                                                                    allUserexceptblocked[index].userName,
+                                                                                    allUserexceptblocked[index].userId,
+                                                                                    _auth.currentUser!.uid,
+                                                                                  );
                                                                                 },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),

@@ -372,8 +372,22 @@ class _MatchScreenState extends State<MatchScreen> {
                                               type: ApplePayButtonType.buy,
                                               margin: const EdgeInsets.only(
                                                   top: 15.0),
-                                              onPaymentResult: (data) {
+                                              onPaymentResult: (data) async{
                                                 print(data);
+                                                SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                preferences.setBool("counter", false);
+                                                DateTime date = DateTime(now.year, now.month, now.day);
+                                                await firebaseFirestore
+                                                    .collection("users")
+                                                    .doc(uid)
+                                                    .collection("matching_Attempt")
+                                                    .doc(date.toString())
+                                                    .update({'date': date.toString(), 'counter': 3}).then((text) {
+                                                  setState(() {
+                                                    isLoad = false;
+                                                    counter = 2;
+                                                  });
+                                                }).catchError((e) {});
                                               },
                                               loadingIndicator: const Center(
                                                 child:
@@ -390,8 +404,23 @@ class _MatchScreenState extends State<MatchScreen> {
                                               type: GooglePayButtonType.pay,
                                               margin: const EdgeInsets.only(
                                                   top: 15.0),
-                                              onPaymentResult: (data) {
+                                              onPaymentResult: (data) async{
                                                 print(data);
+                                                SharedPreferences preferences = await SharedPreferences.getInstance();
+                                                preferences.setBool("counter", false);
+                                                DateTime date = DateTime(now.year, now.month, now.day);
+                                                await firebaseFirestore
+                                                    .collection("users")
+                                                    .doc(uid)
+                                                    .collection("matching_Attempt")
+                                                    .doc(date.toString())
+                                                    .update({'date': date.toString(), 'counter': 3}).then((text) {
+                                                  setState(() {
+                                                    isLoad = false;
+                                                    counter = 2;
+                                                  });
+                                                }).catchError((e) {});
+
                                               },
                                               loadingIndicator: const Center(
                                                 child:
