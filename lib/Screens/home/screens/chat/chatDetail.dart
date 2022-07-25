@@ -229,7 +229,21 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                       ),
                     ),
                     SizedBox(width: 2.w),
-                    SizedBox(
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow:[
+                          BoxShadow(
+                              color: AppColors
+                                  .redcolor,
+                              blurRadius:
+                              2.r,
+                              offset:
+                              const Offset(
+                                  0, 1.5))
+                        ]
+                            ,
+                      ),
                       width: 50.w,
                       height: 50.h,
                       child: ClipOval(

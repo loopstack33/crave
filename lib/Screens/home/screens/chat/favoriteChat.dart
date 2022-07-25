@@ -79,7 +79,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
       log("Exiting chat Room : ${existingChatRoom.chatroomid}");
       log("Exiting chat participants : ${existingChatRoom.participants}");
       chatRoom = existingChatRoom;
-
+      Navigator.pop(context);
       ToastUtils.showCustomToast(
           context, "Chat room already assigned", Colors.red);
     } else {
@@ -107,6 +107,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
      // AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
+      Navigator.pop(context);
       FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(
@@ -325,6 +326,15 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                               top: 15.0),
                                                       onPaymentResult: (data) {
                                                         print(data);
+                                                        assignChatRoom(
+                                                          context,
+                                                          name,
+                                                          docs[index]["likedId"],
+                                                          id,
+                                                        );
+                                                      },
+                                                      onError: (data){
+                                                        ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                       },
                                                       loadingIndicator:
                                                           const Center(
@@ -349,6 +359,15 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                               top: 15.0),
                                                       onPaymentResult: (data) {
                                                         print(data);
+                                                        assignChatRoom(
+                                                          context,
+                                                          name,
+                                                          docs[index]["likedId"],
+                                                          id,
+                                                        );
+                                                      },
+                                                      onError: (data){
+                                                        ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                       },
                                                       loadingIndicator:
                                                           const Center(
@@ -366,6 +385,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                       );
                                     });
                               } else {
+
                                 assignChatRoom(
                                   context,
                                   name,
