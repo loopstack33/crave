@@ -617,6 +617,13 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                           context,
                                                           SelectedPackage);
                                                     },
+                                                    onError: (data) {
+                                                      ToastUtils
+                                                          .showCustomToast(
+                                                              context,
+                                                              data.toString(),
+                                                              Colors.red);
+                                                    },
                                                     loadingIndicator:
                                                         const Center(
                                                       child:
@@ -641,6 +648,13 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                       postDetailsToFirestore(
                                                           context,
                                                           SelectedPackage);
+                                                    },
+                                                    onError: (data) {
+                                                      ToastUtils
+                                                          .showCustomToast(
+                                                              context,
+                                                              data.toString(),
+                                                              Colors.red);
                                                     },
                                                     loadingIndicator:
                                                         const Center(

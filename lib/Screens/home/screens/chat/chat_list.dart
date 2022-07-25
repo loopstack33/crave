@@ -2,12 +2,17 @@
 import 'package:crave/Screens/home/screens/chat/widgets/chatListWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
+import '../../../../utils/app_routes.dart';
 import '../../../../utils/color_constant.dart';
+import '../../homeScreen.dart';
 import 'favoriteChat.dart';
 
 
 class UserChatList extends StatefulWidget {
-  const UserChatList({Key? key}) : super(key: key);
+  bool isDash;
+  UserChatList({Key? key,required this.isDash}) : super(key: key);
 
   @override
   State<UserChatList> createState() => _UserChatListState();
@@ -22,6 +27,22 @@ class _UserChatListState extends State<UserChatList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: widget.isDash?AppBar(
+        automaticallyImplyLeading: false,
+        leading: GestureDetector(
+          onTap: (){
+            AppRoutes.pushAndRemoveUntil(
+                context, PageTransitionType.topToBottom, const HomeScreen());
+          },
+          child:const Icon(FontAwesomeIcons.chevronLeft,color: AppColors.redcolor,),
+        ),
+        title: Text("ChatRoom",style: TextStyle(fontFamily: 'Poppins-Regular',fontSize: 20.sp,color: AppColors.redcolor),),
+        backgroundColor: AppColors.white,
+
+        elevation: 0,
+
+      ):null,
       body: SingleChildScrollView(
         physics:const BouncingScrollPhysics(),
         child: SafeArea(

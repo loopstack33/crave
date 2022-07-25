@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const Dashboard(),
     const MatchScreen(),
    // const Chat(),
-    const UserChatList(),
+    UserChatList(isDash: false,),
     const Profile(),
   ];
 

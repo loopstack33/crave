@@ -100,6 +100,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
 
                               return GestureDetector(
                                 onTap: () {
+                                  log(chatRoomModel.chatroomid.toString());
                                   if (chatRoomModel.toString() != "null") {
                                     AppRoutes.push(
                                         context,
