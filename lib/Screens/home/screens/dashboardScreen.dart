@@ -68,7 +68,7 @@ class _DashboardState extends State<Dashboard> {
         photoUrl = value.data()!["imageUrl"];
         name = value.data()!["name"];
         currentUserlist.add(id.toString());
-        currentGender=value.data()!["gender"];
+        currentGender = value.data()!["gender"];
       });
     });
   }
@@ -90,7 +90,6 @@ class _DashboardState extends State<Dashboard> {
       }
     });
 
-    log("this block one");
     log(allUserexceptblocked.length.toString());
     for (int i = 0; i < allUserexceptblocked.length; i++) {
       bool checkblock1 = await testingChat(
@@ -98,7 +97,6 @@ class _DashboardState extends State<Dashboard> {
       if (checkblock1 == false) {
         allUserexceptblockedChat.add(allUserexceptblocked[i]);
       }
-      log("$checkblock1.toString()");
     }
 
     if (mounted) {
@@ -106,7 +104,6 @@ class _DashboardState extends State<Dashboard> {
         isLoad = false;
       });
     }
-    log("this block one");
     log(allUserexceptblockedChat.length.toString());
   }
 
@@ -169,7 +166,12 @@ class _DashboardState extends State<Dashboard> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-      AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
+      AppRoutes.push(
+          context,
+          PageTransitionType.fade,
+          UserChatList(
+            isDash: true,
+          ));
       FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(
@@ -774,185 +776,171 @@ class _DashboardState extends State<Dashboard> {
                                                           .withOpacity(0.6),
                                                       child: InkWell(
                                                         onTap: () {
-                                                          if(currentGender=="Man"){
-                                                             const paymentItems = [
-                                                            PaymentItem(
-                                                              label:
-                                                                  'Crave ChatPay',
-                                                              amount: '1.99',
-                                                              status:
-                                                                  PaymentItemStatus
-                                                                      .final_price,
-                                                            )
-                                                          ];
-                                                          showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return Dialog(
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                  ),
-                                                                  elevation:
-                                                                      0.0,
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  child:
-                                                                      Container(
-                                                                    width:
-                                                                        515.w,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .white,
+                                                          if (currentGender ==
+                                                              "Man") {
+                                                            const paymentItems =
+                                                                [
+                                                              PaymentItem(
+                                                                label:
+                                                                    'Crave ChatPay',
+                                                                amount: '1.99',
+                                                                status: PaymentItemStatus
+                                                                    .final_price,
+                                                              )
+                                                            ];
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return Dialog(
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
                                                                       borderRadius:
                                                                           BorderRadius.circular(
-                                                                              14.r),
+                                                                              10),
                                                                     ),
+                                                                    elevation:
+                                                                        0.0,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
                                                                     child:
-                                                                        SingleChildScrollView(
+                                                                        Container(
+                                                                      width:
+                                                                          515.w,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(14.r),
+                                                                      ),
                                                                       child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Container(
-                                                                            padding: const EdgeInsets.only(
-                                                                                left: 8.0,
-                                                                                right: 8.0,
-                                                                                top: 5.0,
-                                                                                bottom: 5.0),
-                                                                            width:
-                                                                                515.w,
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: AppColors.redcolor,
-                                                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(14.r), topRight: Radius.circular(14.r)),
-                                                                            ),
-                                                                            child:
-                                                                                Align(
-                                                                              alignment: Alignment.center,
-                                                                              child: Text(
-                                                                                "Action Required",
-                                                                                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins-Medium', fontSize: 22.sp),
+                                                                          SingleChildScrollView(
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Container(
+                                                                              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                                                              width: 515.w,
+                                                                              decoration: BoxDecoration(
+                                                                                color: AppColors.redcolor,
+                                                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(14.r), topRight: Radius.circular(14.r)),
+                                                                              ),
+                                                                              child: Align(
+                                                                                alignment: Alignment.center,
+                                                                                child: Text(
+                                                                                  "Action Required",
+                                                                                  style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins-Medium', fontSize: 22.sp),
+                                                                                ),
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 10.h),
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              Container(
-                                                                                  width: 50.w,
-                                                                                  height: 50.h,
-                                                                                  decoration: const BoxDecoration(
-                                                                                    shape: BoxShape.circle,
-                                                                                    color: AppColors.redcolor,
+                                                                            SizedBox(height: 10.h),
+                                                                            Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Container(
+                                                                                    width: 50.w,
+                                                                                    height: 50.h,
+                                                                                    decoration: const BoxDecoration(
+                                                                                      shape: BoxShape.circle,
+                                                                                      color: AppColors.redcolor,
+                                                                                    ),
+                                                                                    child: Image.asset(icon)),
+                                                                                SizedBox(
+                                                                                  width: 20.w,
+                                                                                ),
+                                                                                Text(
+                                                                                  "Confirm",
+                                                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'Poppins-Medium', fontSize: 20.sp),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(height: 10.h),
+                                                                            Text(
+                                                                              "For chatting without liking pay 1.99 \$.",
+                                                                              style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black, fontFamily: 'Poppins-Regular', fontSize: 18.sp),
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 10.h,
+                                                                            ),
+                                                                            Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                ApplePayButton(
+                                                                                  width: 200,
+                                                                                  height: 50,
+                                                                                  paymentConfigurationAsset: 'files/applepay.json',
+                                                                                  paymentItems: paymentItems,
+                                                                                  style: ApplePayButtonStyle.black,
+                                                                                  type: ApplePayButtonType.buy,
+                                                                                  margin: const EdgeInsets.only(top: 15.0),
+                                                                                  onPaymentResult: (data) {
+                                                                                    print(data);
+                                                                                    assignChatRoom(
+                                                                                      context,
+                                                                                      allUserexceptblocked[index].userName,
+                                                                                      allUserexceptblocked[index].userId,
+                                                                                      _auth.currentUser!.uid,
+                                                                                    );
+                                                                                  },
+                                                                                  onError: (data) {
+                                                                                    ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                                                  },
+                                                                                  loadingIndicator: const Center(
+                                                                                    child: CircularProgressIndicator(),
                                                                                   ),
-                                                                                  child: Image.asset(icon)),
-                                                                              SizedBox(
-                                                                                width: 20.w,
-                                                                              ),
-                                                                              Text(
-                                                                                "Confirm",
-                                                                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'Poppins-Medium', fontSize: 20.sp),
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 10.h),
-                                                                          Text(
-                                                                            "For chatting without liking pay 1.99 \$.",
-                                                                            style: TextStyle(
-                                                                                fontWeight: FontWeight.w300,
-                                                                                color: Colors.black,
-                                                                                fontFamily: 'Poppins-Regular',
-                                                                                fontSize: 18.sp),
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                10.h,
-                                                                          ),
-                                                                          
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              ApplePayButton(
-                                                                                width: 200,
-                                                                                height: 50,
-                                                                                paymentConfigurationAsset: 'files/applepay.json',
-                                                                                paymentItems: paymentItems,
-                                                                                style: ApplePayButtonStyle.black,
-                                                                                type: ApplePayButtonType.buy,
-                                                                                margin: const EdgeInsets.only(top: 15.0),
-                                                                                onPaymentResult: (data) {
-                                                                                  print(data);
-                                                                                  assignChatRoom(
-                                                                                    context,
-                                                                                    allUserexceptblocked[index].userName,
-                                                                                    allUserexceptblocked[index].userId,
-                                                                                    _auth.currentUser!.uid,
-                                                                                  );
-                                                                                },
-                                                                                onError: (data){
-                                                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
-                                                                                },
-                                                                                loadingIndicator: const Center(
-                                                                                  child: CircularProgressIndicator(),
                                                                                 ),
-                                                                              ),
-                                                                              GooglePayButton(
-                                                                                width: 200,
-                                                                                height: 50,
-                                                                                paymentConfigurationAsset: 'files/gpay.json',
-                                                                                paymentItems: paymentItems,
-                                                                                style: GooglePayButtonStyle.black,
-                                                                                type: GooglePayButtonType.pay,
-                                                                                margin: const EdgeInsets.only(top: 15.0),
-                                                                                onPaymentResult: (data) {
-                                                                                  print(data);
-                                                                                  assignChatRoom(
-                                                                                    context,
-                                                                                    allUserexceptblocked[index].userName,
-                                                                                    allUserexceptblocked[index].userId,
-                                                                                    _auth.currentUser!.uid,
-                                                                                  );
-                                                                                },
-                                                                                onError: (data){
-                                                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
-                                                                                },
-                                                                                loadingIndicator: const Center(
-                                                                                  child: CircularProgressIndicator(),
+                                                                                GooglePayButton(
+                                                                                  width: 200,
+                                                                                  height: 50,
+                                                                                  paymentConfigurationAsset: 'files/gpay.json',
+                                                                                  paymentItems: paymentItems,
+                                                                                  style: GooglePayButtonStyle.black,
+                                                                                  type: GooglePayButtonType.pay,
+                                                                                  margin: const EdgeInsets.only(top: 15.0),
+                                                                                  onPaymentResult: (data) {
+                                                                                    print(data);
+                                                                                    assignChatRoom(
+                                                                                      context,
+                                                                                      allUserexceptblocked[index].userName,
+                                                                                      allUserexceptblocked[index].userId,
+                                                                                      _auth.currentUser!.uid,
+                                                                                    );
+                                                                                  },
+                                                                                  onError: (data) {
+                                                                                    ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                                                  },
+                                                                                  loadingIndicator: const Center(
+                                                                                    child: CircularProgressIndicator(),
+                                                                                  ),
                                                                                 ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          SizedBox(
-                                                                              height: 20.h)
-                                                                        ],
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(height: 20.h)
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                );
-                                                              });
-                                                       
-                                                          }else{
-                                                              assignChatRoom(
-                                                                                  context,
-                                                                                  allUserexceptblocked[index].userName,
-                                                                                  allUserexceptblocked[index].userId,
-                                                                                  _auth.currentUser!.uid,
-                                                                                );
+                                                                  );
+                                                                });
+                                                          } else {
+                                                            assignChatRoom(
+                                                              context,
+                                                              allUserexceptblocked[
+                                                                      index]
+                                                                  .userName,
+                                                              allUserexceptblocked[
+                                                                      index]
+                                                                  .userId,
+                                                              _auth.currentUser!
+                                                                  .uid,
+                                                            );
                                                           }
-                                                          },
+                                                        },
                                                         child: Image.asset(
                                                           lockedchat,
                                                           width: 48,

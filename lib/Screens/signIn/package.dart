@@ -73,179 +73,190 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  text(context, "How much would you pay for an adventure?", 24.sp,
+                  text(context, "How much would you pay for an adventure?",
+                      24.sp,
                       color: AppColors.black,
                       boldText: FontWeight.w600,
                       fontFamily: "Poppins-SemiBold"),
                   SizedBox(
                     height: 20.h,
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GestureDetector(
                         onTap: () async {
                           SelectedPackage = "week";
-                          if(mounted){
-                            setState((){
-                              loading =true;
+                          if (mounted) {
+                            setState(() {
+                              loading = true;
                             });
                           }
-                          const paymentItems = [
-                            PaymentItem(
-                              label: 'ONE WEEK PACKAGE',
-                              amount: '9.99',
-                              status: PaymentItemStatus.final_price,
-                            )
-                          ];
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 0.0,
-                                  backgroundColor: Colors.transparent,
-                                  child: Container(
-                                    width: 515.w,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:
-                                      BorderRadius.circular(14.r),
-                                    ),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0,
-                                                right: 8.0,
-                                                top: 5.0,
-                                                bottom: 5.0),
-                                            width: 515.w,
-                                            decoration: BoxDecoration(
-                                              color: AppColors.redcolor,
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                  topLeft:
-                                                  Radius.circular(
-                                                      14.r),
-                                                  topRight:
-                                                  Radius.circular(
-                                                      14.r)),
-                                            ),
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "Action Required",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                    color: Colors.white,
-                                                    fontFamily:
-                                                    'Poppins-Medium',
-                                                    fontSize: 22.sp),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 10.h),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                  width: 50.w,
-                                                  height: 50.h,
-                                                  decoration:
-                                                  const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color:
-                                                    AppColors.redcolor,
-                                                  ),
-                                                  child: Image.asset(icon)),
-                                              SizedBox(
-                                                width: 20.w,
-                                              ),
-                                              Text(
-                                                "Confirm",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: Colors.black,
-                                                    fontFamily:
-                                                    'Poppins-Medium',
-                                                    fontSize: 20.sp),
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 10.h),
-                                          Text(
-                                            "One week package \$9.99",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.black,
-                                                fontFamily:
-                                                'Poppins-Regular',
-                                                fontSize: 18.sp),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                                children: [
-                                                  ApplePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset: 'files/applepay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: ApplePayButtonStyle.black,
-                                                    type: ApplePayButtonType.buy,
-                                                    margin: const EdgeInsets.only(top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
-                                                    },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
-                                                    ),
-                                                  ),
-                                                  GooglePayButton(
-                                                    width: 200,
-                                                    height: 50,
-                                                    paymentConfigurationAsset: 'files/gpay.json',
-                                                    paymentItems: paymentItems,
-                                                    style: GooglePayButtonStyle.black,
-                                                    type: GooglePayButtonType.pay,
-                                                    margin: const EdgeInsets.only(top: 15.0),
-                                                    onPaymentResult: (data) {
-                                                      print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
-                                                    },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 20.h)
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              });
-
+                          AppRoutes.push(context, PageTransitionType.fade,
+                              const CreateProfile());
+                          // const paymentItems = [
+                          //   PaymentItem(
+                          //     label: 'ONE WEEK PACKAGE',
+                          //     amount: '9.99',
+                          //     status: PaymentItemStatus.final_price,
+                          //   )
+                          // ];
+                          // showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) {
+                          //       return Dialog(
+                          //         shape: RoundedRectangleBorder(
+                          //           borderRadius: BorderRadius.circular(10),
+                          //         ),
+                          //         elevation: 0.0,
+                          //         backgroundColor: Colors.transparent,
+                          //         child: Container(
+                          //           width: 515.w,
+                          //           decoration: BoxDecoration(
+                          //             color: Colors.white,
+                          //             borderRadius: BorderRadius.circular(14.r),
+                          //           ),
+                          //           child: SingleChildScrollView(
+                          //             child: Column(
+                          //               children: [
+                          //                 Container(
+                          //                   padding: const EdgeInsets.only(
+                          //                       left: 8.0,
+                          //                       right: 8.0,
+                          //                       top: 5.0,
+                          //                       bottom: 5.0),
+                          //                   width: 515.w,
+                          //                   decoration: BoxDecoration(
+                          //                     color: AppColors.redcolor,
+                          //                     borderRadius: BorderRadius.only(
+                          //                         topLeft:
+                          //                             Radius.circular(14.r),
+                          //                         topRight:
+                          //                             Radius.circular(14.r)),
+                          //                   ),
+                          //                   child: Align(
+                          //                     alignment: Alignment.center,
+                          //                     child: Text(
+                          //                       "Action Required",
+                          //                       style: TextStyle(
+                          //                           fontWeight: FontWeight.w600,
+                          //                           color: Colors.white,
+                          //                           fontFamily:
+                          //                               'Poppins-Medium',
+                          //                           fontSize: 22.sp),
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //                 SizedBox(height: 10.h),
+                          //                 Row(
+                          //                   mainAxisAlignment:
+                          //                       MainAxisAlignment.center,
+                          //                   children: [
+                          //                     Container(
+                          //                         width: 50.w,
+                          //                         height: 50.h,
+                          //                         decoration:
+                          //                             const BoxDecoration(
+                          //                           shape: BoxShape.circle,
+                          //                           color: AppColors.redcolor,
+                          //                         ),
+                          //                         child: Image.asset(icon)),
+                          //                     SizedBox(
+                          //                       width: 20.w,
+                          //                     ),
+                          //                     Text(
+                          //                       "Confirm",
+                          //                       style: TextStyle(
+                          //                           fontWeight: FontWeight.bold,
+                          //                           color: Colors.black,
+                          //                           fontFamily:
+                          //                               'Poppins-Medium',
+                          //                           fontSize: 20.sp),
+                          //                     )
+                          //                   ],
+                          //                 ),
+                          //                 SizedBox(height: 10.h),
+                          //                 Text(
+                          //                   "One week package \$9.99",
+                          //                   style: TextStyle(
+                          //                       fontWeight: FontWeight.w300,
+                          //                       color: Colors.black,
+                          //                       fontFamily: 'Poppins-Regular',
+                          //                       fontSize: 18.sp),
+                          //                   textAlign: TextAlign.center,
+                          //                 ),
+                          //                 SizedBox(
+                          //                   height: 10.h,
+                          //                 ),
+                          //                 Row(
+                          //                   mainAxisAlignment:
+                          //                       MainAxisAlignment.center,
+                          //                   children: [
+                          //                     Row(
+                          //                       mainAxisAlignment:
+                          //                           MainAxisAlignment.center,
+                          //                       children: [
+                          //                         ApplePayButton(
+                          //                           width: 200,
+                          //                           height: 50,
+                          //                           paymentConfigurationAsset:
+                          //                               'files/applepay.json',
+                          //                           paymentItems: paymentItems,
+                          //                           style: ApplePayButtonStyle
+                          //                               .black,
+                          //                           type:
+                          //                               ApplePayButtonType.buy,
+                          //                           margin:
+                          //                               const EdgeInsets.only(
+                          //                                   top: 15.0),
+                          //                           onPaymentResult: (data) {
+                          //                             print(data);
+                          //                             postDetailsToFirestore(
+                          //                                 context,
+                          //                                 SelectedPackage);
+                          //                           },
+                          //                           loadingIndicator:
+                          //                               const Center(
+                          //                             child:
+                          //                                 CircularProgressIndicator(),
+                          //                           ),
+                          //                         ),
+                          //                         GooglePayButton(
+                          //                           width: 200,
+                          //                           height: 50,
+                          //                           paymentConfigurationAsset:
+                          //                               'files/gpay.json',
+                          //                           paymentItems: paymentItems,
+                          //                           style: GooglePayButtonStyle
+                          //                               .black,
+                          //                           type:
+                          //                               GooglePayButtonType.pay,
+                          //                           margin:
+                          //                               const EdgeInsets.only(
+                          //                                   top: 15.0),
+                          //                           onPaymentResult: (data) {
+                          //                             print(data);
+                          //                             postDetailsToFirestore(
+                          //                                 context,
+                          //                                 SelectedPackage);
+                          //                           },
+                          //                           loadingIndicator:
+                          //                               const Center(
+                          //                             child:
+                          //                                 CircularProgressIndicator(),
+                          //                           ),
+                          //                         ),
+                          //                       ],
+                          //                     ),
+                          //                   ],
+                          //                 ),
+                          //                 SizedBox(height: 20.h)
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       );
+                          //     });
                         },
                         child: Container(
                           height: 190.h,
@@ -275,9 +286,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                       GestureDetector(
                         onTap: () {
                           SelectedPackage = "month";
-                          if(mounted){
-                            setState((){
-                              loading =true;
+                          if (mounted) {
+                            setState(() {
+                              loading = true;
                             });
                           }
 
@@ -301,8 +312,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                     width: 515.w,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius:
-                                      BorderRadius.circular(14.r),
+                                      borderRadius: BorderRadius.circular(14.r),
                                     ),
                                     child: SingleChildScrollView(
                                       child: Column(
@@ -316,25 +326,21 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                             width: 515.w,
                                             decoration: BoxDecoration(
                                               color: AppColors.redcolor,
-                                              borderRadius:
-                                              BorderRadius.only(
+                                              borderRadius: BorderRadius.only(
                                                   topLeft:
-                                                  Radius.circular(
-                                                      14.r),
+                                                      Radius.circular(14.r),
                                                   topRight:
-                                                  Radius.circular(
-                                                      14.r)),
+                                                      Radius.circular(14.r)),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Text(
                                                 "Action Required",
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.w600,
+                                                    fontWeight: FontWeight.w600,
                                                     color: Colors.white,
                                                     fontFamily:
-                                                    'Poppins-Medium',
+                                                        'Poppins-Medium',
                                                     fontSize: 22.sp),
                                               ),
                                             ),
@@ -342,16 +348,15 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                           SizedBox(height: 10.h),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Container(
                                                   width: 50.w,
                                                   height: 50.h,
                                                   decoration:
-                                                  const BoxDecoration(
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color:
-                                                    AppColors.redcolor,
+                                                    color: AppColors.redcolor,
                                                   ),
                                                   child: Image.asset(icon)),
                                               SizedBox(
@@ -360,11 +365,10 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                               Text(
                                                 "Confirm",
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
                                                     color: Colors.black,
                                                     fontFamily:
-                                                    'Poppins-Medium',
+                                                        'Poppins-Medium',
                                                     fontSize: 20.sp),
                                               )
                                             ],
@@ -375,8 +379,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 color: Colors.black,
-                                                fontFamily:
-                                                'Poppins-Regular',
+                                                fontFamily: 'Poppins-Regular',
                                                 fontSize: 18.sp),
                                             textAlign: TextAlign.center,
                                           ),
@@ -385,42 +388,60 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                           ),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   ApplePayButton(
                                                     width: 200,
                                                     height: 50,
-                                                    paymentConfigurationAsset: 'files/applepay.json',
+                                                    paymentConfigurationAsset:
+                                                        'files/applepay.json',
                                                     paymentItems: paymentItems,
-                                                    style: ApplePayButtonStyle.black,
-                                                    type: ApplePayButtonType.buy,
-                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                    style: ApplePayButtonStyle
+                                                        .black,
+                                                    type:
+                                                        ApplePayButtonType.buy,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
                                                     onPaymentResult: (data) {
                                                       print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
+                                                      postDetailsToFirestore(
+                                                          context,
+                                                          SelectedPackage);
                                                     },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
+                                                    loadingIndicator:
+                                                        const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     ),
                                                   ),
                                                   GooglePayButton(
                                                     width: 200,
                                                     height: 50,
-                                                    paymentConfigurationAsset: 'files/gpay.json',
+                                                    paymentConfigurationAsset:
+                                                        'files/gpay.json',
                                                     paymentItems: paymentItems,
-                                                    style: GooglePayButtonStyle.black,
-                                                    type: GooglePayButtonType.pay,
-                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                    style: GooglePayButtonStyle
+                                                        .black,
+                                                    type:
+                                                        GooglePayButtonType.pay,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
                                                     onPaymentResult: (data) {
                                                       print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
+                                                      postDetailsToFirestore(
+                                                          context,
+                                                          SelectedPackage);
                                                     },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
+                                                    loadingIndicator:
+                                                        const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     ),
                                                   ),
                                                 ],
@@ -470,9 +491,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                       GestureDetector(
                         onTap: () {
                           SelectedPackage = "year";
-                          if(mounted){
-                            setState((){
-                              loading =true;
+                          if (mounted) {
+                            setState(() {
+                              loading = true;
                             });
                           }
                           const paymentItems = [
@@ -495,8 +516,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                     width: 515.w,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius:
-                                      BorderRadius.circular(14.r),
+                                      borderRadius: BorderRadius.circular(14.r),
                                     ),
                                     child: SingleChildScrollView(
                                       child: Column(
@@ -510,25 +530,21 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                             width: 515.w,
                                             decoration: BoxDecoration(
                                               color: AppColors.redcolor,
-                                              borderRadius:
-                                              BorderRadius.only(
+                                              borderRadius: BorderRadius.only(
                                                   topLeft:
-                                                  Radius.circular(
-                                                      14.r),
+                                                      Radius.circular(14.r),
                                                   topRight:
-                                                  Radius.circular(
-                                                      14.r)),
+                                                      Radius.circular(14.r)),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Text(
                                                 "Action Required",
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.w600,
+                                                    fontWeight: FontWeight.w600,
                                                     color: Colors.white,
                                                     fontFamily:
-                                                    'Poppins-Medium',
+                                                        'Poppins-Medium',
                                                     fontSize: 22.sp),
                                               ),
                                             ),
@@ -536,16 +552,15 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                           SizedBox(height: 10.h),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Container(
                                                   width: 50.w,
                                                   height: 50.h,
                                                   decoration:
-                                                  const BoxDecoration(
+                                                      const BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color:
-                                                    AppColors.redcolor,
+                                                    color: AppColors.redcolor,
                                                   ),
                                                   child: Image.asset(icon)),
                                               SizedBox(
@@ -554,11 +569,10 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                               Text(
                                                 "Confirm",
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
                                                     color: Colors.black,
                                                     fontFamily:
-                                                    'Poppins-Medium',
+                                                        'Poppins-Medium',
                                                     fontSize: 20.sp),
                                               )
                                             ],
@@ -569,8 +583,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 color: Colors.black,
-                                                fontFamily:
-                                                'Poppins-Regular',
+                                                fontFamily: 'Poppins-Regular',
                                                 fontSize: 18.sp),
                                             textAlign: TextAlign.center,
                                           ),
@@ -579,48 +592,74 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                           ),
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   ApplePayButton(
                                                     width: 200,
                                                     height: 50,
-                                                    paymentConfigurationAsset: 'files/applepay.json',
+                                                    paymentConfigurationAsset:
+                                                        'files/applepay.json',
                                                     paymentItems: paymentItems,
-                                                    style: ApplePayButtonStyle.black,
-                                                    type: ApplePayButtonType.buy,
-                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                    style: ApplePayButtonStyle
+                                                        .black,
+                                                    type:
+                                                        ApplePayButtonType.buy,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
                                                     onPaymentResult: (data) {
                                                       print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
+                                                      postDetailsToFirestore(
+                                                          context,
+                                                          SelectedPackage);
                                                     },
-                                                    onError: (data){
-                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                    onError: (data) {
+                                                      ToastUtils
+                                                          .showCustomToast(
+                                                              context,
+                                                              data.toString(),
+                                                              Colors.red);
                                                     },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
+                                                    loadingIndicator:
+                                                        const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     ),
                                                   ),
                                                   GooglePayButton(
                                                     width: 200,
                                                     height: 50,
-                                                    paymentConfigurationAsset: 'files/gpay.json',
+                                                    paymentConfigurationAsset:
+                                                        'files/gpay.json',
                                                     paymentItems: paymentItems,
-                                                    style: GooglePayButtonStyle.black,
-                                                    type: GooglePayButtonType.pay,
-                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                    style: GooglePayButtonStyle
+                                                        .black,
+                                                    type:
+                                                        GooglePayButtonType.pay,
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
                                                     onPaymentResult: (data) {
                                                       print(data);
-                                                      postDetailsToFirestore(context, SelectedPackage);
+                                                      postDetailsToFirestore(
+                                                          context,
+                                                          SelectedPackage);
                                                     },
-                                                    onError: (data){
-                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                    onError: (data) {
+                                                      ToastUtils
+                                                          .showCustomToast(
+                                                              context,
+                                                              data.toString(),
+                                                              Colors.red);
                                                     },
-                                                    loadingIndicator: const Center(
-                                                      child: CircularProgressIndicator(),
+                                                    loadingIndicator:
+                                                        const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
                                                     ),
                                                   ),
                                                 ],
@@ -682,7 +721,6 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
-
                   text(
                       context,
                       "You can like anyone around the world. CRAVE has no borders! Tap on the ♥ icon, go chatting and have fun!",
@@ -738,7 +776,6 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                           ],
                         ),
                       )),
-
                   SizedBox(
                     height: 20.h,
                   ),
@@ -752,14 +789,13 @@ class _SigninPhoneValidState extends State<PackageScreen> {
   }
 
   void postDetailsToFirestore(BuildContext context, package) async {
-
     final FirebaseAuth auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'package': package,
-      'steps':'5',
+      'steps': '5',
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "Package Added", Colors.green);
@@ -767,8 +803,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
           loading = false;
         });
         preferences.setString("package", package);
-        AppRoutes.push(
-            context, PageTransitionType.fade,  const CreateProfile());
+        AppRoutes.push(context, PageTransitionType.fade, const CreateProfile());
       }
     }).catchError((e) {});
     if (mounted) {
