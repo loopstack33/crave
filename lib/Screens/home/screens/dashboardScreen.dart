@@ -155,6 +155,7 @@ class _DashboardState extends State<Dashboard> {
         idFrom: "",
         paid: false,
         idTo: "",
+        dateTime: DateTime.now().toString(),
         count: 0,
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
         participants: {
@@ -168,7 +169,7 @@ class _DashboardState extends State<Dashboard> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+      AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
       FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(

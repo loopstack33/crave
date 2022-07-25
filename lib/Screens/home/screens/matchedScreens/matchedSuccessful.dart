@@ -91,7 +91,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
 
       ToastUtils.showCustomToast(
           context, "Chat room already assigned", Colors.red);
-      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+      // AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
     } else {
       log("ChatRoom Not Available");
 
@@ -116,7 +116,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+      AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
       FCMServices.sendFCM("crave", targetID.toString(), matchedname.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(

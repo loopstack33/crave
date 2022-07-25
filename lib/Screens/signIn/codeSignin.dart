@@ -674,6 +674,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'country':'',
       'status': '',
       'age': '',
+      'email':'',
       'gender': '',
       'birthday': '',
       'genes': '',

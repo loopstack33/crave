@@ -106,7 +106,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-      AppRoutes.push(context, PageTransitionType.fade, const UserChatList());
+     // AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
       FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(

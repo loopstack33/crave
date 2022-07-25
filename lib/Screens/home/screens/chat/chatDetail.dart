@@ -172,7 +172,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
     await firebaseFirestore
         .collection("chatrooms")
         .doc(widget.chatRoom.chatroomid)
-        .set({"paid":true})
+        .update({"paid":true})
         .then((value) async{
       ToastUtils.showCustomToast(context, "Payment Success", Colors.green);
       if(mounted){
@@ -180,6 +180,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
          isLoad = true;
        });
       }
+      Navigator.pop(context);
       await firebaseFirestore
           .collection("chatrooms")
           .doc(widget.chatRoom.chatroomid)

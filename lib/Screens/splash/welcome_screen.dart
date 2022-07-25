@@ -20,6 +20,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../home/homeScreen.dart';
 import '../signIn/name.dart';
 
 class Welcome_Screen extends StatefulWidget {
@@ -201,8 +202,8 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
      idToken:  res.identityToken,
      accessToken: res.authorizationCode
     );
-
-    signInWithPhoneAuthCredential(credential);
+    bool check = await userExists(AppleIDAuthorizationScopes.email.toString());
+    Future.delayed(const Duration(seconds: 3),()=>signInWithPhoneAuthCredential(credential,check));
 
     print(res.state);
     if (mounted) {
@@ -211,50 +212,16 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       });
     }
 
-    /*switch (AuthorizationErrorCode) {
-      case AuthorizationErrorCode.canceled:
-        try {
 
-          await signinWithCredential(credential);
-
-
-        } on PlatformException catch (error) {
-          if(mounted){
-            setState((){
-              loading = false;
-            });
-          }
-
-        } on FirebaseAuthException catch (error) {
-          if(mounted){
-            setState((){
-              loading = false;
-            });
-          }
-        }
-        break;
-      case AuthorizationStatus.error:
-        if(mounted){
-          setState((){
-            loading = false;
-          });
-        }
-       ToastUtils.showCustomToast(context, 'Apple authorization failed', Colors.red);
-        break;
-      case AuthorizationStatus.cancelled:
-        if(mounted){
-          setState((){
-            loading = false;
-          });
-        }
-        ToastUtils.showCustomToast(context, 'Apple authorization cancelled', Colors.red);
-        break;
-    }*/
   }
+  var instance = FirebaseFirestore.instance;
+
+  Future<bool> userExists(String email) async =>
+      (await instance.collection("users").where("email", isEqualTo: email).get()).docs.isNotEmpty;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void signInWithPhoneAuthCredential(OAuthCredential phoneAuthCredential) async {
+  void signInWithPhoneAuthCredential(OAuthCredential phoneAuthCredential,bool email) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
@@ -265,7 +232,22 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       final authCredential =
       await _auth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
-        postDetailsToFirestore(context, "");
+        if(email == true){
+          if (mounted) {
+            ToastUtils.showCustomToast(
+                context, "Login Success", Colors.green);
+            updateDeviceToken(_auth.currentUser!.uid, 'users');
+            preferences.setString("logStatus", "true");
+            preferences.setString("uid",_auth.currentUser!.uid.toString());
+            setState(() {
+              loading = false;
+            });
+            AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
+          }
+        }
+        else{
+          postDetailsToFirestore(context, email);
+        }
 
       }
     } on FirebaseAuthException catch (e) {
@@ -277,9 +259,21 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       ToastUtils.showCustomToast(context, e.message.toString(), Colors.red);
     }
   }
+  var deviceToken;
+
+  updateDeviceToken(id, collection) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+    var deviceT = await _firebaseMessaging.getToken();
+    log(' deviceToken: $deviceT');
+    await firebaseFirestore.collection(collection).doc(id).update({
+      'deviceToken': deviceT,
+    });
+  }
+
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  void postDetailsToFirestore(BuildContext context, phone) async {
+  void postDetailsToFirestore(BuildContext context, email) async {
     final auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -289,9 +283,10 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).set({
       'uid': user.uid,
-      'phone': phone,
+      'phone': "",
       'name': '',
       'showName': '',
+      'email':email,
       'deviceToken': deviceT.toString(),
       'craves':[],
       'imageUrl':[],
