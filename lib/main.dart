@@ -42,7 +42,6 @@ Future<void> _messageHandler(RemoteMessage event) async {
 }
 
 fcmListen() async {
-  // var sfID = await AuthServices.getTraderID();
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
     log('target: ${event.data['id']}');
     log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
@@ -68,10 +67,17 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (BuildContext context, _) {
-          return const MaterialApp(
-            title: 'Flutter Demo',
+          return MaterialApp(
+            theme: ThemeData(
+                pageTransitionsTheme:const PageTransitionsTheme(
+                    builders: {
+                      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                    }
+                )
+            ),
             debugShowCheckedModeBanner: false,
-            home: Splash(),
+            home:const Splash(),
           );
         });
   }
