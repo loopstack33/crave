@@ -901,6 +901,9 @@ class _DashboardState extends State<Dashboard> {
                                                                                     _auth.currentUser!.uid,
                                                                                   );
                                                                                 },
+                                                                                onError: (data){
+                                                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                                                },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
                                                                                 ),
@@ -921,6 +924,9 @@ class _DashboardState extends State<Dashboard> {
                                                                                     allUserexceptblocked[index].userId,
                                                                                     _auth.currentUser!.uid,
                                                                                   );
+                                                                                },
+                                                                                onError: (data){
+                                                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                                                 },
                                                                                 loadingIndicator: const Center(
                                                                                   child: CircularProgressIndicator(),
@@ -1313,7 +1319,10 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset("assets/images/craveLogo.png"),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 30.0),
+                          child: Image.asset("assets/images/craveLogo.png"),
+                        ),
                       ],
                     ))),
         ));

@@ -6,6 +6,7 @@ import 'package:crave/Screens/home/screens/chat/call/screen/call_pickup_scree.da
 import 'package:crave/Screens/home/screens/chat/fullPage_view.dart';
 import 'package:crave/Screens/home/screens/chat/messagesWidgets/videoWidget.dart';
 import 'package:crave/Screens/home/screens/chat/widgets/bottom_field_widget.dart';
+import 'package:crave/Screens/home/screens/chat/widgets/timer.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/widgets/custom_toast.dart';
 import 'package:crave/widgets/loader.dart';
@@ -58,6 +59,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
   int _start = 0;
   String result = "00:00:00";
   bool timeup = false;
+
   @override
   void initState() {
     super.initState();
@@ -90,7 +92,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
           timeup = true;
         });
       } else {
-        startTimer();
+      //  startTimer();
       }
     });
   }
@@ -125,26 +127,76 @@ class _ChatDetailPageState extends State<ChatDetailPage>
     });
   }
 
+  bool isPaid = false;
   currentuser() async {
-    //currentuserdata
-
     await firebaseFirestore
         .collection("users")
         .doc(auth.currentUser!.uid)
         .get()
-        .then((value) {
+        .then((value) async{
       loggedInUser = UsersModel.fromDocument(value);
       currentUsersData.add(loggedInUser!);
-      gettingtimer();
+      await firebaseFirestore
+          .collection("chatrooms")
+          .doc(widget.chatRoom.chatroomid)
+          .get().then((value){
+          if(mounted){
+            setState((){
+              isPaid = value.data()!["paid"];
+            });
+          }
+          if(isPaid ==false){
+            gettingtimer();
+          }
+          else{
+            if(mounted) {
+              setState(() {
+              isLoad = false;
+            });
+            }
+          }
+      });
+
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer!.cancel();
+   // _timer!.cancel();
     controller.dispose();
     WidgetsBinding.instance.removeObserver(this);
+  }
+
+  postUpdate() async{
+    await firebaseFirestore
+        .collection("chatrooms")
+        .doc(widget.chatRoom.chatroomid)
+        .set({"paid":true})
+        .then((value) async{
+      ToastUtils.showCustomToast(context, "Payment Success", Colors.green);
+      if(mounted){
+       setState((){
+         isLoad = true;
+       });
+      }
+      await firebaseFirestore
+          .collection("chatrooms")
+          .doc(widget.chatRoom.chatroomid)
+          .get().then((value){
+        if(mounted){
+          setState((){
+            isPaid = value.data()!["paid"];
+          });
+        }
+        if(mounted) {
+          setState(() {
+            isLoad = false;
+          });
+        }
+
+      });
+  });
   }
 
   @override
@@ -154,6 +206,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
       opacity: 0.1,
       child: CallPickUp(
         scaffold: Scaffold(
+          resizeToAvoidBottomInset: true,
           backgroundColor: AppColors.white,
           appBar: AppBar(
             elevation: 1,
@@ -241,12 +294,13 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                     fontFamily: 'Poppins-Regular',
                                     fontSize: 10.sp)),
                           ]),
-                          Text(
-                            timeup == false ? "$result" : "00:00:00",
-                            style: TextStyle(
-                                fontFamily: 'Poppins-SemiBold',
-                                fontSize: 10.sp),
-                          ),
+                          // Text(
+                          //   timeup == false ? result : "00:00:00",
+                          //   style: TextStyle(
+                          //       fontFamily: 'Poppins-SemiBold',
+                          //       fontSize: 10.sp),
+                          // ),
+                          isPaid ==false?TimerWidget(isLoad: isLoad,chatRoom: widget.chatRoom,):const SizedBox()
                         ],
                       ),
                     ),
@@ -391,6 +445,9 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                               widget.targetUser.imgUrl[0].toString(),
                                                               false);
                                                         },
+                                                        onError: (data){
+                                                          ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                        },
                                                         loadingIndicator: const Center(
                                                           child: CircularProgressIndicator(),
                                                         ),
@@ -411,6 +468,9 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                               widget.targetUser.userId.toString(),
                                                               widget.targetUser.imgUrl[0].toString(),
                                                               false);
+                                                        },
+                                                        onError: (data){
+                                                          ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                         },
                                                         loadingIndicator: const Center(
                                                           child: CircularProgressIndicator(),
@@ -456,12 +516,13 @@ class _ChatDetailPageState extends State<ChatDetailPage>
           body: timeup == true
               ? Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(onTap: () {
                         if (currentUsersData[0].gender == "Man") {
                           const paymentItems = [
                             PaymentItem(
-                              label: 'Crave VideoCall',
+                              label: 'Crave ChatPay',
                               amount: '1.99',
                               status: PaymentItemStatus.final_price,
                             )
@@ -542,7 +603,7 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                           ),
                                           SizedBox(height: 10.h),
                                           Text(
-                                            "For video chatting pay 1.99 \$.",
+                                            "For chat extend pay 1.99 \$.",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 color: Colors.black,
@@ -571,6 +632,9 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                 onPaymentResult: (data) {
                                                   print(data);
                                                 },
+                                                onError: (data){
+                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                },
                                                 loadingIndicator: const Center(
                                                   child:
                                                       CircularProgressIndicator(),
@@ -590,6 +654,9 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                 onPaymentResult: (data) {
                                                   print(data);
                                                 },
+                                                onError: (data){
+                                                  ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                },
                                                 loadingIndicator: const Center(
                                                   child:
                                                       CircularProgressIndicator(),
@@ -605,16 +672,15 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                 );
                               });
                         }
-                        ;
-                        child:
-                        Text("Pay for more chat\nClick here to pay");
-                      })
+
+                      }, child:
+                      Text("Pay 1.99\$ to extent chat\n Click here to pay",style: TextStyle(fontSize: 20.sp,fontFamily: 'Poppins-Regular'),textAlign: TextAlign.center,))
                     ],
                   ),
                 )
               : Stack(
                   children: <Widget>[
-                    Align(
+                    isPaid ==false?   Align(
                       alignment: Alignment.topCenter,
                       child: Container(
                         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -764,6 +830,10 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                         onPaymentResult:
                                                             (data) {
                                                           print(data);
+                                                          postUpdate();
+                                                        },
+                                                        onError: (data){
+                                                          ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                         },
                                                         loadingIndicator:
                                                             const Center(
@@ -789,6 +859,10 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                                                         onPaymentResult:
                                                             (data) {
                                                           print(data);
+                                                          postUpdate();
+                                                        },
+                                                        onError: (data){
+                                                          ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                         },
                                                         loadingIndicator:
                                                             const Center(
@@ -814,7 +888,8 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                           ],
                         ),
                       ),
-                    ),
+                    )
+                    :const SizedBox(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 55.0, top: 30.0),
                       child: StreamBuilder(

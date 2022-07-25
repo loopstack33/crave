@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1089311314091-uo88trf7qcc52tlunbdk6miuklr16tts</string>
+				<string>com.googleusercontent.apps.1089311314091-qkav002nom9bhe29r0eks138mhlh4prm</string>
 			</array>
 		</dict>
 	</array>
@@ -39,12 +39,12 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Needs to hear recordings</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Needs to pick image from gallery</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera Library Use</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone Use</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needs to pick image from gallery</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

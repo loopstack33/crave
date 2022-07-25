@@ -597,6 +597,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                       print(data);
                                                       postDetailsToFirestore(context, SelectedPackage);
                                                     },
+                                                    onError: (data){
+                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                    },
                                                     loadingIndicator: const Center(
                                                       child: CircularProgressIndicator(),
                                                     ),
@@ -612,6 +615,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                     onPaymentResult: (data) {
                                                       print(data);
                                                       postDetailsToFirestore(context, SelectedPackage);
+                                                    },
+                                                    onError: (data){
+                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                                     },
                                                     loadingIndicator: const Center(
                                                       child: CircularProgressIndicator(),

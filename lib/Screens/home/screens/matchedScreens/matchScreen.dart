@@ -167,7 +167,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     height: 35.h,
                   ),
                   Positioned(
-                    left: 12,
+                    left: 15,
                     top: 5.7,
                     child: Text("$counter",
                         style: TextStyle(
@@ -385,9 +385,12 @@ class _MatchScreenState extends State<MatchScreen> {
                                                     .update({'date': date.toString(), 'counter': 3}).then((text) {
                                                   setState(() {
                                                     isLoad = false;
-                                                    counter = 2;
+                                                    counter = 3;
                                                   });
                                                 }).catchError((e) {});
+                                              },
+                                              onError: (data){
+                                                ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                               },
                                               loadingIndicator: const Center(
                                                 child:
@@ -421,6 +424,9 @@ class _MatchScreenState extends State<MatchScreen> {
                                                   });
                                                 }).catchError((e) {});
 
+                                              },
+                                              onError: (data){
+                                                ToastUtils.showCustomToast(context, data.toString(), Colors.red);
                                               },
                                               loadingIndicator: const Center(
                                                 child:

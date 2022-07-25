@@ -125,7 +125,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
                 },
                 size: 18.sp),*/
             (Platform.isIOS)
-                ? loading?Center(child: CircularProgressIndicator(color: AppColors.redcolor),):SizedBox(
+                ? loading?const Center(child: CircularProgressIndicator(color: AppColors.redcolor),):SizedBox(
               width: 320.w,
               height: 56.h,
                   child: SignInWithAppleButton(
@@ -141,7 +141,9 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
               },
             ),
                 )
-                : Container(),
+                :  SizedBox(
+              height: 30.h,
+            ),
 
             SizedBox(height: 30.h),
             Text.rich(
@@ -183,7 +185,6 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       ),
     );
   }
-
 
   signinApple(BuildContext context) async {
     if (!await SignInWithApple.isAvailable()) {
