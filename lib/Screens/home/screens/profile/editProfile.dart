@@ -139,8 +139,8 @@ class _ProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        leading: IconButton (
-          icon:  const Icon(Icons.arrow_back_ios, color: AppColors.redcolor),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.redcolor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: AppColors.white,
@@ -512,8 +512,9 @@ class _ProfileState extends State<EditProfile> {
               fit: BoxFit.contain,
             ),
           ),
-          backgroundColor:
-              company.status == false ? const Color(0xffFAFAFA) : AppColors.redcolor,
+          backgroundColor: company.status == false
+              ? const Color(0xffFAFAFA)
+              : AppColors.redcolor,
           label: text(context, company.name, 12.sp,
               color: company.status == false ? Colors.black : AppColors.white,
               boldText: FontWeight.w400,

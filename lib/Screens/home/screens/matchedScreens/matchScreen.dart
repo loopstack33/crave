@@ -372,25 +372,38 @@ class _MatchScreenState extends State<MatchScreen> {
                                               type: ApplePayButtonType.buy,
                                               margin: const EdgeInsets.only(
                                                   top: 15.0),
-                                              onPaymentResult: (data) async{
+                                              onPaymentResult: (data) async {
                                                 print(data);
-                                                SharedPreferences preferences = await SharedPreferences.getInstance();
-                                                preferences.setBool("counter", false);
-                                                DateTime date = DateTime(now.year, now.month, now.day);
+                                                SharedPreferences preferences =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                preferences.setBool(
+                                                    "counter", false);
+                                                DateTime date = DateTime(
+                                                    now.year,
+                                                    now.month,
+                                                    now.day);
                                                 await firebaseFirestore
                                                     .collection("users")
                                                     .doc(uid)
-                                                    .collection("matching_Attempt")
+                                                    .collection(
+                                                        "matching_Attempt")
                                                     .doc(date.toString())
-                                                    .update({'date': date.toString(), 'counter': 3}).then((text) {
+                                                    .update({
+                                                  'date': date.toString(),
+                                                  'counter': 3
+                                                }).then((text) {
                                                   setState(() {
                                                     isLoad = false;
                                                     counter = 3;
                                                   });
                                                 }).catchError((e) {});
                                               },
-                                              onError: (data){
-                                                ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                              onError: (data) {
+                                                ToastUtils.showCustomToast(
+                                                    context,
+                                                    data.toString(),
+                                                    Colors.red);
                                               },
                                               loadingIndicator: const Center(
                                                 child:
@@ -407,26 +420,38 @@ class _MatchScreenState extends State<MatchScreen> {
                                               type: GooglePayButtonType.pay,
                                               margin: const EdgeInsets.only(
                                                   top: 15.0),
-                                              onPaymentResult: (data) async{
+                                              onPaymentResult: (data) async {
                                                 print(data);
-                                                SharedPreferences preferences = await SharedPreferences.getInstance();
-                                                preferences.setBool("counter", false);
-                                                DateTime date = DateTime(now.year, now.month, now.day);
+                                                SharedPreferences preferences =
+                                                    await SharedPreferences
+                                                        .getInstance();
+                                                preferences.setBool(
+                                                    "counter", false);
+                                                DateTime date = DateTime(
+                                                    now.year,
+                                                    now.month,
+                                                    now.day);
                                                 await firebaseFirestore
                                                     .collection("users")
                                                     .doc(uid)
-                                                    .collection("matching_Attempt")
+                                                    .collection(
+                                                        "matching_Attempt")
                                                     .doc(date.toString())
-                                                    .update({'date': date.toString(), 'counter': 3}).then((text) {
+                                                    .update({
+                                                  'date': date.toString(),
+                                                  'counter': 3
+                                                }).then((text) {
                                                   setState(() {
                                                     isLoad = false;
                                                     counter = 2;
                                                   });
                                                 }).catchError((e) {});
-
                                               },
-                                              onError: (data){
-                                                ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                              onError: (data) {
+                                                ToastUtils.showCustomToast(
+                                                    context,
+                                                    data.toString(),
+                                                    Colors.red);
                                               },
                                               loadingIndicator: const Center(
                                                 child:
@@ -611,7 +636,7 @@ class _MatchScreenState extends State<MatchScreen> {
     log(CompleteUserData.length.toString());
     if (CompleteUserData.length == next) {
       ToastUtils.showCustomToast(
-          context, "No Match Found, Try Agian", AppColors.redcolor);
+          context, "No Match Found, Try Again", AppColors.redcolor);
       if (mounted) {
         setState(() {
           loading = false;
