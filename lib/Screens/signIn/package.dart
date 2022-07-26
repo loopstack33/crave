@@ -87,13 +87,14 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                       GestureDetector(
                         onTap: () async {
                           SelectedPackage = "week";
-                          if (mounted) {
-                            setState(() {
-                              loading = true;
-                            });
-                          }
-                          AppRoutes.push(context, PageTransitionType.fade,
-                              const CreateProfile());
+                          // if (mounted) {
+                          //   setState(() {
+                          //     loading = true;
+                          //   });
+                          // }
+                          postDetailsToFirestore(
+                              context,
+                              SelectedPackage);
                           // const paymentItems = [
                           //   PaymentItem(
                           //     label: 'ONE WEEK PACKAGE',
@@ -286,11 +287,11 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                       GestureDetector(
                         onTap: () {
                           SelectedPackage = "month";
-                          if (mounted) {
-                            setState(() {
-                              loading = true;
-                            });
-                          }
+                          // if (mounted) {
+                          //   setState(() {
+                          //     loading = true;
+                          //   });
+                          // }
 
                           const paymentItems = [
                             PaymentItem(
@@ -491,11 +492,11 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                       GestureDetector(
                         onTap: () {
                           SelectedPackage = "year";
-                          if (mounted) {
-                            setState(() {
-                              loading = true;
-                            });
-                          }
+                          // if (mounted) {
+                          //   setState(() {
+                          //     loading = true;
+                          //   });
+                          // }
                           const paymentItems = [
                             PaymentItem(
                               label: 'ONE WEEK PACKAGE',
@@ -621,7 +622,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                       ToastUtils
                                                           .showCustomToast(
                                                               context,
-                                                              data.toString(),
+                                                              "Payment Failed",
                                                               Colors.red);
                                                     },
                                                     loadingIndicator:
@@ -652,9 +653,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                     onError: (data) {
                                                       ToastUtils
                                                           .showCustomToast(
-                                                              context,
-                                                              data.toString(),
-                                                              Colors.red);
+                                                          context,
+                                                          "Payment Failed",
+                                                          Colors.red);
                                                     },
                                                     loadingIndicator:
                                                         const Center(

@@ -13,6 +13,7 @@ import 'package:crave/widgets/custom_toast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
 import 'package:uuid/uuid.dart';
@@ -182,9 +183,8 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                 .snapshots(),
             builder: (BuildContext context, snapshot) {
               if (snapshot.data == null) {
-                return const Center(
-                    child:
-                        CircularProgressIndicator(color: AppColors.redcolor));
+                return  Center(
+                    child: Lottie.asset("assets/raw/like.json",width: 200));
               } else {
                 final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs =
                     snapshot.data!.docs;
@@ -334,7 +334,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                         );
                                                       },
                                                       onError: (data){
-                                                        ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                        ToastUtils.showCustomToast(context, "Payment Failed", Colors.red);
                                                       },
                                                       loadingIndicator:
                                                           const Center(
@@ -367,7 +367,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                         );
                                                       },
                                                       onError: (data){
-                                                        ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                        ToastUtils.showCustomToast(context, "Payment Failed", Colors.red);
                                                       },
                                                       loadingIndicator:
                                                           const Center(
@@ -453,10 +453,12 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                           );
                         },
                       )
-                    : const Center(
+                    :  Center(
                         child: Text("No Likes",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w500)));
+                                style: TextStyle(
+                                  fontFamily: 'Poppins-Regular',
+                                    fontSize: 18.sp, )),
+                         );
               }
             },
           ),
