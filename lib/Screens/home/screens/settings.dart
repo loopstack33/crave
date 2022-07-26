@@ -184,7 +184,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "Block User",
+                                          "Delete Account",
                                           style: TextStyle(
                                               fontSize: 22.sp,
                                               color: AppColors.white,

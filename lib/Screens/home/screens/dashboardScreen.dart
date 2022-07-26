@@ -113,8 +113,7 @@ class _DashboardState extends State<Dashboard> {
 
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(
-      BuildContext context, userName, targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(BuildContext context, userName, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -188,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
         appBar: AppBar(
           backgroundColor: AppColors.white,
           automaticallyImplyLeading: false,
-          elevation: 1,
+          elevation: 0,
           centerTitle: true,
           leading: Padding(
             padding: const EdgeInsets.all(15.0),

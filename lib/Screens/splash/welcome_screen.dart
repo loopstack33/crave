@@ -190,7 +190,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
   signinApple(BuildContext context) async {
     if (!await SignInWithApple.isAvailable()) {
       ToastUtils.showCustomToast(context, "This Device is not eligible for Apple Sign in", Colors.red);
-      return null; //Break from the program
+      return null;
     }
 
     final res = await SignInWithApple.getAppleIDCredential(
@@ -203,7 +203,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
      accessToken: res.authorizationCode
     );
     bool check = await userExists(AppleIDAuthorizationScopes.email.toString());
-    Future.delayed(const Duration(seconds: 3),()=>signInWithPhoneAuthCredential(credential,check));
+    Future.delayed(const Duration(seconds: 2),()=>signInWithPhoneAuthCredential(credential,check));
 
     print(res.state);
     if (mounted) {
@@ -286,13 +286,16 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       'phone': "",
       'name': '',
       'showName': '',
-      'email':email,
+      'email':AppleIDAuthorizationScopes.email.toString(),
       'deviceToken': deviceT.toString(),
       'craves':[],
+      'blocked_By':[],
+      'chat_with':[],
       'imageUrl':[],
       'country':'',
       'status': '',
       'age': '',
+      'package':'',
       'gender': '',
       'birthday': '',
       'genes': '',

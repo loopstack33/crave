@@ -75,8 +75,9 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0,
         backgroundColor: AppColors.white,
         title: text(context, "Profile", 24.sp,
             color: AppColors.black,
@@ -184,6 +185,20 @@ class _ProfileState extends State<Profile> {
                           color: const Color(0xff606060),
                           boldText: FontWeight.w500,
                           fontFamily: "Poppins-SemiBold"),
+                      SizedBox(width: 10,),
+                      GestureDetector(   onTap: () async {
+                        final refresh = await Navigator.push(
+                            context,
+                            // Create the SelectionScreen in the next step.
+                            MaterialPageRoute(builder: (context) => const EditProfile()));
+
+                        setState(() {
+                          if (refresh == "Refresh") {
+                            getData();
+                          }
+                        });
+                      },
+                      child: Image.asset("assets/images/edit.png",width: 22.w,height: 22.h,),)
                     ],
                   ),
 
@@ -320,10 +335,20 @@ class _ProfileState extends State<Profile> {
                                                                                         ? bondage
                                                                                         : e == "Butt Stuff"
                                                                                             ? buttstuff
+                                                : e == "Roleplay"
+                                                ? roleplay1
+                                                : e == "Feet Stuff"
+                                                ? feetstuf1
+                                                : e == "Golden Showers"
+                                                ? shower1
+                                                : e == "Dirty Talk"
+                                                ? dirtytalk1
+                                                : e == "Cuddling"
+                                                ? cuddling1
                                                                                             : kinky1,
                                             color: AppColors.white,
-                                            width: 15,
-                                            height: 15,
+                                            width: 20,
+                                            height: 20,
                                           ),
                                         ),
                                         label: Text(

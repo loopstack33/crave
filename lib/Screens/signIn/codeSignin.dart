@@ -669,7 +669,14 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'country': '',
       'status': '',
       'age': '',
+<<<<<<< HEAD
       'email': '',
+=======
+      'package':'',
+      'blocked_By':[],
+      'chat_with':[],
+      'email':'',
+>>>>>>> b5caad5def3d02e158c20c194fd3c8cfa076730c
       'gender': '',
       'birthday': '',
       'genes': '',

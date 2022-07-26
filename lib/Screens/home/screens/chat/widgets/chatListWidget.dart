@@ -409,7 +409,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
           }
         } else {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(color: AppColors.redcolor,),
           );
         }
       },
