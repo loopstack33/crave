@@ -92,9 +92,7 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                           //     loading = true;
                           //   });
                           // }
-                          postDetailsToFirestore(
-                              context,
-                              SelectedPackage);
+                          postDetailsToFirestore(context, SelectedPackage);
                           // const paymentItems = [
                           //   PaymentItem(
                           //     label: 'ONE WEEK PACKAGE',
@@ -653,9 +651,9 @@ class _SigninPhoneValidState extends State<PackageScreen> {
                                                     onError: (data) {
                                                       ToastUtils
                                                           .showCustomToast(
-                                                          context,
-                                                          "Payment Failed",
-                                                          Colors.red);
+                                                              context,
+                                                              "Payment Failed",
+                                                              Colors.red);
                                                     },
                                                     loadingIndicator:
                                                         const Center(
@@ -804,7 +802,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
           loading = false;
         });
         preferences.setString("package", package);
-        AppRoutes.push(context, PageTransitionType.fade, const CreateProfile());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const CreateProfile());
       }
     }).catchError((e) {});
     if (mounted) {

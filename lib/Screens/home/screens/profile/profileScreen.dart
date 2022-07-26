@@ -1,9 +1,11 @@
 // ignore_for_file: file_names
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/home/screens/profile/editProfile.dart';
+import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_text.dart';
@@ -11,6 +13,7 @@ import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -46,6 +49,11 @@ class _ProfileState extends State<Profile> {
   }
 
   getData() async {
+    photoUrl.clear();
+    pic1url = "";
+    pic2url = "";
+    pic3url = "";
+
     String uid = _auth.currentUser!.uid;
     await _firestore.collection('users').doc(uid).get().then((value) {
       setState(() {
@@ -56,6 +64,9 @@ class _ProfileState extends State<Profile> {
         bio = value.data()!["bio"];
         country = value.data()!["country"];
         age = value.data()!["age"];
+
+        log(photoUrl.length.toString());
+        log(photoUrl.toString());
         isLoading = false;
         if (photoUrl.length == 1) {
           pic1url = photoUrl[0];
@@ -84,30 +95,6 @@ class _ProfileState extends State<Profile> {
             boldText: FontWeight.w500,
             fontFamily: "Poppins-Medium"),
         centerTitle: true,
-        actions: [
-          InkWell(
-            onTap: () async {
-              final refresh = await Navigator.push(
-                  context,
-                  // Create the SelectionScreen in the next step.
-                  MaterialPageRoute(builder: (context) => const EditProfile()));
-
-              setState(() {
-                if (refresh == "Refresh") {
-                  getData();
-                }
-              });
-            },
-            child: Image.asset(
-              editProfile,
-              width: 24.w,
-              height: 24.h,
-            ),
-          ),
-          SizedBox(
-            width: 10.w,
-          )
-        ],
       ),
       body: ProgressHUD(
           inAsyncCall: isLoading,
@@ -132,43 +119,91 @@ class _ProfileState extends State<Profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: 100.w,
-                        height: 154.h,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: pic1url == ""
-                                  ? const AssetImage(addpic) as ImageProvider
-                                  : NetworkImage(pic1url)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10.0)),
+                      InkWell(
+                        onTap: () async {
+                          photoUrl.clear();
+                          final refresh = await Navigator.push(
+                              context,
+                              // Create the SelectionScreen in the next step.
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfile())).then((value) => {
+                                setState(() {
+                                  isLoading = true;
+                                  getData();
+                                })
+                              });
+                        },
+                        child: Container(
+                          width: 100.w,
+                          height: 154.h,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: pic1url == ""
+                                    ? const AssetImage(addpic) as ImageProvider
+                                    : NetworkImage(pic1url)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 100.w,
-                        height: 154.h,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: pic2url == ""
-                                  ? const AssetImage(addpic) as ImageProvider
-                                  : NetworkImage(pic2url)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10.0)),
+                      InkWell(
+                        onTap: () async {
+                          photoUrl.clear();
+                          final refresh = await Navigator.push(
+                              context,
+                              // Create the SelectionScreen in the next step.
+                              MaterialPageRoute(
+                                  builder: (context) => const EditProfile()));
+
+                          setState(() {
+                            if (refresh == "Refresh") {
+                              getData();
+                            }
+                          });
+                        },
+                        child: Container(
+                          width: 100.w,
+                          height: 154.h,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: pic2url == ""
+                                    ? const AssetImage(addpic) as ImageProvider
+                                    : NetworkImage(pic2url)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
+                          ),
                         ),
                       ),
-                      Container(
-                        width: 100.w,
-                        height: 154.h,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: pic3url == ""
-                                  ? const AssetImage(addpic) as ImageProvider
-                                  : NetworkImage(pic3url)),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10.0)),
+                      InkWell(
+                        onTap: () async {
+                          photoUrl.clear();
+                          final refresh = await Navigator.push(
+                              context,
+                              // Create the SelectionScreen in the next step.
+                              MaterialPageRoute(
+                                  builder: (context) => const EditProfile()));
+
+                          setState(() {
+                            if (refresh == "Refresh") {
+                              getData();
+                            }
+                          });
+                        },
+                        child: Container(
+                          width: 100.w,
+                          height: 154.h,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: pic3url == ""
+                                    ? const AssetImage(addpic) as ImageProvider
+                                    : NetworkImage(pic3url)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10.0)),
+                          ),
                         ),
                       ),
                     ],
@@ -185,20 +220,30 @@ class _ProfileState extends State<Profile> {
                           color: const Color(0xff606060),
                           boldText: FontWeight.w500,
                           fontFamily: "Poppins-SemiBold"),
-                      SizedBox(width: 10,),
-                      GestureDetector(   onTap: () async {
-                        final refresh = await Navigator.push(
-                            context,
-                            // Create the SelectionScreen in the next step.
-                            MaterialPageRoute(builder: (context) => const EditProfile()));
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          photoUrl.clear();
+                          final refresh = await Navigator.push(
+                              context,
+                              // Create the SelectionScreen in the next step.
+                              MaterialPageRoute(
+                                  builder: (context) => const EditProfile()));
 
-                        setState(() {
-                          if (refresh == "Refresh") {
-                            getData();
-                          }
-                        });
-                      },
-                      child: Image.asset("assets/images/edit.png",width: 22.w,height: 22.h,),)
+                          setState(() {
+                            if (refresh == "Refresh") {
+                              getData();
+                            }
+                          });
+                        },
+                        child: Image.asset(
+                          "assets/images/edit.png",
+                          width: 22.w,
+                          height: 22.h,
+                        ),
+                      )
                     ],
                   ),
 
@@ -269,35 +314,45 @@ class _ProfileState extends State<Profile> {
                                 width: 114.w,
                                 height: 22.h,
                               ),
-                              // InkWell(
-                              //   onTap: () {
-                              //     AppRoutes.push(
-                              //         context,
-                              //         PageTransitionType.fade,
-                              //         const MyCraves());
-                              //   },
-                              //   child: Container(
-                              //     height: 35.h,
-                              //     width: 85.w,
-                              //     decoration: BoxDecoration(
-                              //       color: AppColors.redcolor,
-                              //       borderRadius: BorderRadius.circular(32),
-                              //     ),
-                              //     child: Row(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       children: [
-                              //         text(context, "Add", 16.sp,
-                              //             color: AppColors.white,
-                              //             boldText: FontWeight.w400,
-                              //             fontFamily: "Poppins-Regular"),
-                              //         const Icon(
-                              //           Icons.add,
-                              //           color: AppColors.white,
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
+                              InkWell(
+                                onTap: () async {
+                                  photoUrl.clear();
+                                  final refresh = await Navigator.push(
+                                      context,
+                                      // Create the SelectionScreen in the next step.
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const EditProfile()));
+
+                                  setState(() {
+                                    if (refresh == "Refresh") {
+                                      getData();
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  height: 33.h,
+                                  width: 80.w,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.redcolor,
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      text(context, "Add", 14.sp,
+                                          color: AppColors.white,
+                                          boldText: FontWeight.w400,
+                                          fontFamily: "Poppins-Regular"),
+                                      const Icon(
+                                        Icons.add,
+                                        size: 14,
+                                        color: AppColors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(
@@ -335,17 +390,17 @@ class _ProfileState extends State<Profile> {
                                                                                         ? bondage
                                                                                         : e == "Butt Stuff"
                                                                                             ? buttstuff
-                                                : e == "Roleplay"
-                                                ? roleplay1
-                                                : e == "Feet Stuff"
-                                                ? feetstuf1
-                                                : e == "Golden Showers"
-                                                ? shower1
-                                                : e == "Dirty Talk"
-                                                ? dirtytalk1
-                                                : e == "Cuddling"
-                                                ? cuddling1
-                                                                                            : kinky1,
+                                                                                            : e == "Roleplay"
+                                                                                                ? roleplay1
+                                                                                                : e == "Feet Stuff"
+                                                                                                    ? feetstuf1
+                                                                                                    : e == "Golden Showers"
+                                                                                                        ? shower1
+                                                                                                        : e == "Dirty Talk"
+                                                                                                            ? dirtytalk1
+                                                                                                            : e == "Cuddling"
+                                                                                                                ? cuddling1
+                                                                                                                : kinky1,
                                             color: AppColors.white,
                                             width: 20,
                                             height: 20,

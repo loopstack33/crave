@@ -486,7 +486,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                 loading = false;
               });
               AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const FirstName());
+                  context, PageTransitionType.rightToLeft, const FirstName());
             }
           } else if (step == "1") {
             if (mounted) {
@@ -495,8 +495,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const BirthdayScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const BirthdayScreen());
             }
           } else if (step == "2") {
             if (mounted) {
@@ -505,8 +505,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const GenderScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const GenderScreen());
             }
           } else if (step == "3") {
             if (mounted) {
@@ -515,8 +515,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const GenderOption());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const GenderOption());
             }
           } else if (step == "4") {
             if (mounted) {
@@ -525,8 +525,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const PackageScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const PackageScreen());
             }
           } else if (step == "5") {
             if (mounted) {
@@ -535,8 +535,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const CreateProfile());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const CreateProfile());
             }
           } else if (step == "6") {
             if (mounted) {
@@ -549,7 +549,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                 loading = false;
               });
               AppRoutes.pushAndRemoveUntil(
-                  context, PageTransitionType.fade, const HomeScreen());
+                  context, PageTransitionType.rightToLeft, const HomeScreen());
             }
           }
         } else {
@@ -669,14 +669,10 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'country': '',
       'status': '',
       'age': '',
-<<<<<<< HEAD
+      'package': '',
+      'blocked_By': [],
+      'chat_with': [],
       'email': '',
-=======
-      'package':'',
-      'blocked_By':[],
-      'chat_with':[],
-      'email':'',
->>>>>>> b5caad5def3d02e158c20c194fd3c8cfa076730c
       'gender': '',
       'birthday': '',
       'genes': '',
@@ -690,7 +686,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         setState(() {
           loading = false;
         });
-        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const FirstName());
       }
       preferences.setString("uid", user.uid.toString());
     }).catchError((e) {});

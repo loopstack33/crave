@@ -24,7 +24,7 @@ class _SigninPhoneValidState extends State<FirstName> {
   TextEditingController nameController = TextEditingController();
   bool loading = false;
   //Initialize a button color variable
-  Color btnColor =const Color(0xFFE38282);
+  Color btnColor = const Color(0xFFE38282);
   bool isEnabled = false;
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -93,14 +93,14 @@ class _SigninPhoneValidState extends State<FirstName> {
                     padding: const EdgeInsets.only(left: 10, bottom: 10),
                     child: TextFormField(
                       onChanged: (text) {
-                        if(mounted) {
+                        if (mounted) {
                           setState(() {
-                            if(text.isNotEmpty) {
-                              isEnabled=true;
-                              btnColor =AppColors.redcolor;
+                            if (text.isNotEmpty) {
+                              isEnabled = true;
+                              btnColor = AppColors.redcolor;
                             } else {
-                              isEnabled=false;
-                              btnColor =const Color(0xFFE38282);
+                              isEnabled = false;
+                              btnColor = const Color(0xFFE38282);
                             }
                           });
                         }
@@ -108,7 +108,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                       controller: nameController,
                       textAlignVertical: TextAlignVertical.top,
                       cursorColor: Colors.black,
-                      style:  TextStyle(
+                      style: TextStyle(
                           fontFamily: "Poppins-Regular",
                           fontSize: 16.sp,
                           color: AppColors.textColor,
@@ -129,8 +129,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                               color: AppColors.textColor,
                               fontWeight: FontWeight.w400)),
                     ),
-                  )
-              ),
+                  )),
               SizedBox(
                 height: 10.h,
               ),
@@ -170,34 +169,38 @@ class _SigninPhoneValidState extends State<FirstName> {
               ),
               Align(
                 alignment: Alignment.center,
-                child:loading
-                    ?const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.redcolor,
-                     ),
-                     )
-                    :DefaultButton(
-                    color: btnColor,
-                    text: "CONTINUE",
-                    press:isEnabled? () {
-                    if(nameController.text.isEmpty){
-                      if(mounted){
-                        setState((){
-                          loading = false;
-                        });
-                      }
-                      ToastUtils.showCustomToast(context, "Please enter a name", AppColors.redcolor);
-                    }
-                    else{
-                      if(mounted){
-                        setState((){
-                          loading = true;
-                        });
-                      }
-                      postDetailsToFirestore(context, nameController.text.toString());
-
-                    }
-                    }:(){}),
+                child: loading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.redcolor,
+                        ),
+                      )
+                    : DefaultButton(
+                        color: btnColor,
+                        text: "CONTINUE",
+                        press: isEnabled
+                            ? () {
+                                if (nameController.text.isEmpty) {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                  ToastUtils.showCustomToast(
+                                      context,
+                                      "Please enter a name",
+                                      AppColors.redcolor);
+                                } else {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                  }
+                                  postDetailsToFirestore(
+                                      context, nameController.text.toString());
+                                }
+                              }
+                            : () {}),
               ),
               const Spacer(),
               Padding(
@@ -303,20 +306,18 @@ class _SigninPhoneValidState extends State<FirstName> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'name': name,
-      'showName':checkbox.toString(),
-      'steps':'1',
+      'showName': checkbox.toString(),
+      'steps': '1',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(
-            context, "Name Added", Colors.green);
+        ToastUtils.showCustomToast(context, "Name Added", Colors.green);
         setState(() {
           loading = false;
         });
         preferences.setString("name", name.toString());
-        AppRoutes.push(context, PageTransitionType.fade,
-            const BirthdayScreen());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const BirthdayScreen());
       }
-
     }).catchError((e) {});
     if (mounted) {
       setState(() {
@@ -326,11 +327,10 @@ class _SigninPhoneValidState extends State<FirstName> {
   }
 
   void _onRememberMeChanged(newValue) {
-    if(mounted) {
+    if (mounted) {
       setState(() {
         checkbox = newValue;
       });
     }
   }
-
 }
