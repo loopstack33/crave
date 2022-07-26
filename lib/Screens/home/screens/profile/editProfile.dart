@@ -134,338 +134,345 @@ class _ProfileState extends State<EditProfile> {
     });
   }
 
+  back() {
+    Navigator.pop(context, 'Refresh');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        leading: IconButton (
-          icon:  const Icon(Icons.arrow_back_ios, color: AppColors.redcolor),
-          onPressed: () => Navigator.of(context).pop(),
+    return WillPopScope(
+      onWillPop: () => back(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 1,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppColors.redcolor),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          backgroundColor: AppColors.white,
+          title: text(context, "Edit Profile", 24.sp,
+              color: AppColors.black,
+              boldText: FontWeight.w500,
+              fontFamily: "Poppins-Medium"),
+          centerTitle: true,
         ),
-        backgroundColor: AppColors.white,
-        title: text(context, "Edit Profile", 24.sp,
-            color: AppColors.black,
-            boldText: FontWeight.w500,
-            fontFamily: "Poppins-Medium"),
-        centerTitle: true,
-      ),
-      body: ProgressHUD(
-          inAsyncCall: isLoading,
-          opacity: 0.1,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  text(context, "Profile Images", 16.sp,
-                      color: AppColors.black,
-                      boldText: FontWeight.w500,
-                      fontFamily: "Roboto-Medium"),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Stack(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              if (pic1url == "") {
-                                imagePickermethod(1);
-                              }
-                            },
-                            child: Container(
-                              width: 100.w,
-                              height: 154.h,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: pic1url == "" || clearPic == false
-                                        ? const AssetImage(addpic)
-                                        : _image != null
-                                            ? FileImage(_image!)
-                                                as ImageProvider
-                                            : NetworkImage(pic1url)),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0)),
-                              ),
-                            ),
-                          ),
-                          if (clearPic == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  if (mounted) {
-                                    if (pic1url != "") {
-                                      setState(() {
-                                        var collection = FirebaseFirestore
-                                            .instance
-                                            .collection('users');
-                                        collection.doc(uid).update({
-                                          'imageUrl':
-                                              FieldValue.arrayRemove(val1),
-                                        });
-                                        getData();
-                                      });
-                                    }
-                                  } else if (pic1url == "checked") {
-                                    _image = null;
-                                    clearPic = false;
-                                  }
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
-                      Stack(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              if (pic2url == "") {
-                                imagePickermethod(2);
-                              }
-                            },
-                            child: Container(
-                              width: 100.w,
-                              height: 154.h,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: pic2url == "" || clearPic1 == false
-                                        ? const AssetImage(addpic)
-                                        : _image1 != null
-                                            ? FileImage(_image1!)
-                                                as ImageProvider
-                                            : NetworkImage(pic2url)),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0)),
-                              ),
-                            ),
-                          ),
-                          if (clearPic1 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  if (mounted) {
-                                    if (pic2url != "") {
-                                      setState(() {
-                                        var collection = FirebaseFirestore
-                                            .instance
-                                            .collection('users');
-                                        collection.doc(uid).update({
-                                          'imageUrl':
-                                              FieldValue.arrayRemove(val2),
-                                        });
-                                        getData();
-                                      });
-                                    }
-                                  } else if (pic2url == "checked") {
-                                    _image1 = null;
-                                    clearPic1 = false;
-                                  }
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
-                      Stack(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              if (pic3url == "") {
-                                imagePickermethod(3);
-                              }
-                            },
-                            child: Container(
-                              width: 100.w,
-                              height: 154.h,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: pic3url == "" || clearPic2 == false
-                                        ? const AssetImage(addpic)
-                                        : _image2 != null
-                                            ? FileImage(_image2!)
-                                                as ImageProvider
-                                            : NetworkImage(pic3url)),
-                                // : NetworkImage(pic3url)),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0)),
-                              ),
-                            ),
-                          ),
-                          if (clearPic2 == true) ...[
-                            Positioned(
-                              left: 65,
-                              child: InkWell(
-                                onTap: () {
-                                  if (mounted) {
-                                    if (pic3url != "") {
-                                      setState(() {
-                                        var collection = FirebaseFirestore
-                                            .instance
-                                            .collection('users');
-                                        collection.doc(uid).update({
-                                          'imageUrl':
-                                              FieldValue.arrayRemove(val3),
-                                        });
-                                        getData();
-                                      });
-                                    }
-                                  } else if (pic3url == "checked") {
-                                    _image2 = null;
-                                    clearPic2 = false;
-                                  }
-                                },
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    deletePic,
-                                    width: 30.w,
-                                    height: 30.h,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  //
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      text(context, "$name, $age", 28.sp,
-                          color: const Color(0xff606060),
-                          boldText: FontWeight.w500,
-                          fontFamily: "Poppins-SemiBold"),
-                    ],
-                  ),
-
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  text(context, "ABOUT ME", 16.sp,
-                      color: AppColors.black,
-                      boldText: FontWeight.w500,
-                      fontFamily: "Poppins-SemiBold"),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Container(
-                    // height: 136.h,
-
-                    decoration: BoxDecoration(
-                      color: const Color(0xffF5F5F5),
-                      borderRadius: BorderRadius.circular(12),
+        body: ProgressHUD(
+            inAsyncCall: isLoading,
+            opacity: 0.1,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    text(context, "Profile Images", 16.sp,
+                        color: AppColors.black,
+                        boldText: FontWeight.w500,
+                        fontFamily: "Roboto-Medium"),
+                    SizedBox(
+                      height: 10.h,
                     ),
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 10, bottom: 10),
-                        child: TextFormField(
-                          style: TextStyle(
-                              fontSize: 14.sp,
-                              color: const Color(0xff636363),
-                              fontFamily: "Poppins-Regular"),
-                          controller: controllerBio,
-                          onSaved: (String? value) {
-                            controllerBio.text = value!;
-                          },
-                          maxLines: 2,
-                          maxLength: 100,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.only(
-                                  left: 0, bottom: 5, top: 5, right: 5),
-                              hintText: "About Me",
-                              hintStyle: TextStyle(
-                                  fontFamily: "Poppins-Regular",
-                                  fontSize: 14.sp,
-                                  color: AppColors.textColor,
-                                  fontWeight: FontWeight.w400)),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Container(
-                      width: 335.w,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (pic1url == "") {
+                                  imagePickermethod(1);
+                                }
+                              },
+                              child: Container(
+                                width: 100.w,
+                                height: 154.h,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: pic1url == "" || clearPic == false
+                                          ? const AssetImage(addpic)
+                                          : _image != null
+                                              ? FileImage(_image!)
+                                                  as ImageProvider
+                                              : NetworkImage(pic1url)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                ),
+                              ),
+                            ),
+                            if (clearPic == true) ...[
+                              Positioned(
+                                left: 65,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (mounted) {
+                                      if (pic1url != "") {
+                                        setState(() {
+                                          var collection = FirebaseFirestore
+                                              .instance
+                                              .collection('users');
+                                          collection.doc(uid).update({
+                                            'imageUrl':
+                                                FieldValue.arrayRemove(val1),
+                                          });
+                                          getData();
+                                        });
+                                      }
+                                    } else if (pic1url == "checked") {
+                                      _image = null;
+                                      clearPic = false;
+                                    }
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Image.asset(
+                                      deletePic,
+                                      width: 30.w,
+                                      height: 30.h,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ]
+                          ],
+                        ),
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (pic2url == "") {
+                                  imagePickermethod(2);
+                                }
+                              },
+                              child: Container(
+                                width: 100.w,
+                                height: 154.h,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: pic2url == "" || clearPic1 == false
+                                          ? const AssetImage(addpic)
+                                          : _image1 != null
+                                              ? FileImage(_image1!)
+                                                  as ImageProvider
+                                              : NetworkImage(pic2url)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                ),
+                              ),
+                            ),
+                            if (clearPic1 == true) ...[
+                              Positioned(
+                                left: 65,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (mounted) {
+                                      if (pic2url != "") {
+                                        setState(() {
+                                          var collection = FirebaseFirestore
+                                              .instance
+                                              .collection('users');
+                                          collection.doc(uid).update({
+                                            'imageUrl':
+                                                FieldValue.arrayRemove(val2),
+                                          });
+                                          getData();
+                                        });
+                                      }
+                                    } else if (pic2url == "checked") {
+                                      _image1 = null;
+                                      clearPic1 = false;
+                                    }
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Image.asset(
+                                      deletePic,
+                                      width: 30.w,
+                                      height: 30.h,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ]
+                          ],
+                        ),
+                        Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (pic3url == "") {
+                                  imagePickermethod(3);
+                                }
+                              },
+                              child: Container(
+                                width: 100.w,
+                                height: 154.h,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: pic3url == "" || clearPic2 == false
+                                          ? const AssetImage(addpic)
+                                          : _image2 != null
+                                              ? FileImage(_image2!)
+                                                  as ImageProvider
+                                              : NetworkImage(pic3url)),
+                                  // : NetworkImage(pic3url)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10.0)),
+                                ),
+                              ),
+                            ),
+                            if (clearPic2 == true) ...[
+                              Positioned(
+                                left: 65,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (mounted) {
+                                      if (pic3url != "") {
+                                        setState(() {
+                                          var collection = FirebaseFirestore
+                                              .instance
+                                              .collection('users');
+                                          collection.doc(uid).update({
+                                            'imageUrl':
+                                                FieldValue.arrayRemove(val3),
+                                          });
+                                          getData();
+                                        });
+                                      }
+                                    } else if (pic3url == "checked") {
+                                      _image2 = null;
+                                      clearPic2 = false;
+                                    }
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Image.asset(
+                                      deletePic,
+                                      width: 30.w,
+                                      height: 30.h,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ]
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    //
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        text(context, "$name, $age", 28.sp,
+                            color: const Color(0xff606060),
+                            boldText: FontWeight.w500,
+                            fontFamily: "Poppins-SemiBold"),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    text(context, "ABOUT ME", 16.sp,
+                        color: AppColors.black,
+                        boldText: FontWeight.w500,
+                        fontFamily: "Poppins-SemiBold"),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Container(
+                      // height: 136.h,
+
                       decoration: BoxDecoration(
                         color: const Color(0xffF5F5F5),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: text(
-                                context, "Selected  $craveCounter/3", 14.sp,
-                                color: AppColors.black,
-                                boldText: FontWeight.w400,
-                                fontFamily: "Poppins-Medium"),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          //chipping
-                          Column(
-                            children: <Widget>[
-                              Wrap(
-                                children: companyWidgets.toList(),
-                              ),
-                              // Text('Selected: ${_filters.join(', ')}'),
-                            ],
-                          ),
-                        ],
-                      )),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  DefaultButton(
-                      text: "Save",
-                      press: () {
-                        postDetailsToFirestore(context);
-                      }),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                ],
+                      child: Padding(
+                          padding: const EdgeInsets.only(left: 10, bottom: 10),
+                          child: TextFormField(
+                            style: TextStyle(
+                                fontSize: 14.sp,
+                                color: const Color(0xff636363),
+                                fontFamily: "Poppins-Regular"),
+                            controller: controllerBio,
+                            onSaved: (String? value) {
+                              controllerBio.text = value!;
+                            },
+                            maxLines: 2,
+                            maxLength: 100,
+                            textAlignVertical: TextAlignVertical.top,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                contentPadding: const EdgeInsets.only(
+                                    left: 0, bottom: 5, top: 5, right: 5),
+                                hintText: "About Me",
+                                hintStyle: TextStyle(
+                                    fontFamily: "Poppins-Regular",
+                                    fontSize: 14.sp,
+                                    color: AppColors.textColor,
+                                    fontWeight: FontWeight.w400)),
+                          )),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Container(
+                        width: 335.w,
+                        decoration: BoxDecoration(
+                          color: const Color(0xffF5F5F5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: text(
+                                  context, "Selected  $craveCounter/3", 14.sp,
+                                  color: AppColors.black,
+                                  boldText: FontWeight.w400,
+                                  fontFamily: "Poppins-Medium"),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            //chipping
+                            Column(
+                              children: <Widget>[
+                                Wrap(
+                                  children: companyWidgets.toList(),
+                                ),
+                                // Text('Selected: ${_filters.join(', ')}'),
+                              ],
+                            ),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    DefaultButton(
+                        text: "Save",
+                        press: () {
+                          postDetailsToFirestore(context);
+                        }),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )),
+            )),
+      ),
     );
   }
 
@@ -498,8 +505,9 @@ class _ProfileState extends State<EditProfile> {
               fit: BoxFit.contain,
             ),
           ),
-          backgroundColor:
-              company.status == false ? const Color(0xffFAFAFA) : AppColors.redcolor,
+          backgroundColor: company.status == false
+              ? const Color(0xffFAFAFA)
+              : AppColors.redcolor,
           label: text(context, company.name, 12.sp,
               color: company.status == false ? Colors.black : AppColors.white,
               boldText: FontWeight.w400,

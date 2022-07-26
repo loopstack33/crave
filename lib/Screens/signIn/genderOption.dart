@@ -283,39 +283,40 @@ class _SigninPhoneValidState extends State<GenderOption> {
               ),
               Align(
                 alignment: Alignment.center,
-                child:  loading
+                child: loading
                     ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.redcolor,
-                  ),
-                )
+                        child: CircularProgressIndicator(
+                          color: AppColors.redcolor,
+                        ),
+                      )
                     : DefaultButton(
-                    text: "NEXT",
-                    color: sexuality != null ? AppColors.redcolor : btnColor,
-                    press: sexuality != null
-                        ? () {
-                            if (heterob == true ||
-                                lesbianb == true ||
-                                gayb == true ||
-                                bisexualb == true ||
-                                sexuality != null) {
-                              if(mounted){
-                                setState((){
-                                  loading = true;
-                                });
+                        text: "NEXT",
+                        color:
+                            sexuality != null ? AppColors.redcolor : btnColor,
+                        press: sexuality != null
+                            ? () {
+                                if (heterob == true ||
+                                    lesbianb == true ||
+                                    gayb == true ||
+                                    bisexualb == true ||
+                                    sexuality != null) {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                  }
+                                  postDetailsToFirestore(context, sexuality);
+                                } else {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                  ToastUtils.showCustomToast(context,
+                                      "Choose genes option", Colors.red);
+                                }
                               }
-                              postDetailsToFirestore(context, sexuality);
-                            } else {
-                              if(mounted){
-                                setState((){
-                                  loading = false;
-                                });
-                              }
-                              ToastUtils.showCustomToast(
-                                  context, "Choose genes option", Colors.red);
-                            }
-                          }
-                        : () {}),
+                            : () {}),
               ),
               const Spacer(),
               Padding(
@@ -421,7 +422,7 @@ class _SigninPhoneValidState extends State<GenderOption> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'genes': gene,
-      'steps':'4',
+      'steps': '4',
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "Sexuality Added", Colors.green);
@@ -429,7 +430,8 @@ class _SigninPhoneValidState extends State<GenderOption> {
           loading = false;
         });
         preferences.setString("gene", gene);
-        AppRoutes.push(context, PageTransitionType.fade, const PackageScreen());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const PackageScreen());
       }
     }).catchError((e) {});
     if (mounted) {

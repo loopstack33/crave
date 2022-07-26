@@ -40,7 +40,6 @@ class CodeSignin extends StatefulWidget {
 }
 
 class _SigninPhoneValidState extends State<CodeSignin> {
-
   ///VARIABLES AND DECLARATION
   TextEditingController otpController = TextEditingController();
   bool verifyText = false;
@@ -79,18 +78,20 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           .collection('users')
           .where('phone', isEqualTo: phone)
           .get()
-          .then((value) => value.size > 0 ? setState((){
-            getUser(id!);
-            exists = true;
-      }) : setState((){
-        exists = false;
-      }));
+          .then((value) => value.size > 0
+              ? setState(() {
+                  getUser(id!);
+                  exists = true;
+                })
+              : setState(() {
+                  exists = false;
+                }));
     } catch (e) {
       debugPrint(e.toString());
-
     }
   }
-  String step='';
+
+  String step = '';
   getUser(String id) async {
     log(id.toString());
     try {
@@ -98,20 +99,18 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           .collection('users')
           .doc(id)
           .get()
-          .then((value){
-            if(mounted){
-              setState((){
-                step =value.data()!["steps"];
-                log(step.toString());
-              });
-            }
-         });
+          .then((value) {
+        if (mounted) {
+          setState(() {
+            step = value.data()!["steps"];
+            log(step.toString());
+          });
+        }
+      });
     } catch (e) {
       debugPrint(e.toString());
-
     }
   }
-
 
   @override
   void initState() {
@@ -120,8 +119,6 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     myVerificationId = widget.verifyId;
     isTimeOut = widget.isTimeOut2;
     startTimer();
-
-
   }
 
   @override
@@ -171,7 +168,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
               ),
               Center(
                 child: Pinput(
-                  androidSmsAutofillMethod:  AndroidSmsAutofillMethod.smsRetrieverApi,
+                  androidSmsAutofillMethod:
+                      AndroidSmsAutofillMethod.smsRetrieverApi,
                   length: 6,
                   defaultPinTheme: PinTheme(
                     width: 55.w,
@@ -248,28 +246,25 @@ class _SigninPhoneValidState extends State<CodeSignin> {
                           text: "VERIFY",
                           press: isEnabled
                               ? () {
-                            if (otpController.text.isEmpty) {
-                              ToastUtils.showCustomToast(
-                                  context,
-                                  "Please enter six digit code",
-                                  AppColors.redcolor);
-                              if (mounted) {
-                                setState(() {
-                                  loading = false;
-                                });
-                              }
-                            }
-                            else{
-                              PhoneAuthCredential phoneAuthCredential =
-                              PhoneAuthProvider.credential(
-                                  verificationId: myVerificationId,
-                                  smsCode: otpController.text);
+                                  if (otpController.text.isEmpty) {
+                                    ToastUtils.showCustomToast(
+                                        context,
+                                        "Please enter six digit code",
+                                        AppColors.redcolor);
+                                    if (mounted) {
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    }
+                                  } else {
+                                    PhoneAuthCredential phoneAuthCredential =
+                                        PhoneAuthProvider.credential(
+                                            verificationId: myVerificationId,
+                                            smsCode: otpController.text);
 
-                              signInWithPhoneAuthCredential(
-                                  phoneAuthCredential);
-
-                            }
-
+                                    signInWithPhoneAuthCredential(
+                                        phoneAuthCredential);
+                                  }
                                 }
                               : () {})),
               SizedBox(
@@ -482,85 +477,84 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             verifyText = true;
           });
         }
-        if(exists==true){
-          if(step =="0"){
+        if (exists == true) {
+          if (step == "0") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const FirstName());
+              AppRoutes.pushAndRemoveUntil(
+                  context, PageTransitionType.rightToLeft, const FirstName());
             }
-          }
-          else if(step =="1"){
+          } else if (step == "1") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const BirthdayScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const BirthdayScreen());
             }
-          }
-          else if(step =="2"){
+          } else if (step == "2") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const GenderScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const GenderScreen());
             }
-          }
-          else if(step =="3"){
+          } else if (step == "3") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const GenderOption());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const GenderOption());
             }
-          }
-          else if(step =="4"){
+          } else if (step == "4") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const PackageScreen());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const PackageScreen());
             }
-          }
-          else if(step =="5"){
+          } else if (step == "5") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade, const CreateProfile());
+              AppRoutes.pushAndRemoveUntil(context,
+                  PageTransitionType.rightToLeft, const CreateProfile());
             }
-          }
-          else if(step =="6"){
+          } else if (step == "6") {
             if (mounted) {
               ToastUtils.showCustomToast(
                   context, "Login Success", Colors.green);
               updateDeviceToken(_auth.currentUser!.uid, 'users');
               preferences.setString("logStatus", "true");
-              preferences.setString("uid",_auth.currentUser!.uid.toString());
+              preferences.setString("uid", _auth.currentUser!.uid.toString());
               setState(() {
                 loading = false;
               });
-              AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
+              AppRoutes.pushAndRemoveUntil(
+                  context, PageTransitionType.rightToLeft, const HomeScreen());
             }
           }
-        }
-        else{
+        } else {
           postDetailsToFirestore(context, widget.phone.toString());
         }
-
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -594,7 +588,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
     });
   }
 
-  Future<void> verifyPhoneNumber(String phoneNumber, BuildContext context, Function setData) async {
+  Future<void> verifyPhoneNumber(
+      String phoneNumber, BuildContext context, Function setData) async {
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
       ToastUtils.showCustomToast(
@@ -669,21 +664,21 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'name': '',
       'showName': '',
       'deviceToken': deviceT.toString(),
-      'craves':[],
-      'imageUrl':[],
-      'country':'',
+      'craves': [],
+      'imageUrl': [],
+      'country': '',
       'status': '',
       'age': '',
-      'package':'',
-      'blocked_By':[],
-      'chat_with':[],
-      'email':'',
+      'package': '',
+      'blocked_By': [],
+      'chat_with': [],
+      'email': '',
       'gender': '',
       'birthday': '',
       'genes': '',
       'bio': '',
-      'likedBy':[],
-       'steps':'0'
+      'likedBy': [],
+      'steps': '0'
     }).then((value) {
       if (mounted) {
         ToastUtils.showCustomToast(
@@ -691,9 +686,10 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         setState(() {
           loading = false;
         });
-        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const FirstName());
       }
-       preferences.setString("uid",user.uid.toString());
+      preferences.setString("uid", user.uid.toString());
     }).catchError((e) {});
     if (mounted) {
       setState(() {

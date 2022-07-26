@@ -28,7 +28,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
   bool isEnabled = false;
   TextEditingController phone = TextEditingController();
   //Initialize a button color variable
-  Color btnColor =const Color(0xFFE38282);
+  Color btnColor = const Color(0xFFE38282);
 
   @override
   Widget build(BuildContext context) {
@@ -116,16 +116,16 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                       ),
                       child: TextFormField(
                         onChanged: (text) {
-                          if(mounted) {
+                          if (mounted) {
                             setState(() {
-                            if(text.isNotEmpty) {
-                              isEnabled=true;
-                              btnColor =AppColors.redcolor;
-                            } else {
-                              isEnabled=false;
-                              btnColor =const Color(0xFFE38282);
-                            }
-                          });
+                              if (text.isNotEmpty) {
+                                isEnabled = true;
+                                btnColor = AppColors.redcolor;
+                              } else {
+                                isEnabled = false;
+                                btnColor = const Color(0xFFE38282);
+                              }
+                            });
                           }
                         },
                         controller: phone,
@@ -161,10 +161,11 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                     children: [
                       TextSpan(
                         text:
-                        'By providing my phone number, I hereby agree and accept the ',
+                            'By providing my phone number, I hereby agree and accept the ',
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            fontSize: 14.sp,
+                            fontFamily: "Poppins-Regular",
                             color: AppColors.textColor),
                       ),
                       TextSpan(
@@ -179,21 +180,24 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                         text: ' and',
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            fontSize: 14.sp,
+                            fontFamily: "Poppins-Regular",
                             color: AppColors.textColor),
                       ),
                       TextSpan(
                         text: ' Privacy Policy',
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            fontSize: 14.sp,
+                            fontFamily: "Poppins-Regular",
                             color: AppColors.textColor),
                       ),
                       TextSpan(
                         text: ' of this app',
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            fontSize: 14.sp, fontFamily: "Poppins-Regular",
+                            fontSize: 14.sp,
+                            fontFamily: "Poppins-Regular",
                             color: AppColors.textColor),
                       ),
                     ],
@@ -205,82 +209,84 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
               ),
               Align(
                 alignment: Alignment.center,
-                child:loading
-                    ?const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.redcolor,
-                  ),
-                )
-                    :  DefaultButton(
-                    text: "CONTINUE",
-                    color: btnColor,
-                    press:isEnabled? ()async  {
-                      if (mounted) {
-                        setState(() {
-                          loading = true;
-                        });
-                      }
-                      if (phone.text.isEmpty) {
-                        ToastUtils.showCustomToast(
-                            context,
-                            "Please enter number",
-                            AppColors.redcolor);
-                        if (mounted) {
-                          setState(() {
-                            loading = false;
-                          });
-                        }
-                      }
-                      else {
-                        await FirebaseAuth.instance.verifyPhoneNumber(
-                          phoneNumber: countryCode.toString() + phone.text.toString().replaceAll(RegExp(r'^0+(?=.)'), ''),
-                          verificationCompleted: (PhoneAuthCredential credential) async {
-                          },
-                          verificationFailed:
-                              (FirebaseAuthException e) {
-                            if (mounted) {
-                              setState(() {
-                                loading = false;
-
-                              });
-                            }
-                            ToastUtils.showCustomToast(
-                                context, e.toString(), Colors.red);
-                          },
-                          codeSent: (String verificationId,
-                              int? resendToken) {
-                            ToastUtils.showCustomToast(context,
-                                "Code Sent", Colors.green);
-                            if (mounted) {
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                            AppRoutes.push(
-                                context, PageTransitionType.fade,
-                                 CodeSignin(
-                                    isTimeOut2: false,
-                                    phone: countryCode.toString() +
-                                        phone.text
-                                            .toString()
-                                            .replaceAll(
-                                            RegExp(r'^0+(?=.)'), '')
-                                            .toString(),
-                                    verifyId: verificationId
-                                ));
-
-                          },
-                          codeAutoRetrievalTimeout:
-                              (String verificationId) {
-                            if (mounted) {
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                          },
-                        );
-                      }
-                    }:(){}),
+                child: loading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.redcolor,
+                        ),
+                      )
+                    : DefaultButton(
+                        text: "CONTINUE",
+                        color: btnColor,
+                        press: isEnabled
+                            ? () async {
+                                if (mounted) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                }
+                                if (phone.text.isEmpty) {
+                                  ToastUtils.showCustomToast(
+                                      context,
+                                      "Please enter number",
+                                      AppColors.redcolor);
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                } else {
+                                  await FirebaseAuth.instance.verifyPhoneNumber(
+                                    phoneNumber: countryCode.toString() +
+                                        phone.text.toString().replaceAll(
+                                            RegExp(r'^0+(?=.)'), ''),
+                                    verificationCompleted: (PhoneAuthCredential
+                                        credential) async {},
+                                    verificationFailed:
+                                        (FirebaseAuthException e) {
+                                      if (mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      }
+                                      ToastUtils.showCustomToast(
+                                          context, e.toString(), Colors.red);
+                                    },
+                                    codeSent: (String verificationId,
+                                        int? resendToken) {
+                                      ToastUtils.showCustomToast(
+                                          context, "Code Sent", Colors.green);
+                                      if (mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      }
+                                      AppRoutes.push(
+                                          context,
+                                          PageTransitionType.leftToRight,
+                                          CodeSignin(
+                                              isTimeOut2: false,
+                                              phone: countryCode.toString() +
+                                                  phone.text
+                                                      .toString()
+                                                      .replaceAll(
+                                                          RegExp(r'^0+(?=.)'),
+                                                          '')
+                                                      .toString(),
+                                              verifyId: verificationId));
+                                    },
+                                    codeAutoRetrievalTimeout:
+                                        (String verificationId) {
+                                      if (mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      }
+                                    },
+                                  );
+                                }
+                              }
+                            : () {}),
               ),
               const Spacer(),
               Padding(
@@ -378,5 +384,4 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
       ),
     );
   }
-
 }

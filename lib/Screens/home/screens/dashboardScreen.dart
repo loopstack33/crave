@@ -16,6 +16,7 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
 import 'package:uuid/uuid.dart';
@@ -36,7 +37,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   bool alreadyLiked = false;
-  bool isLoad = true;
+  bool isLoad = false;
   bool loading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -101,7 +102,7 @@ class _DashboardState extends State<Dashboard> {
 
     if (mounted) {
       setState(() {
-        isLoad = false;
+        // isLoad = false;
       });
     }
     log(allUserexceptblockedChat.length.toString());
@@ -113,7 +114,8 @@ class _DashboardState extends State<Dashboard> {
 
   static ChatRoomModel? chatRoom;
 
-  Future<ChatRoomModel?> assignChatRoom(BuildContext context, userName, targetID, userID) async {
+  Future<ChatRoomModel?> assignChatRoom(
+      BuildContext context, userName, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -1309,7 +1311,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 30.0),
-                          child: Image.asset("assets/images/craveLogo.png"),
+                          child: Lottie.asset("assets/raw/doubleheart.json"),
                         ),
                       ],
                     ))),
@@ -1380,7 +1382,7 @@ class _DashboardState extends State<Dashboard> {
       setState(() {
         loading = false;
         Navigator.pop(context);
-        isLoad = true;
+        // isLoad = true;
         getData();
         getDataalluserexcepcurrent();
       });

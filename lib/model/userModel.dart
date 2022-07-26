@@ -48,7 +48,7 @@ class UsersModel {
         'craves': craves,
         'imageUrl': imgUrl,
         'showName': showName,
-        'likedBy':likedBy
+        'likedBy': likedBy,
       };
 
   factory UsersModel.fromDocument(DocumentSnapshot doc) {
@@ -130,7 +130,7 @@ class UsersModel {
         package: package,
         craves: craves,
         showName: showName,
-        likedBy:likedBy,
+        likedBy: likedBy,
         imgUrl: imageUrl);
   }
 }

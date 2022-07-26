@@ -229,35 +229,36 @@ class _SigninPhoneValidState extends State<GenderScreen> {
                 alignment: Alignment.center,
                 child: loading
                     ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.redcolor,
-                  ),
-                )
-                    :  DefaultButton(
-                    text: "NEXT",
-                    color: gender != null ? AppColors.redcolor : btnColor,
-                    press: gender != null
-                        ? () {
-                            if (man == true ||
-                                woman == true ||
-                                others == true ||
-                                gender != null) {
-                              if(mounted){
-                                setState((){
-                                  loading = true;
-                                });
+                        child: CircularProgressIndicator(
+                          color: AppColors.redcolor,
+                        ),
+                      )
+                    : DefaultButton(
+                        text: "NEXT",
+                        color: gender != null ? AppColors.redcolor : btnColor,
+                        press: gender != null
+                            ? () {
+                                if (man == true ||
+                                    woman == true ||
+                                    others == true ||
+                                    gender != null) {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                  }
+                                  postDetailsToFirestore(context, gender);
+                                } else {
+                                  if (mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                  ToastUtils.showCustomToast(context,
+                                      "Choose a Gender", AppColors.redcolor);
+                                }
                               }
-                              postDetailsToFirestore(context, gender);
-                            } else {
-                              if(mounted){
-                                setState((){
-                                  loading = false;
-                                });
-                              }
-                              ToastUtils.showCustomToast(context, "Choose a Gender", AppColors.redcolor);
-                            }
-                          }
-                        : () {}),
+                            : () {}),
               ),
               const Spacer(),
               Padding(
@@ -363,7 +364,7 @@ class _SigninPhoneValidState extends State<GenderScreen> {
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
       'gender': genderb,
-      'steps':'3',
+      'steps': '3',
     }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "Gender Added", Colors.green);
@@ -371,7 +372,8 @@ class _SigninPhoneValidState extends State<GenderScreen> {
           loading = false;
         });
         preferences.setString("gender", genderb);
-        AppRoutes.push(context, PageTransitionType.fade, const GenderOption());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const GenderOption());
       }
     }).catchError((e) {});
     if (mounted) {

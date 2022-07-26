@@ -30,7 +30,6 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   bool loading = false;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,8 +146,8 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
                                   ToastUtils.showCustomToast(context,
                                       "Must be 18 years old", Colors.red);
                                 } else {
-                                  if(mounted){
-                                    setState((){
+                                  if (mounted) {
+                                    setState(() {
                                       loading = true;
                                     });
                                   }
@@ -262,10 +261,11 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = auth.currentUser;
 
-    await firebaseFirestore
-        .collection("users")
-        .doc(user!.uid)
-        .update({'age': age, 'birthday': birthday, 'steps':'2',}).then((text) {
+    await firebaseFirestore.collection("users").doc(user!.uid).update({
+      'age': age,
+      'birthday': birthday,
+      'steps': '2',
+    }).then((text) {
       if (mounted) {
         ToastUtils.showCustomToast(context, "Age Added", Colors.green);
         setState(() {
@@ -273,7 +273,8 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
         });
         preferences.setString("age", age);
         preferences.setString("birthday", birthday);
-        AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
+        AppRoutes.push(
+            context, PageTransitionType.rightToLeft, const GenderScreen());
       }
     }).catchError((e) {});
     if (mounted) {
