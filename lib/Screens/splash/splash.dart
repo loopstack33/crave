@@ -25,8 +25,13 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-
+    //clearPref();
     Future.delayed(const Duration(seconds: 3), () => checkSignedIn());
+  }
+
+  clearPref() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
   }
 
   checkSignedIn() async {
@@ -56,7 +61,6 @@ class _SplashState extends State<Splash> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +77,8 @@ class _SplashState extends State<Splash> {
             children: [
               Image.asset(
                 logo,
-                width: 120,
-                height: 60,
+                width: 100,
+                height: 50,
               ),
             ],
           ),

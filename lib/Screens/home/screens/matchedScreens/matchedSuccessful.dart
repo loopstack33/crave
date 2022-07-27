@@ -27,7 +27,9 @@ class MatchedSuccessed extends StatefulWidget {
       matchedid,
       participantname,
       matchedname,
+      token,
       showName;
+
   int counter;
   MatchedSuccessed(
       {Key? key,
@@ -37,6 +39,7 @@ class MatchedSuccessed extends StatefulWidget {
       required this.participantid,
       required this.matchedname,
       required this.counter,
+      required this.token,
       required this.participantname,
       required this.showName})
       : super(key: key);
@@ -63,7 +66,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
   static ChatRoomModel? chatRoom;
 
   Future<ChatRoomModel?> assignChatRoom(
-      BuildContext context, targetID, userID) async {
+      BuildContext context, token, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -116,9 +119,14 @@ class _MatchScreenState extends State<MatchedSuccessed> {
           .doc(newChatRoom.chatroomid)
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
-      AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
-      FCMServices.sendFCM("crave", targetID.toString(), matchedname.toString(),
-          "Want's to chat with you.");
+      AppRoutes.push(
+          context,
+          PageTransitionType.fade,
+          UserChatList(
+            isDash: true,
+          ));
+      FCMServices.sendFCM(token, targetID.toString(), matchedname.toString(),
+          "Say Hi! to your new match");
       ToastUtils.showCustomToast(
           context, "ChatRoom Assigned Success", Colors.green);
     }
@@ -330,6 +338,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
                 press: () {
                   assignChatRoom(
                     context,
+                    widget.token,
                     widget.matchedid.toString(),
                     _auth.currentUser!.uid,
                   );

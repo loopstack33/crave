@@ -24,7 +24,7 @@ class _CreatingProfileScreenState extends State<CreatingProfileScreen> {
 
     Future.delayed(const Duration(seconds: 2), () {
       AppRoutes.pushAndRemoveUntil(
-          context, PageTransitionType.scale, const HomeScreen());
+          context, PageTransitionType.fade, const HomeScreen());
     });
   }
 

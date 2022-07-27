@@ -14,6 +14,7 @@ import 'package:crave/widgets/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pay/pay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -266,7 +267,7 @@ class _MatchScreenState extends State<MatchScreen> {
                 InkWell(
                   onTap: () {
                     if (currentUsersData[0].gender == "Man") {
-                      if (counter == 0) {
+                      if (counter == 0 || counter < 0) {
                         //dialogbox
                         const _paymentItems = [
                           PaymentItem(
@@ -476,6 +477,9 @@ class _MatchScreenState extends State<MatchScreen> {
                         matchedGenes1();
                       }
                     } else {
+                      setState(() {
+                        loading = true;
+                      });
                       matchedGenes1();
                     }
                   },
@@ -490,7 +494,7 @@ class _MatchScreenState extends State<MatchScreen> {
                       shape: BoxShape.circle,
                     ),
                     padding: const EdgeInsets.all(10),
-                    child: loading
+                    child: loading == true
                         ? Image.asset(
                             "assets/raw/loadingmatch.gif",
                             height: 100,
@@ -511,44 +515,56 @@ class _MatchScreenState extends State<MatchScreen> {
                         height: 145.h,
                       ),
                     ),
-                    Positioned(
-                      top: 15,
-                      left: 208,
-                      child: SizedBox(
-                        width: 50.w,
-                        height: 50.h,
-                        child: ClipOval(
-                            child: Image.network(
-                          matchedImageUrl,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext ctx, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            }
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                    : null,
-                              ),
-                            );
-                          },
-                          errorBuilder: (
-                            BuildContext context,
-                            Object exception,
-                            StackTrace? stackTrace,
-                          ) {
-                            return Text(
-                              'Oops!! An error occurred. 😢',
-                              style: TextStyle(fontSize: 16.sp),
-                            );
-                          },
-                        )),
-                      ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          margin: EdgeInsets.only(
+                            top: 15,
+                            right: 25,
+                          ),
+                          width: 50.w,
+                          height: 50.h,
+                          child: loading == true
+                              ? ClipOval(
+                                  child: Image.network(
+                                  matchedImageUrl,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext ctx,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (
+                                    BuildContext context,
+                                    Object exception,
+                                    StackTrace? stackTrace,
+                                  ) {
+                                    return Text(
+                                      '         ',
+                                      style: TextStyle(fontSize: 16.sp),
+                                    );
+                                  },
+                                ))
+                              : ClipOval(
+                                  child: Lottie.asset(
+                                      "assets/raw/question.json",
+                                      height: 20,
+                                      width: 20))),
                     ),
                   ],
                 ),
@@ -585,7 +601,117 @@ class _MatchScreenState extends State<MatchScreen> {
     }
     log(matchedGenes.length.toString());
     if (matchedGenes.length == 0) {
-      ToastUtils.showCustomToast(context, "No Match Found", AppColors.redcolor);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r)),
+              elevation: 10,
+              backgroundColor: AppColors.white,
+              child: SingleChildScrollView(
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setter) {
+                    return Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.r),
+                                topRight: Radius.circular(20.r)),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.redcolor.withOpacity(0.35),
+                                AppColors.redcolor
+                              ],
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Oops!",
+                                style: TextStyle(
+                                    fontSize: 22.sp,
+                                    color: AppColors.white,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "There is no match right now\nPlease Try Again after a while.\nThanks",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                width: 150.w,
+                                height: 40.h,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppColors.redcolor.withOpacity(0.35),
+                                      AppColors.redcolor
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Ok",
+                                        style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins')),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+          });
+
+      //ToastUtils.showCustomToast(context, "No Match Found", AppColors.redcolor);
     } else {
       //if hetero
       if (currentUsersData[0].genes == "Hetero") {
@@ -623,8 +749,118 @@ class _MatchScreenState extends State<MatchScreen> {
             loading = false;
           });
         }
-        ToastUtils.showCustomToast(
-            context, "No Match Found", AppColors.redcolor);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                insetPadding: const EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r)),
+                elevation: 10,
+                backgroundColor: AppColors.white,
+                child: SingleChildScrollView(
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setter) {
+                      return Column(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20.r),
+                                  topRight: Radius.circular(20.r)),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.redcolor.withOpacity(0.35),
+                                  AppColors.redcolor
+                                ],
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Oops!",
+                                  style: TextStyle(
+                                      fontSize: 22.sp,
+                                      color: AppColors.white,
+                                      fontFamily: 'Poppins-Regular',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "There is no match right now\nPlease Try Again after a while.\nThanks",
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: AppColors.black,
+                                      fontFamily: 'Poppins-Regular',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: 150.w,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        AppColors.redcolor.withOpacity(0.35),
+                                        AppColors.redcolor
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Ok",
+                                          style: TextStyle(
+                                              fontSize: 20.sp,
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins')),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              );
+            });
+
+        // ToastUtils.showCustomToast(
+        //     context, "No Match Found", AppColors.redcolor);
       } else {
         if (temp < expectedList.length) {
           CompleteUserData.add(heteroCheck[i]);
@@ -635,8 +871,118 @@ class _MatchScreenState extends State<MatchScreen> {
     log("$next.toString()");
     log(CompleteUserData.length.toString());
     if (CompleteUserData.length == next) {
-      ToastUtils.showCustomToast(
-          context, "No Match Found, Try Again", AppColors.redcolor);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r)),
+              elevation: 10,
+              backgroundColor: AppColors.white,
+              child: SingleChildScrollView(
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setter) {
+                    return Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.r),
+                                topRight: Radius.circular(20.r)),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.redcolor.withOpacity(0.35),
+                                AppColors.redcolor
+                              ],
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Oops!",
+                                style: TextStyle(
+                                    fontSize: 22.sp,
+                                    color: AppColors.white,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "There is no match right now\nPlease Try Again after a while.\nThanks",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                width: 150.w,
+                                height: 40.h,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppColors.redcolor.withOpacity(0.35),
+                                      AppColors.redcolor
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Ok",
+                                        style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins')),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+          });
+
+      // ToastUtils.showCustomToast(
+      //     context, "No Match Found, Try Again", AppColors.redcolor);
       if (mounted) {
         setState(() {
           loading = false;
@@ -674,8 +1020,118 @@ class _MatchScreenState extends State<MatchScreen> {
             loading = false;
           });
         }
-        ToastUtils.showCustomToast(
-            context, "No Match Found", AppColors.redcolor);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                insetPadding: const EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r)),
+                elevation: 10,
+                backgroundColor: AppColors.white,
+                child: SingleChildScrollView(
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setter) {
+                      return Column(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20.r),
+                                  topRight: Radius.circular(20.r)),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColors.redcolor.withOpacity(0.35),
+                                  AppColors.redcolor
+                                ],
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Oops!",
+                                  style: TextStyle(
+                                      fontSize: 22.sp,
+                                      color: AppColors.white,
+                                      fontFamily: 'Poppins-Regular',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "There is no match right now\nPlease Try Again after a while.\nThanks",
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: AppColors.black,
+                                      fontFamily: 'Poppins-Regular',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: 150.w,
+                                  height: 40.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        AppColors.redcolor.withOpacity(0.35),
+                                        AppColors.redcolor
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Ok",
+                                          style: TextStyle(
+                                              fontSize: 20.sp,
+                                              color: AppColors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Poppins')),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              );
+            });
+
+        // ToastUtils.showCustomToast(
+        //     context, "No Match Found", AppColors.redcolor);
       } else {
         if (temp < expectedList.length) {
           CompleteUserData.add(allUsersData[i]);
@@ -685,8 +1141,118 @@ class _MatchScreenState extends State<MatchScreen> {
     }
 
     if (CompleteUserData.length == next) {
-      ToastUtils.showCustomToast(
-          context, "No Match Found, Try Agian", AppColors.redcolor);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              insetPadding: const EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r)),
+              elevation: 10,
+              backgroundColor: AppColors.white,
+              child: SingleChildScrollView(
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setter) {
+                    return Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.r),
+                                topRight: Radius.circular(20.r)),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColors.redcolor.withOpacity(0.35),
+                                AppColors.redcolor
+                              ],
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Oops!",
+                                style: TextStyle(
+                                    fontSize: 22.sp,
+                                    color: AppColors.white,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "There is no match right now\nPlease Try Again after a while.\nThanks",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: AppColors.black,
+                                    fontFamily: 'Poppins-Regular',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                width: 150.w,
+                                height: 40.h,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppColors.redcolor.withOpacity(0.35),
+                                      AppColors.redcolor
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Ok",
+                                        style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins')),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+          });
+
+      // ToastUtils.showCustomToast(
+      //     context, "No Match Found, Try Agian", AppColors.redcolor);
       if (mounted) {
         setState(() {
           loading = false;
@@ -756,6 +1322,7 @@ class _MatchScreenState extends State<MatchScreen> {
                     imagurl: image,
                     img2url: matchedImageUrl,
                     participantid: uid!,
+                    token: CompleteUserData[next].userToken,
                     matchedid: CompleteUserData[next].userId,
                     participantname: currentUsersData[next].userName,
                     matchedname: CompleteUserData[next].userName,

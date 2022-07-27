@@ -797,13 +797,12 @@ class _SigninPhoneValidState extends State<PackageScreen> {
       'steps': '5',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "Package Added", Colors.green);
+        // ToastUtils.showCustomToast(context, "Package Added", Colors.green);
         setState(() {
           loading = false;
         });
         preferences.setString("package", package);
-        AppRoutes.push(
-            context, PageTransitionType.rightToLeft, const CreateProfile());
+        AppRoutes.push(context, PageTransitionType.fade, const CreateProfile());
       }
     }).catchError((e) {});
     if (mounted) {

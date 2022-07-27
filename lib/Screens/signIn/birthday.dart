@@ -267,14 +267,13 @@ class _SigninPhoneValidState extends State<BirthdayScreen> {
       'steps': '2',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "Age Added", Colors.green);
+        // ToastUtils.showCustomToast(context, "Age Added", Colors.green);
         setState(() {
           loading = false;
         });
         preferences.setString("age", age);
         preferences.setString("birthday", birthday);
-        AppRoutes.push(
-            context, PageTransitionType.rightToLeft, const GenderScreen());
+        AppRoutes.push(context, PageTransitionType.fade, const GenderScreen());
       }
     }).catchError((e) {});
     if (mounted) {

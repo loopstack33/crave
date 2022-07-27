@@ -425,13 +425,12 @@ class _SigninPhoneValidState extends State<GenderOption> {
       'steps': '4',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "Sexuality Added", Colors.green);
+        // ToastUtils.showCustomToast(context, "Sexuality Added", Colors.green);
         setState(() {
           loading = false;
         });
         preferences.setString("gene", gene);
-        AppRoutes.push(
-            context, PageTransitionType.rightToLeft, const PackageScreen());
+        AppRoutes.push(context, PageTransitionType.fade, const PackageScreen());
       }
     }).catchError((e) {});
     if (mounted) {

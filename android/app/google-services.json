@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1089311314091:android:7738fd207635bfe7d727ee",
+        "mobilesdk_app_id": "1:1089311314091:android:72c4c1b2b892dcfcd727ee",
         "android_client_info": {
           "package_name": "com.crave.datingapp"
         }
@@ -19,14 +19,6 @@
           "android_info": {
             "package_name": "com.crave.datingapp",
             "certificate_hash": "6d17a660834d2f173a94cea017361892d4af2c47"
-          }
-        },
-        {
-          "client_id": "1089311314091-bu6lv09de1i32ppdehj06i8s1ett7jst.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.crave.datingapp",
-            "certificate_hash": "d4160f14efd0f1b4ad59f9e8689bc3fcaf305fac"
           }
         },
         {
@@ -47,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1089311314091-uo88trf7qcc52tlunbdk6miuklr16tts.apps.googleusercontent.com",
+              "client_id": "1089311314091-o14mkp06bgnjn6286pvnl38l85kccn70.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.crave.datingapp"
+                "bundle_id": "com.prc.bookingapp"
               }
             }
           ]

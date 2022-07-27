@@ -45,10 +45,12 @@ class _DashboardState extends State<Dashboard> {
   List<dynamic> cravesHalf = [];
   List<dynamic> currentUserlist = [];
   bool viewMore = true;
+  bool boolLike = false;
   String viewMoreButton = "View More";
   UsersModel? allUsers;
   List<UsersModel> allUserexceptblocked = [];
   List<UsersModel> allUserexceptblockedChat = [];
+  List<UsersModel> temp = [];
   String? currentGender;
   @override
   void initState() {
@@ -106,6 +108,8 @@ class _DashboardState extends State<Dashboard> {
       });
     }
     log(allUserexceptblockedChat.length.toString());
+    //  temp.clear();
+    temp = allUserexceptblockedChat;
   }
 
   String _selectedMenu = '';
@@ -115,7 +119,7 @@ class _DashboardState extends State<Dashboard> {
   static ChatRoomModel? chatRoom;
 
   Future<ChatRoomModel?> assignChatRoom(
-      BuildContext context, userName, targetID, userID) async {
+      BuildContext context, token, userName, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -151,6 +155,7 @@ class _DashboardState extends State<Dashboard> {
         lastMessage: "",
         read: false,
         idFrom: "",
+        order: 0,
         paid: false,
         idTo: "",
         dateTime: DateTime.now().toString(),
@@ -173,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
           UserChatList(
             isDash: true,
           ));
-      FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
+      FCMServices.sendFCM(token, targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(
           context, "ChatRoom Assigned Success", Colors.green);
@@ -207,452 +212,221 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
         body: ProgressHUD(
-          inAsyncCall: isLoad,
-          opacity: 0.1,
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: allUserexceptblockedChat.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: allUserexceptblockedChat.length,
-                      itemBuilder: (context, index) {
-                        List<dynamic> craves =
-                            List.from(allUserexceptblockedChat[index].craves);
-                        cravesHalf.clear();
-                        if (craves.length > 3) {
-                          for (int i = 0; i < craves.length / 2; i++) {
-                            String temp;
-                            temp = craves[i].toString();
-                            cravesHalf.add(temp);
+            inAsyncCall: isLoad,
+            opacity: 0.1,
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: allUserexceptblockedChat.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: allUserexceptblockedChat.length,
+                        itemBuilder: (context, index) {
+                          List<dynamic> craves =
+                              List.from(allUserexceptblockedChat[index].craves);
+                          cravesHalf.clear();
+                          if (craves.length > 3) {
+                            for (int i = 0; i < craves.length / 2; i++) {
+                              String temp;
+                              temp = craves[i].toString();
+                              cravesHalf.add(temp);
+                            }
+                          } else {
+                            cravesHalf.add(craves[0].toString());
                           }
-                        } else {
-                          cravesHalf.add(craves[0].toString());
-                        }
 
-                        List<dynamic> imgList =
-                            List.from(allUserexceptblockedChat[index].imgUrl);
+                          List<dynamic> imgList =
+                              List.from(allUserexceptblockedChat[index].imgUrl);
 
-                        return Container(
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.only(top: 10, left: 10),
-                          decoration: BoxDecoration(
-                              color: AppColors.black,
-                              borderRadius: BorderRadius.circular(16.r)),
-                          child: Column(
-                            children: [
-                              Stack(
-                                children: [
-                                  FlutterCarousel(
-                                    options: CarouselOptions(
-                                      autoPlay: false,
-                                      enlargeCenterPage: true,
-                                    ),
-                                    items: imgList
-                                        .map((item) => Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4.0),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(16.r)),
-                                                child: Image.network(
-                                                  item,
-                                                  width: double.infinity,
-                                                  fit: BoxFit.cover,
-                                                  loadingBuilder:
-                                                      (BuildContext ctx,
-                                                          Widget child,
-                                                          ImageChunkEvent?
-                                                              loadingProgress) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        value: loadingProgress
-                                                                    .expectedTotalBytes !=
-                                                                null
-                                                            ? loadingProgress
-                                                                    .cumulativeBytesLoaded /
-                                                                loadingProgress
-                                                                    .expectedTotalBytes!
-                                                            : null,
-                                                      ),
-                                                    );
-                                                  },
-                                                  errorBuilder: (
-                                                    BuildContext context,
-                                                    Object exception,
-                                                    StackTrace? stackTrace,
-                                                  ) {
-                                                    return Text(
-                                                      'Oops!! An error occurred. 😢',
-                                                      style: TextStyle(
-                                                          fontSize: 16.sp),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ))
-                                        .toList(),
-                                  ),
-                                  Positioned.fill(
-                                      child: Align(
-                                    alignment: Alignment.topCenter,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 20),
-                                            child: PopupMenuButton<Menu>(
-                                                shape: RoundedRectangleBorder(
+                          return Container(
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.only(top: 10, left: 10),
+                            decoration: BoxDecoration(
+                                color: AppColors.black,
+                                borderRadius: BorderRadius.circular(16.r)),
+                            child: Column(
+                              children: [
+                                Stack(
+                                  children: [
+                                    FlutterCarousel(
+                                      options: CarouselOptions(
+                                        autoPlay: false,
+                                        enlargeCenterPage: true,
+                                      ),
+                                      items: imgList
+                                          .map((item) => Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 4.0),
+                                                child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.all(
-                                                    Radius.circular(10.r),
+                                                          Radius.circular(
+                                                              16.r)),
+                                                  child: Image.network(
+                                                    item,
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                    loadingBuilder: (BuildContext
+                                                            ctx,
+                                                        Widget child,
+                                                        ImageChunkEvent?
+                                                            loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) {
+                                                        return child;
+                                                      }
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          value: loadingProgress
+                                                                      .expectedTotalBytes !=
+                                                                  null
+                                                              ? loadingProgress
+                                                                      .cumulativeBytesLoaded /
+                                                                  loadingProgress
+                                                                      .expectedTotalBytes!
+                                                              : null,
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (
+                                                      BuildContext context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace,
+                                                    ) {
+                                                      return Text(
+                                                        'Oops!! An error occurred. 😢',
+                                                        style: TextStyle(
+                                                            fontSize: 16.sp),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
-                                                child: Image.asset(
-                                                  report,
-                                                  width: 35.w,
-                                                  height: 35.h,
-                                                ),
-                                                onSelected: (Menu item) {
-                                                  if (mounted) {
-                                                    setState(() {
-                                                      _selectedMenu = item.name;
-                                                    });
-                                                  }
-                                                  if (_selectedMenu
-                                                          .toString() ==
-                                                      "BlockForever") {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            insetPadding:
-                                                                const EdgeInsets
-                                                                    .all(10),
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.r)),
-                                                            elevation: 10,
-                                                            backgroundColor:
-                                                                AppColors.white,
-                                                            child:
-                                                                SingleChildScrollView(
+                                              ))
+                                          .toList(),
+                                    ),
+                                    Positioned.fill(
+                                        child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 20),
+                                              child: PopupMenuButton<Menu>(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(10.r),
+                                                    ),
+                                                  ),
+                                                  child: Image.asset(
+                                                    report,
+                                                    width: 35.w,
+                                                    height: 35.h,
+                                                  ),
+                                                  onSelected: (Menu item) {
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _selectedMenu =
+                                                            item.name;
+                                                      });
+                                                    }
+                                                    if (_selectedMenu
+                                                            .toString() ==
+                                                        "BlockForever") {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return Dialog(
+                                                              insetPadding:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20.r)),
+                                                              elevation: 10,
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .white,
                                                               child:
-                                                                  StatefulBuilder(
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    StateSetter
-                                                                        setter) {
-                                                                  return Column(
-                                                                    children: [
-                                                                      Container(
-                                                                        width: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width,
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topLeft: Radius.circular(20.r),
-                                                                              topRight: Radius.circular(20.r)),
-                                                                          gradient:
-                                                                              LinearGradient(
-                                                                            begin:
-                                                                                Alignment.topCenter,
-                                                                            end:
-                                                                                Alignment.bottomCenter,
-                                                                            colors: [
-                                                                              AppColors.redcolor.withOpacity(0.35),
-                                                                              AppColors.redcolor
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        padding:
-                                                                            const EdgeInsets.all(8),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Text(
-                                                                              "Block User",
-                                                                              style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Text(
-                                                                              "Are you sure you want to block this\nuser forever?",
-                                                                              style: TextStyle(fontSize: 16.sp, color: AppColors.black, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            10.h,
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceEvenly,
-                                                                        children: [
-                                                                          GestureDetector(
-                                                                            onTap:
-                                                                                () async {
-                                                                              blockUser(name.toString(), photoUrl[0].toString(), allUserexceptblockedChat[index].userId.toString());
-                                                                            },
-                                                                            child:
-                                                                                Container(
-                                                                              width: 150.w,
-                                                                              height: 40.h,
-                                                                              decoration: BoxDecoration(
-                                                                                gradient: LinearGradient(
-                                                                                  begin: Alignment.topCenter,
-                                                                                  end: Alignment.bottomCenter,
-                                                                                  colors: [
-                                                                                    AppColors.redcolor.withOpacity(0.35),
-                                                                                    AppColors.redcolor
-                                                                                  ],
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(5.r),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
-                                                                                ],
-                                                                              ),
+                                                                  SingleChildScrollView(
+                                                                child:
+                                                                    StatefulBuilder(
+                                                                  builder: (BuildContext
+                                                                          context,
+                                                                      StateSetter
+                                                                          setter) {
+                                                                    return Column(
+                                                                      children: [
+                                                                        Container(
+                                                                          width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r)),
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              begin: Alignment.topCenter,
+                                                                              end: Alignment.bottomCenter,
+                                                                              colors: [
+                                                                                AppColors.redcolor.withOpacity(0.35),
+                                                                                AppColors.redcolor
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                          GestureDetector(
-                                                                            onTap:
-                                                                                () async {
-                                                                              Navigator.pop(context);
-                                                                            },
-                                                                            child:
-                                                                                Container(
-                                                                              width: 150.w,
-                                                                              height: 40.h,
-                                                                              decoration: BoxDecoration(
-                                                                                gradient: LinearGradient(
-                                                                                  begin: Alignment.topCenter,
-                                                                                  end: Alignment.bottomCenter,
-                                                                                  colors: [
-                                                                                    AppColors.redcolor.withOpacity(0.35),
-                                                                                    AppColors.redcolor
-                                                                                  ],
-                                                                                ),
-                                                                                borderRadius: BorderRadius.circular(5.r),
-                                                                              ),
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                children: [
-                                                                                  Text("No", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            20.h,
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ),
-                                                          );
-                                                        });
-                                                  } else if (_selectedMenu
-                                                          .toString() ==
-                                                      "Report") {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            insetPadding:
-                                                                const EdgeInsets
-                                                                    .all(10),
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.r)),
-                                                            elevation: 10,
-                                                            backgroundColor:
-                                                                AppColors.white,
-                                                            child:
-                                                                SingleChildScrollView(
-                                                              child:
-                                                                  StatefulBuilder(
-                                                                builder: (BuildContext
-                                                                        context,
-                                                                    StateSetter
-                                                                        setter) {
-                                                                  return Column(
-                                                                    children: [
-                                                                      Container(
-                                                                        width: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width,
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          borderRadius: BorderRadius.only(
-                                                                              topLeft: Radius.circular(20.r),
-                                                                              topRight: Radius.circular(20.r)),
-                                                                          gradient:
-                                                                              LinearGradient(
-                                                                            begin:
-                                                                                Alignment.topCenter,
-                                                                            end:
-                                                                                Alignment.bottomCenter,
-                                                                            colors: [
-                                                                              AppColors.redcolor.withOpacity(0.35),
-                                                                              AppColors.redcolor
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        padding:
-                                                                            const EdgeInsets.all(8),
-                                                                        child:
-                                                                            Stack(
-                                                                          children: [
-                                                                            Align(
-                                                                              alignment: Alignment.center,
-                                                                              child: Text(
-                                                                                "Report User",
+                                                                          padding:
+                                                                              const EdgeInsets.all(8),
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                "Block User",
                                                                                 style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
                                                                               ),
-                                                                            ),
-                                                                            Align(
-                                                                              alignment: Alignment.centerRight,
-                                                                              child: InkWell(
-                                                                                onTap: () {
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                child: Icon(
-                                                                                  FontAwesomeIcons.multiply,
-                                                                                  color: AppColors.white,
-                                                                                  size: 25.sp,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Container(
-                                                                        margin:
-                                                                            const EdgeInsets.all(10),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          border:
-                                                                              Border.all(
-                                                                            color:
-                                                                                const Color(0xFFB7B7B7),
-                                                                            width:
-                                                                                1, //
-                                                                          ),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(12.0.r),
-                                                                        ),
-                                                                        child:
-                                                                            TextFormField(
-                                                                          controller:
-                                                                              reportController,
-                                                                          maxLength:
-                                                                              400,
-                                                                          maxLines:
-                                                                              2,
-                                                                          style: TextStyle(
-                                                                              fontSize: 18.sp,
-                                                                              color: const Color(0xFF676060),
-                                                                              fontFamily: 'Poppins',
-                                                                              fontWeight: FontWeight.w300),
-                                                                          textAlignVertical:
-                                                                              TextAlignVertical.center,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            hintText:
-                                                                                "Write your report message here...",
-                                                                            hintStyle: TextStyle(
-                                                                                fontSize: 18.sp,
-                                                                                color: AppColors.textColor,
-                                                                                fontWeight: FontWeight.w300,
-                                                                                fontFamily: 'Poppins'),
-                                                                            fillColor:
-                                                                                const Color(0xFFFFFFFF),
-                                                                            focusedBorder:
-                                                                                OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(12.0.r),
-                                                                              borderSide: const BorderSide(
-                                                                                color: AppColors.white,
-                                                                              ),
-                                                                            ),
-                                                                            enabledBorder:
-                                                                                OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(12.0.r),
-                                                                              borderSide: BorderSide(
-                                                                                color: AppColors.white,
-                                                                                width: 1.0.r,
-                                                                              ),
-                                                                            ),
-                                                                            errorBorder:
-                                                                                OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(12.0.r),
-                                                                              borderSide: BorderSide(
-                                                                                color: Colors.red,
-                                                                                width: 2.0.r,
-                                                                              ),
-                                                                            ),
+                                                                            ],
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            10.h,
-                                                                      ),
-                                                                      feedLoad
-                                                                          ? const Center(
-                                                                              child: CircularProgressIndicator(
-                                                                                color: AppColors.redcolor,
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                "Are you sure you want to block this\nuser forever?",
+                                                                                style: TextStyle(fontSize: 16.sp, color: AppColors.black, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
                                                                               ),
-                                                                            )
-                                                                          : GestureDetector(
-                                                                              onTap: () {
-                                                                                if (reportController.text.isEmpty) {
-                                                                                  ToastUtils.showCustomToast(context, "Please provide some message", Colors.amber);
-                                                                                } else {
-                                                                                  if (mounted) {
-                                                                                    setState(() {
-                                                                                      feedLoad = true;
-                                                                                    });
-                                                                                  }
-                                                                                  isReport(allUserexceptblockedChat[index].userId.toString(), allUserexceptblockedChat[index].userName, allUserexceptblockedChat[index].imgUrl[0].toString());
-                                                                                }
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              10.h,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            GestureDetector(
+                                                                              onTap: () async {
+                                                                                blockUser(name.toString(), photoUrl[0].toString(), allUserexceptblockedChat[index].userId.toString());
                                                                               },
                                                                               child: Container(
-                                                                                width: 200.w,
+                                                                                width: 150.w,
                                                                                 height: 40.h,
                                                                                 decoration: BoxDecoration(
                                                                                   gradient: LinearGradient(
@@ -668,658 +442,890 @@ class _DashboardState extends State<Dashboard> {
                                                                                 child: Row(
                                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                                   children: [
-                                                                                    Icon(
-                                                                                      FontAwesomeIcons.checkCircle,
-                                                                                      color: AppColors.white,
-                                                                                      size: 25.sp,
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: 10.w,
-                                                                                    ),
-                                                                                    Text("Submit", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                    Text("Yes", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
                                                                                   ],
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            20.h,
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
+                                                                            GestureDetector(
+                                                                              onTap: () async {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Container(
+                                                                                width: 150.w,
+                                                                                height: 40.h,
+                                                                                decoration: BoxDecoration(
+                                                                                  gradient: LinearGradient(
+                                                                                    begin: Alignment.topCenter,
+                                                                                    end: Alignment.bottomCenter,
+                                                                                    colors: [
+                                                                                      AppColors.redcolor.withOpacity(0.35),
+                                                                                      AppColors.redcolor
+                                                                                    ],
+                                                                                  ),
+                                                                                  borderRadius: BorderRadius.circular(5.r),
+                                                                                ),
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  children: [
+                                                                                    Text("No", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              20.h,
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                ),
                                                               ),
-                                                            ),
-                                                          );
-                                                        });
-                                                  }
-                                                },
-                                                itemBuilder: (BuildContext
-                                                        context) =>
-                                                    <PopupMenuEntry<Menu>>[
-                                                      PopupMenuItem<Menu>(
-                                                        value:
-                                                            Menu.BlockForever,
-                                                        child: Text(
-                                                          'Block Forever',
-                                                          style: TextStyle(
-                                                              color: const Color(
-                                                                  0xFF2F2F48),
-                                                              fontFamily:
-                                                                  'Poppins-Regular',
-                                                              fontSize: 14.sp),
-                                                        ),
-                                                      ),
-                                                      PopupMenuItem<Menu>(
-                                                        value: Menu.Report,
-                                                        child: Text('Report',
+                                                            );
+                                                          });
+                                                    } else if (_selectedMenu
+                                                            .toString() ==
+                                                        "Report") {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return Dialog(
+                                                              insetPadding:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20.r)),
+                                                              elevation: 10,
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .white,
+                                                              child:
+                                                                  SingleChildScrollView(
+                                                                child:
+                                                                    StatefulBuilder(
+                                                                  builder: (BuildContext
+                                                                          context,
+                                                                      StateSetter
+                                                                          setter) {
+                                                                    return Column(
+                                                                      children: [
+                                                                        Container(
+                                                                          width: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.only(topLeft: Radius.circular(20.r), topRight: Radius.circular(20.r)),
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              begin: Alignment.topCenter,
+                                                                              end: Alignment.bottomCenter,
+                                                                              colors: [
+                                                                                AppColors.redcolor.withOpacity(0.35),
+                                                                                AppColors.redcolor
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          padding:
+                                                                              const EdgeInsets.all(8),
+                                                                          child:
+                                                                              Stack(
+                                                                            children: [
+                                                                              Align(
+                                                                                alignment: Alignment.center,
+                                                                                child: Text(
+                                                                                  "Report User",
+                                                                                  style: TextStyle(fontSize: 22.sp, color: AppColors.white, fontFamily: 'Poppins-Regular', fontWeight: FontWeight.bold),
+                                                                                ),
+                                                                              ),
+                                                                              Align(
+                                                                                alignment: Alignment.centerRight,
+                                                                                child: InkWell(
+                                                                                  onTap: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: Icon(
+                                                                                    FontAwesomeIcons.multiply,
+                                                                                    color: AppColors.white,
+                                                                                    size: 25.sp,
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        Container(
+                                                                          margin:
+                                                                              const EdgeInsets.all(10),
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            border:
+                                                                                Border.all(
+                                                                              color: const Color(0xFFB7B7B7),
+                                                                              width: 1, //
+                                                                            ),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(12.0.r),
+                                                                          ),
+                                                                          child:
+                                                                              TextFormField(
+                                                                            controller:
+                                                                                reportController,
+                                                                            maxLength:
+                                                                                400,
+                                                                            maxLines:
+                                                                                2,
+                                                                            style: TextStyle(
+                                                                                fontSize: 18.sp,
+                                                                                color: const Color(0xFF676060),
+                                                                                fontFamily: 'Poppins',
+                                                                                fontWeight: FontWeight.w300),
+                                                                            textAlignVertical:
+                                                                                TextAlignVertical.center,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              hintText: "Write your report message here...",
+                                                                              hintStyle: TextStyle(fontSize: 18.sp, color: AppColors.textColor, fontWeight: FontWeight.w300, fontFamily: 'Poppins'),
+                                                                              fillColor: const Color(0xFFFFFFFF),
+                                                                              focusedBorder: OutlineInputBorder(
+                                                                                borderRadius: BorderRadius.circular(12.0.r),
+                                                                                borderSide: const BorderSide(
+                                                                                  color: AppColors.white,
+                                                                                ),
+                                                                              ),
+                                                                              enabledBorder: OutlineInputBorder(
+                                                                                borderRadius: BorderRadius.circular(12.0.r),
+                                                                                borderSide: BorderSide(
+                                                                                  color: AppColors.white,
+                                                                                  width: 1.0.r,
+                                                                                ),
+                                                                              ),
+                                                                              errorBorder: OutlineInputBorder(
+                                                                                borderRadius: BorderRadius.circular(12.0.r),
+                                                                                borderSide: BorderSide(
+                                                                                  color: Colors.red,
+                                                                                  width: 2.0.r,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              10.h,
+                                                                        ),
+                                                                        feedLoad
+                                                                            ? const Center(
+                                                                                child: CircularProgressIndicator(
+                                                                                  color: AppColors.redcolor,
+                                                                                ),
+                                                                              )
+                                                                            : GestureDetector(
+                                                                                onTap: () {
+                                                                                  if (reportController.text.isEmpty) {
+                                                                                    ToastUtils.showCustomToast(context, "Please provide some message", Colors.amber);
+                                                                                  } else {
+                                                                                    if (mounted) {
+                                                                                      setState(() {
+                                                                                        feedLoad = true;
+                                                                                      });
+                                                                                    }
+                                                                                    isReport(allUserexceptblockedChat[index].userId.toString(), allUserexceptblockedChat[index].userName, allUserexceptblockedChat[index].imgUrl[0].toString());
+                                                                                  }
+                                                                                },
+                                                                                child: Container(
+                                                                                  width: 200.w,
+                                                                                  height: 40.h,
+                                                                                  decoration: BoxDecoration(
+                                                                                    gradient: LinearGradient(
+                                                                                      begin: Alignment.topCenter,
+                                                                                      end: Alignment.bottomCenter,
+                                                                                      colors: [
+                                                                                        AppColors.redcolor.withOpacity(0.35),
+                                                                                        AppColors.redcolor
+                                                                                      ],
+                                                                                    ),
+                                                                                    borderRadius: BorderRadius.circular(5.r),
+                                                                                  ),
+                                                                                  child: Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                    children: [
+                                                                                      Icon(
+                                                                                        FontAwesomeIcons.checkCircle,
+                                                                                        color: AppColors.white,
+                                                                                        size: 25.sp,
+                                                                                      ),
+                                                                                      SizedBox(
+                                                                                        width: 10.w,
+                                                                                      ),
+                                                                                      Text("Submit", style: TextStyle(fontSize: 20.sp, color: AppColors.white, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              20.h,
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    }
+                                                  },
+                                                  itemBuilder: (BuildContext
+                                                          context) =>
+                                                      <PopupMenuEntry<Menu>>[
+                                                        PopupMenuItem<Menu>(
+                                                          value:
+                                                              Menu.BlockForever,
+                                                          child: Text(
+                                                            'Block Forever',
                                                             style: TextStyle(
                                                                 color: const Color(
                                                                     0xFF2F2F48),
                                                                 fontFamily:
                                                                     'Poppins-Regular',
                                                                 fontSize:
-                                                                    14.sp)),
-                                                      ),
-                                                    ]),
-                                          ),
-                                        ],
+                                                                    14.sp),
+                                                          ),
+                                                        ),
+                                                        PopupMenuItem<Menu>(
+                                                          value: Menu.Report,
+                                                          child: Text('Report',
+                                                              style: TextStyle(
+                                                                  color: const Color(
+                                                                      0xFF2F2F48),
+                                                                  fontFamily:
+                                                                      'Poppins-Regular',
+                                                                  fontSize:
+                                                                      14.sp)),
+                                                        ),
+                                                      ]),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )),
-                                  Positioned.fill(
-                                      child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              if (allUserexceptblockedChat[
-                                                          index]
-                                                      .showName
-                                                      .toString() ==
-                                                  "true") ...[
-                                                text(
-                                                    context,
-                                                    allUserexceptblockedChat[
+                                    )),
+                                    Positioned.fill(
+                                        child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                if (allUserexceptblockedChat[
                                                             index]
-                                                        .userName,
-                                                    22.sp,
-                                                    color: AppColors.white,
-                                                    fontFamily:
-                                                        'Poppins-Medium'),
-                                              ]
-                                            ],
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.r),
-                                                child: BackdropFilter(
-                                                  filter: ImageFilter.blur(
-                                                      sigmaX: 10, sigmaY: 10),
-                                                  child: Container(
-                                                      color: AppColors
-                                                          .containerborder
-                                                          .withOpacity(0.6),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          if (currentGender ==
-                                                              "Man") {
-                                                            const paymentItems =
-                                                                [
-                                                              PaymentItem(
-                                                                label:
-                                                                    'Crave ChatPay',
-                                                                amount: '1.99',
-                                                                status: PaymentItemStatus
-                                                                    .final_price,
-                                                              )
-                                                            ];
-                                                            showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return Dialog(
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                    ),
-                                                                    elevation:
-                                                                        0.0,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    child:
-                                                                        Container(
-                                                                      width:
-                                                                          515.w,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color: Colors
-                                                                            .white,
+                                                        .showName
+                                                        .toString() ==
+                                                    "true") ...[
+                                                  text(
+                                                      context,
+                                                      allUserexceptblockedChat[
+                                                              index]
+                                                          .userName,
+                                                      22.sp,
+                                                      color: AppColors.white,
+                                                      fontFamily:
+                                                          'Poppins-Medium'),
+                                                ]
+                                              ],
+                                            ),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                  child: BackdropFilter(
+                                                    filter: ImageFilter.blur(
+                                                        sigmaX: 10, sigmaY: 10),
+                                                    child: Container(
+                                                        color: AppColors
+                                                            .containerborder
+                                                            .withOpacity(0.6),
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            if (currentGender ==
+                                                                "Man") {
+                                                              const paymentItems =
+                                                                  [
+                                                                PaymentItem(
+                                                                  label:
+                                                                      'Crave ChatPay',
+                                                                  amount:
+                                                                      '1.99',
+                                                                  status: PaymentItemStatus
+                                                                      .final_price,
+                                                                )
+                                                              ];
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return Dialog(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
                                                                         borderRadius:
-                                                                            BorderRadius.circular(14.r),
+                                                                            BorderRadius.circular(10),
                                                                       ),
+                                                                      elevation:
+                                                                          0.0,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
                                                                       child:
-                                                                          SingleChildScrollView(
+                                                                          Container(
+                                                                        width:
+                                                                            515.w,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(14.r),
+                                                                        ),
                                                                         child:
-                                                                            Column(
-                                                                          children: [
-                                                                            Container(
-                                                                              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
-                                                                              width: 515.w,
-                                                                              decoration: BoxDecoration(
-                                                                                color: AppColors.redcolor,
-                                                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(14.r), topRight: Radius.circular(14.r)),
-                                                                              ),
-                                                                              child: Align(
-                                                                                alignment: Alignment.center,
-                                                                                child: Text(
-                                                                                  "Action Required",
-                                                                                  style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins-Medium', fontSize: 22.sp),
+                                                                            SingleChildScrollView(
+                                                                          child:
+                                                                              Column(
+                                                                            children: [
+                                                                              Container(
+                                                                                padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5.0, bottom: 5.0),
+                                                                                width: 515.w,
+                                                                                decoration: BoxDecoration(
+                                                                                  color: AppColors.redcolor,
+                                                                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(14.r), topRight: Radius.circular(14.r)),
+                                                                                ),
+                                                                                child: Align(
+                                                                                  alignment: Alignment.center,
+                                                                                  child: Text(
+                                                                                    "Action Required",
+                                                                                    style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins-Medium', fontSize: 22.sp),
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                            ),
-                                                                            SizedBox(height: 10.h),
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              children: [
-                                                                                Container(
-                                                                                    width: 50.w,
-                                                                                    height: 50.h,
-                                                                                    decoration: const BoxDecoration(
-                                                                                      shape: BoxShape.circle,
-                                                                                      color: AppColors.redcolor,
+                                                                              SizedBox(height: 10.h),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Container(
+                                                                                      width: 50.w,
+                                                                                      height: 50.h,
+                                                                                      decoration: const BoxDecoration(
+                                                                                        shape: BoxShape.circle,
+                                                                                        color: AppColors.redcolor,
+                                                                                      ),
+                                                                                      child: Image.asset(icon)),
+                                                                                  SizedBox(
+                                                                                    width: 20.w,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "Confirm",
+                                                                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'Poppins-Medium', fontSize: 20.sp),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(height: 10.h),
+                                                                              Text(
+                                                                                "For chatting without liking pay 1.99 \$.",
+                                                                                style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black, fontFamily: 'Poppins-Regular', fontSize: 18.sp),
+                                                                                textAlign: TextAlign.center,
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 10.h,
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  ApplePayButton(
+                                                                                    width: 200,
+                                                                                    height: 50,
+                                                                                    paymentConfigurationAsset: 'files/applepay.json',
+                                                                                    paymentItems: paymentItems,
+                                                                                    style: ApplePayButtonStyle.black,
+                                                                                    type: ApplePayButtonType.buy,
+                                                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                                                    onPaymentResult: (data) {
+                                                                                      print(data);
+                                                                                      assignChatRoom(
+                                                                                        context,
+                                                                                        allUserexceptblocked[index].userToken,
+                                                                                        allUserexceptblocked[index].userName,
+                                                                                        allUserexceptblocked[index].userId,
+                                                                                        _auth.currentUser!.uid,
+                                                                                      );
+                                                                                    },
+                                                                                    onError: (data) {
+                                                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                                                    },
+                                                                                    loadingIndicator: const Center(
+                                                                                      child: CircularProgressIndicator(),
                                                                                     ),
-                                                                                    child: Image.asset(icon)),
-                                                                                SizedBox(
-                                                                                  width: 20.w,
-                                                                                ),
-                                                                                Text(
-                                                                                  "Confirm",
-                                                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'Poppins-Medium', fontSize: 20.sp),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(height: 10.h),
-                                                                            Text(
-                                                                              "For chatting without liking pay 1.99 \$.",
-                                                                              style: TextStyle(fontWeight: FontWeight.w300, color: Colors.black, fontFamily: 'Poppins-Regular', fontSize: 18.sp),
-                                                                              textAlign: TextAlign.center,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 10.h,
-                                                                            ),
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              children: [
-                                                                                ApplePayButton(
-                                                                                  width: 200,
-                                                                                  height: 50,
-                                                                                  paymentConfigurationAsset: 'files/applepay.json',
-                                                                                  paymentItems: paymentItems,
-                                                                                  style: ApplePayButtonStyle.black,
-                                                                                  type: ApplePayButtonType.buy,
-                                                                                  margin: const EdgeInsets.only(top: 15.0),
-                                                                                  onPaymentResult: (data) {
-                                                                                    print(data);
-                                                                                    assignChatRoom(
-                                                                                      context,
-                                                                                      allUserexceptblocked[index].userName,
-                                                                                      allUserexceptblocked[index].userId,
-                                                                                      _auth.currentUser!.uid,
-                                                                                    );
-                                                                                  },
-                                                                                  onError: (data) {
-                                                                                    ToastUtils.showCustomToast(context, data.toString(), Colors.red);
-                                                                                  },
-                                                                                  loadingIndicator: const Center(
-                                                                                    child: CircularProgressIndicator(),
                                                                                   ),
-                                                                                ),
-                                                                                GooglePayButton(
-                                                                                  width: 200,
-                                                                                  height: 50,
-                                                                                  paymentConfigurationAsset: 'files/gpay.json',
-                                                                                  paymentItems: paymentItems,
-                                                                                  style: GooglePayButtonStyle.black,
-                                                                                  type: GooglePayButtonType.pay,
-                                                                                  margin: const EdgeInsets.only(top: 15.0),
-                                                                                  onPaymentResult: (data) {
-                                                                                    print(data);
-                                                                                    assignChatRoom(
-                                                                                      context,
-                                                                                      allUserexceptblocked[index].userName,
-                                                                                      allUserexceptblocked[index].userId,
-                                                                                      _auth.currentUser!.uid,
-                                                                                    );
-                                                                                  },
-                                                                                  onError: (data) {
-                                                                                    ToastUtils.showCustomToast(context, data.toString(), Colors.red);
-                                                                                  },
-                                                                                  loadingIndicator: const Center(
-                                                                                    child: CircularProgressIndicator(),
+                                                                                  GooglePayButton(
+                                                                                    width: 200,
+                                                                                    height: 50,
+                                                                                    paymentConfigurationAsset: 'files/gpay.json',
+                                                                                    paymentItems: paymentItems,
+                                                                                    style: GooglePayButtonStyle.black,
+                                                                                    type: GooglePayButtonType.pay,
+                                                                                    margin: const EdgeInsets.only(top: 15.0),
+                                                                                    onPaymentResult: (data) {
+                                                                                      print(data);
+                                                                                      assignChatRoom(
+                                                                                        context,
+                                                                                        allUserexceptblocked[index].userName,
+                                                                                        allUserexceptblocked[index].userToken,
+                                                                                        allUserexceptblocked[index].userId,
+                                                                                        _auth.currentUser!.uid,
+                                                                                      );
+                                                                                    },
+                                                                                    onError: (data) {
+                                                                                      ToastUtils.showCustomToast(context, data.toString(), Colors.red);
+                                                                                    },
+                                                                                    loadingIndicator: const Center(
+                                                                                      child: CircularProgressIndicator(),
+                                                                                    ),
                                                                                   ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(height: 20.h)
-                                                                          ],
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(height: 20.h)
+                                                                            ],
+                                                                          ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  );
-                                                                });
-                                                          } else {
-                                                            assignChatRoom(
-                                                              context,
-                                                              allUserexceptblocked[
-                                                                      index]
-                                                                  .userName,
-                                                              allUserexceptblocked[
-                                                                      index]
-                                                                  .userId,
-                                                              _auth.currentUser!
-                                                                  .uid,
-                                                            );
-                                                          }
-                                                        },
-                                                        child: Image.asset(
-                                                          lockedchat,
-                                                          width: 48,
-                                                          height: 48,
-                                                        ),
-                                                      )),
+                                                                    );
+                                                                  });
+                                                            } else {
+                                                              assignChatRoom(
+                                                                context,
+                                                                allUserexceptblocked[
+                                                                        index]
+                                                                    .userName,
+                                                                allUserexceptblocked[
+                                                                        index]
+                                                                    .userToken,
+                                                                allUserexceptblocked[
+                                                                        index]
+                                                                    .userId,
+                                                                _auth
+                                                                    .currentUser!
+                                                                    .uid,
+                                                              );
+                                                            }
+                                                          },
+                                                          child: Image.asset(
+                                                            lockedchat,
+                                                            width: 48,
+                                                            height: 48,
+                                                          ),
+                                                        )),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(height: 10.h),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.r),
-                                                child: BackdropFilter(
-                                                  filter: ImageFilter.blur(
-                                                      sigmaX: 10, sigmaY: 10),
-                                                  child: Container(
-                                                      color: AppColors
-                                                          .containerborder
-                                                          .withOpacity(0.6),
-                                                      child: IconButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          onPressed: () async {
-                                                            bool exits = await isItems(
-                                                                allUserexceptblockedChat[
+                                                SizedBox(height: 10.h),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                  child: BackdropFilter(
+                                                    filter: ImageFilter.blur(
+                                                        sigmaX: 10, sigmaY: 10),
+                                                    child: Container(
+                                                        color: AppColors
+                                                            .containerborder
+                                                            .withOpacity(0.6),
+                                                        child: IconButton(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            onPressed:
+                                                                () async {
+                                                              bool exits = await isItems(
+                                                                  allUserexceptblockedChat[
+                                                                          index]
+                                                                      .userId
+                                                                      .toString());
+                                                              log(exits
+                                                                  .toString());
+
+                                                              if (exits) {
+                                                                getlikedIds(
+                                                                    allUserexceptblockedChat[
+                                                                            index]
+                                                                        .userId
+                                                                        .toString());
+                                                                log(allUserexceptblockedChat[
                                                                         index]
                                                                     .userId
                                                                     .toString());
-                                                            log(exits
-                                                                .toString());
-
-                                                            if (exits) {
-                                                              getlikedIds(
-                                                                  allUserexceptblockedChat[
-                                                                          index]
-                                                                      .userId
-                                                                      .toString());
-                                                              log(allUserexceptblockedChat[
-                                                                      index]
-                                                                  .userId
-                                                                  .toString());
-                                                            } else {
-                                                              likeUser(
-                                                                  name
-                                                                      .toString(),
-                                                                  photoUrl[0]
-                                                                      .toString(),
-                                                                  allUserexceptblockedChat[
-                                                                          index]
-                                                                      .userId
-                                                                      .toString());
-                                                            }
-                                                          },
-                                                          icon: selectedIndex ==
-                                                                  index
-                                                              ? loading
-                                                                  ? SizedBox(
-                                                                      width:
-                                                                          25.w,
-                                                                      height:
-                                                                          25.h,
-                                                                      child:
-                                                                          CircularProgressIndicator(
-                                                                        color: AppColors
-                                                                            .redcolor,
-                                                                        strokeWidth:
-                                                                            2.0.w,
-                                                                      ))
-                                                                  : Icon(
-                                                                      FontAwesomeIcons
-                                                                          .solidHeart,
-                                                                      size:
-                                                                          28.sp,
-                                                                      color: (allUserexceptblockedChat[index].likedBy.any((item) => currentUserlist.contains(
-                                                                              item)))
-                                                                          ? AppColors
-                                                                              .redcolor
-                                                                          : AppColors
-                                                                              .white,
-                                                                    )
-                                                              : Icon(
-                                                                  FontAwesomeIcons
-                                                                      .solidHeart,
-                                                                  size: 28.sp,
-                                                                  color: (allUserexceptblockedChat[
-                                                                              index]
-                                                                          .likedBy
-                                                                          .any((item) => currentUserlist.contains(
-                                                                              item)))
-                                                                      ? AppColors
-                                                                          .redcolor
-                                                                      : AppColors
-                                                                          .white,
-                                                                ))),
+                                                              } else {
+                                                                likeUser(
+                                                                    name
+                                                                        .toString(),
+                                                                    photoUrl[0]
+                                                                        .toString(),
+                                                                    allUserexceptblockedChat[
+                                                                            index]
+                                                                        .userId
+                                                                        .toString());
+                                                              }
+                                                            },
+                                                            icon: selectedIndex ==
+                                                                    index
+                                                                ? boolLike
+                                                                    ? SizedBox(
+                                                                        width: 25
+                                                                            .w,
+                                                                        height: 25
+                                                                            .h,
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          color:
+                                                                              AppColors.redcolor,
+                                                                          strokeWidth:
+                                                                              2.0.w,
+                                                                        ))
+                                                                    : Icon(
+                                                                        FontAwesomeIcons
+                                                                            .solidHeart,
+                                                                        size: 28
+                                                                            .sp,
+                                                                        color: (allUserexceptblockedChat[index].likedBy.any((item) =>
+                                                                                currentUserlist.contains(item)))
+                                                                            ? AppColors.redcolor
+                                                                            : AppColors.white,
+                                                                      )
+                                                                : Icon(
+                                                                    FontAwesomeIcons
+                                                                        .solidHeart,
+                                                                    size: 28.sp,
+                                                                    color: (allUserexceptblockedChat[index]
+                                                                            .likedBy
+                                                                            .any((item) => currentUserlist.contains(
+                                                                                item)))
+                                                                        ? AppColors
+                                                                            .redcolor
+                                                                        : AppColors
+                                                                            .white,
+                                                                  ))),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Image.asset(
-                                    allUserexceptblockedChat[index].gender ==
-                                            "Man"
-                                        ? male
-                                        : allUserexceptblockedChat[index]
-                                                    .gender ==
-                                                "Woman"
-                                            ? female
-                                            : other,
-                                    color: Colors.white,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                  SizedBox(width: 5.w),
-                                  Image.asset(
-                                    allUserexceptblockedChat[index].genes ==
-                                            "Hetero"
-                                        ? hetero
-                                        : allUserexceptblockedChat[index]
-                                                    .genes ==
-                                                "Lesbian"
-                                            ? lesbian
-                                            : allUserexceptblockedChat[index]
-                                                        .genes ==
-                                                    "Gay"
-                                                ? gay
-                                                : bisexual,
-                                    color: Colors.white,
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.h),
-                              text(context, allUserexceptblockedChat[index].bio,
-                                  12.sp,
-                                  color: AppColors.white,
-                                  fontFamily: 'Poppins-Regular'),
-                              SizedBox(height: 10.h),
-                              SizedBox(
-                                width: double.infinity,
-                                child: Wrap(
-                                    spacing: 8.0, // gap between adjacent chips
-                                    runSpacing: 4.0, // gap between lines
-                                    children: selectedIndex == index &&
-                                            viewMore == true
-                                        ? cravesHalf
-                                            .map((e) => Chip(
-                                                  labelPadding:
-                                                      const EdgeInsets.all(2.0),
-                                                  avatar: CircleAvatar(
-                                                    backgroundColor:
-                                                        AppColors.chipColor,
-                                                    child: Image.asset(
-                                                        e == "Casual Dating"
-                                                            ? casualdating
-                                                            : e == "No String Attached"
-                                                                ? nostring1
-                                                                : e == "In Person"
-                                                                    ? inperson
-                                                                    : e == "Sexting"
-                                                                        ? sexting2
-                                                                        : e == "Kinky"
-                                                                            ? kinky
-                                                                            : e == "Vanilla"
-                                                                                ? vanilla
-                                                                                : e == "Submissive"
-                                                                                    ? submissive
-                                                                                    : e == "Dominance"
-                                                                                        ? dominance
-                                                                                        : e == "Dress Up"
-                                                                                            ? dressup
-                                                                                            : e == "Blindfolding"
-                                                                                                ? blindfolding
-                                                                                                : e == "Bondage"
-                                                                                                    ? bondage
-                                                                                                    : e == "Butt Stuff"
-                                                                                                        ? buttstuff
-                                                                                                        : kinky,
-                                                        color: AppColors.white,
-                                                        width: 15,
-                                                        height: 15),
-                                                  ),
-                                                  label: Text(
-                                                    e.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: AppColors.white,
-                                                        fontFamily:
-                                                            "Poppins-Regular"),
-                                                  ),
-                                                  backgroundColor:
-                                                      AppColors.chipCircle,
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                ))
-                                            .toList()
-                                        : selectedIndex != index
-                                            ? cravesHalf
-                                                .map((e) => Chip(
-                                                      labelPadding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      avatar: CircleAvatar(
-                                                        backgroundColor:
-                                                            AppColors.chipColor,
-                                                        child: Image.asset(
-                                                            e == "Casual Dating"
-                                                                ? casualdating
-                                                                : e == "No String Attached"
-                                                                    ? nostring1
-                                                                    : e == "In Person"
-                                                                        ? inperson
-                                                                        : e == "Sexting"
-                                                                            ? sexting2
-                                                                            : e == "Kinky"
-                                                                                ? kinky
-                                                                                : e == "Vanilla"
-                                                                                    ? vanilla
-                                                                                    : e == "Submissive"
-                                                                                        ? submissive
-                                                                                        : e == "Dominance"
-                                                                                            ? dominance
-                                                                                            : e == "Dress Up"
-                                                                                                ? dressup
-                                                                                                : e == "Blindfolding"
-                                                                                                    ? blindfolding
-                                                                                                    : e == "Bondage"
-                                                                                                        ? bondage
-                                                                                                        : e == "Butt Stuff"
-                                                                                                            ? buttstuff
-                                                                                                            : kinky,
-                                                            color: AppColors.white,
-                                                            width: 15,
-                                                            height: 15),
-                                                      ),
-                                                      label: Text(
-                                                        e.toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 12.sp,
-                                                            color:
-                                                                AppColors.white,
-                                                            fontFamily:
-                                                                "Poppins-Regular"),
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.chipCircle,
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                    ))
-                                                .toList()
-                                            : craves
-                                                .map((e) => Chip(
-                                                      labelPadding:
-                                                          const EdgeInsets.all(
-                                                              2.0),
-                                                      avatar: CircleAvatar(
-                                                        backgroundColor:
-                                                            AppColors.chipColor,
-                                                        child: Image.asset(
-                                                            e == "Casual Dating"
-                                                                ? casualdating
-                                                                : e == "No String Attached"
-                                                                    ? nostring1
-                                                                    : e == "In Person"
-                                                                        ? inperson
-                                                                        : e == "Sexting"
-                                                                            ? sexting2
-                                                                            : e == "Kinky"
-                                                                                ? kinky
-                                                                                : e == "Vanilla"
-                                                                                    ? vanilla
-                                                                                    : e == "Submissive"
-                                                                                        ? submissive
-                                                                                        : e == "Dominance"
-                                                                                            ? dominance
-                                                                                            : e == "Dress Up"
-                                                                                                ? dressup
-                                                                                                : e == "Blindfolding"
-                                                                                                    ? blindfolding
-                                                                                                    : e == "Bondage"
-                                                                                                        ? bondage
-                                                                                                        : e == "Butt Stuff"
-                                                                                                            ? buttstuff
-                                                                                                            : kinky,
-                                                            color: AppColors.white,
-                                                            width: 15,
-                                                            height: 15),
-                                                      ),
-                                                      label: Text(
-                                                        e.toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 12.sp,
-                                                            color:
-                                                                AppColors.white,
-                                                            fontFamily:
-                                                                "Poppins-Regular"),
-                                                      ),
-                                                      backgroundColor:
-                                                          AppColors.chipCircle,
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                    ))
-                                                .toList()),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(AppColors.redcolor),
-                                            shape: MaterialStateProperty.all<
-                                                    RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            18.0),
-                                                    side: const BorderSide(
-                                                        color: Colors.red)))),
-                                        onPressed: () {
-                                          if (mounted) {
-                                            setState(() {
-                                              selectedIndex = index;
-                                              viewMore = !viewMore;
-                                            });
-                                          }
-                                        },
-                                        child: text(
-                                            context,
-                                            selectedIndex == index && viewMore == true
-                                                ? viewMoreButton
-                                                : selectedIndex == index && viewMore == false
-                                                    ? "View less"
-                                                    : viewMoreButton,
-                                            12.sp,
-                                            color: Colors.white,
-                                            fontFamily: "Poppins-Medium")),
+                                    )),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 10.h),
-                            ],
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 2.w,
+                                    ),
+                                    Image.asset(
+                                      allUserexceptblockedChat[index].gender ==
+                                              "Man"
+                                          ? male
+                                          : allUserexceptblockedChat[index]
+                                                      .gender ==
+                                                  "Woman"
+                                              ? female
+                                              : other,
+                                      color: Colors.white,
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Image.asset(
+                                      allUserexceptblockedChat[index].genes ==
+                                              "Hetero"
+                                          ? hetero
+                                          : allUserexceptblockedChat[index]
+                                                      .genes ==
+                                                  "Lesbian"
+                                              ? lesbian
+                                              : allUserexceptblockedChat[index]
+                                                          .genes ==
+                                                      "Gay"
+                                                  ? gay
+                                                  : bisexual,
+                                      color: Colors.white,
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.h),
+                                text(context,
+                                    allUserexceptblockedChat[index].bio, 12.sp,
+                                    color: AppColors.white,
+                                    fontFamily: 'Poppins-Regular'),
+                                SizedBox(height: 10.h),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Wrap(
+                                      spacing:
+                                          8.0, // gap between adjacent chips
+                                      runSpacing: 4.0, // gap between lines
+                                      children: selectedIndex == index &&
+                                              viewMore == true
+                                          ? cravesHalf
+                                              .map((e) => Chip(
+                                                    labelPadding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    avatar: CircleAvatar(
+                                                      backgroundColor:
+                                                          AppColors.chipColor,
+                                                      child: Image.asset(
+                                                          e == "Casual Dating"
+                                                              ? casualdating
+                                                              : e == "No String Attached"
+                                                                  ? nostring1
+                                                                  : e == "In Person"
+                                                                      ? inperson
+                                                                      : e == "Sexting"
+                                                                          ? sexting2
+                                                                          : e == "Kinky"
+                                                                              ? kinky
+                                                                              : e == "Vanilla"
+                                                                                  ? vanilla
+                                                                                  : e == "Submissive"
+                                                                                      ? submissive
+                                                                                      : e == "Dominance"
+                                                                                          ? dominance
+                                                                                          : e == "Dress Up"
+                                                                                              ? dressup
+                                                                                              : e == "Blindfolding"
+                                                                                                  ? blindfolding
+                                                                                                  : e == "Bondage"
+                                                                                                      ? bondage
+                                                                                                      : e == "Butt Stuff"
+                                                                                                          ? buttstuff
+                                                                                                          : kinky,
+                                                          color: AppColors.white,
+                                                          width: 15,
+                                                          height: 15),
+                                                    ),
+                                                    label: Text(
+                                                      e.toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          color:
+                                                              AppColors.white,
+                                                          fontFamily:
+                                                              "Poppins-Regular"),
+                                                    ),
+                                                    backgroundColor:
+                                                        AppColors.chipCircle,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                  ))
+                                              .toList()
+                                          : selectedIndex != index
+                                              ? cravesHalf
+                                                  .map((e) => Chip(
+                                                        labelPadding:
+                                                            const EdgeInsets
+                                                                .all(2.0),
+                                                        avatar: CircleAvatar(
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .chipColor,
+                                                          child: Image.asset(
+                                                              e == "Casual Dating"
+                                                                  ? casualdating
+                                                                  : e == "No String Attached"
+                                                                      ? nostring1
+                                                                      : e == "In Person"
+                                                                          ? inperson
+                                                                          : e == "Sexting"
+                                                                              ? sexting2
+                                                                              : e == "Kinky"
+                                                                                  ? kinky
+                                                                                  : e == "Vanilla"
+                                                                                      ? vanilla
+                                                                                      : e == "Submissive"
+                                                                                          ? submissive
+                                                                                          : e == "Dominance"
+                                                                                              ? dominance
+                                                                                              : e == "Dress Up"
+                                                                                                  ? dressup
+                                                                                                  : e == "Blindfolding"
+                                                                                                      ? blindfolding
+                                                                                                      : e == "Bondage"
+                                                                                                          ? bondage
+                                                                                                          : e == "Butt Stuff"
+                                                                                                              ? buttstuff
+                                                                                                              : kinky,
+                                                              color: AppColors.white,
+                                                              width: 15,
+                                                              height: 15),
+                                                        ),
+                                                        label: Text(
+                                                          e.toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 12.sp,
+                                                              color: AppColors
+                                                                  .white,
+                                                              fontFamily:
+                                                                  "Poppins-Regular"),
+                                                        ),
+                                                        backgroundColor:
+                                                            AppColors
+                                                                .chipCircle,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                      ))
+                                                  .toList()
+                                              : craves
+                                                  .map((e) => Chip(
+                                                        labelPadding:
+                                                            const EdgeInsets
+                                                                .all(2.0),
+                                                        avatar: CircleAvatar(
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .chipColor,
+                                                          child: Image.asset(
+                                                              e == "Casual Dating"
+                                                                  ? casualdating
+                                                                  : e == "No String Attached"
+                                                                      ? nostring1
+                                                                      : e == "In Person"
+                                                                          ? inperson
+                                                                          : e == "Sexting"
+                                                                              ? sexting2
+                                                                              : e == "Kinky"
+                                                                                  ? kinky
+                                                                                  : e == "Vanilla"
+                                                                                      ? vanilla
+                                                                                      : e == "Submissive"
+                                                                                          ? submissive
+                                                                                          : e == "Dominance"
+                                                                                              ? dominance
+                                                                                              : e == "Dress Up"
+                                                                                                  ? dressup
+                                                                                                  : e == "Blindfolding"
+                                                                                                      ? blindfolding
+                                                                                                      : e == "Bondage"
+                                                                                                          ? bondage
+                                                                                                          : e == "Butt Stuff"
+                                                                                                              ? buttstuff
+                                                                                                              : kinky,
+                                                              color: AppColors.white,
+                                                              width: 15,
+                                                              height: 15),
+                                                        ),
+                                                        label: Text(
+                                                          e.toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 12.sp,
+                                                              color: AppColors
+                                                                  .white,
+                                                              fontFamily:
+                                                                  "Poppins-Regular"),
+                                                        ),
+                                                        backgroundColor:
+                                                            AppColors
+                                                                .chipCircle,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                      ))
+                                                  .toList()),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<Color>(
+                                                      AppColors.redcolor),
+                                              shape: MaterialStateProperty.all<
+                                                      RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              18.0),
+                                                      side: const BorderSide(
+                                                          color: Colors.red)))),
+                                          onPressed: () {
+                                            if (mounted) {
+                                              setState(() {
+                                                selectedIndex = index;
+                                                viewMore = !viewMore;
+                                              });
+                                            }
+                                          },
+                                          child: text(
+                                              context,
+                                              selectedIndex == index && viewMore == true
+                                                  ? viewMoreButton
+                                                  : selectedIndex == index && viewMore == false
+                                                      ? "View less"
+                                                      : viewMoreButton,
+                                              12.sp,
+                                              color: Colors.white,
+                                              fontFamily: "Poppins-Medium")),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 30.0),
+                            child: Lottie.asset("assets/raw/doubleheart.json"),
                           ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 30.0),
-                          child: Lottie.asset("assets/raw/doubleheart.json"),
-                        ),
-                      ],
-                    ))),
-        ));
+                        ],
+                      )))));
   }
 
   likeUser(name, image, id) async {
     User? user = _auth.currentUser;
+    setState(() {
+      boolLike = true;
+    });
 
     await firebaseFirestore
         .collection("users")
@@ -1332,20 +1338,9 @@ class _DashboardState extends State<Dashboard> {
       'likedId': user.uid.toString()
     }).then((text) async {
       saveDatainLikedBy(id);
-      getData();
-      getDataalluserexcepcurrent();
+
       ToastUtils.showCustomToast(context, "User Liked", Colors.green);
-      if (mounted) {
-        setState(() {
-          loading = false;
-        });
-      }
     }).catchError((e) {});
-    if (mounted) {
-      setState(() {
-        loading = false;
-      });
-    }
   }
 
   saveDatainLikedBy(String id) async {
@@ -1355,6 +1350,11 @@ class _DashboardState extends State<Dashboard> {
         .update({'likedBy': FieldValue.arrayUnion(currentUserlist)})
         .then((_) => print('Added'))
         .catchError((error) => print('Add failed: $error'));
+
+    setState(() {
+      boolLike = false;
+    });
+    getDataalluserexcepcurrent();
   }
 
   blockUser(name, image, id) async {

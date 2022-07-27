@@ -1,8 +1,8 @@
-
 class MessageModel {
   String? messageid;
   String? sender;
   String? text;
+  int? odermsg;
   bool? seen;
   DateTime? createdon;
   String? type;
@@ -13,6 +13,7 @@ class MessageModel {
     this.sender,
     this.text,
     this.seen,
+    this.odermsg,
     this.createdon,
     this.type,
     this.timer,
@@ -23,6 +24,7 @@ class MessageModel {
     sender = map["sender"];
     text = map["text"];
     seen = map["seen"];
+    odermsg = map["odermsg"];
     createdon = map["createdon"].toDate();
     type = map["type"];
     timer = map['timer'];
@@ -32,11 +34,12 @@ class MessageModel {
     return {
       "messageid": messageid,
       "sender": sender,
+      "odermsg": odermsg,
       "text": text,
       "seen": seen,
       "createdon": createdon,
       "type": type,
-      "timer" : timer,
+      "timer": timer,
     };
   }
 }
