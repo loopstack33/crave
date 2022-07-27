@@ -628,6 +628,7 @@ class _BottomFieldState extends State<BottomField> {
   }
 
   addmessage(String mType, String mText) {
+    log(mText);
     MessageModel newMessage = MessageModel(
       messageid: uuid.v1(),
       sender: widget.usersModel.userId.toString(),
@@ -645,7 +646,7 @@ class _BottomFieldState extends State<BottomField> {
         .doc(newMessage.messageid)
         .set(newMessage.toMap());
     var msgcount1 = 1;
-    widget.chatRoom.lastMessage = msgController.text;
+    widget.chatRoom.lastMessage = mText.toString();
     widget.chatRoom.read = false;
     widget.chatRoom.idFrom = widget.usersModel.userId;
     widget.chatRoom.idTo = widget.targetUser.userId;

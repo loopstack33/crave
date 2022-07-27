@@ -80,7 +80,7 @@ class _SigninPhoneValidState extends State<CodeSignin> {
           .get()
           .then((value) => value.size > 0
               ? setState(() {
-                  getUser(id!);
+                  getUser(/*id!*/"cthZGNOQoJWa4JkFpLsgOert5Ur2");
                   exists = true;
                 })
               : setState(() {

@@ -105,6 +105,7 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         paid: false,
         idFrom: "",
         idTo: "",
+        order: 0,
         count: 0,
         dateTime: DateTime.now().toString(),
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
