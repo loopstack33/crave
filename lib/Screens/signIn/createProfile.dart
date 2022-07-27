@@ -94,239 +94,246 @@ class _CreateProfileState extends State<CreateProfile> {
       body: ProgressHUD(
         inAsyncCall: isLoading,
         opacity: 0.1,
-        child: SingleChildScrollView(
-            child: Padding(
-          padding: const EdgeInsets.only(
-            top: 20,
-            left: 20,
-            right: 20,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              text(context, "Profile Images", 16.sp,
-                  color: AppColors.black,
-                  boldText: FontWeight.w500,
-                  fontFamily: "Roboto-Medium"),
-              SizedBox(
-                height: 10.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Stack(
-                    children: [
-                      SizedBox(
-                        width: 102.w,
-                        height: 154.h,
-                        child: InkWell(
-                          onTap: () {
-                            imagePickermethod(1);
-                          },
-                          child: _image == null || clearPic == false
-                              ? Image.asset(addpic)
-                              : Image.file(_image!),
-                        ),
-                      ),
-                      if (clearPic == true) ...[
-                        Positioned(
-                          left: 65,
-                          child: InkWell(
-                            onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  _image = null;
-                                  clearPic = false;
-                                });
-                              }
-                            },
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Image.asset(
-                                deletePic,
-                                width: 30.w,
-                                height: 30.h,
-                              ),
-                            ),
-                          ),
-                        )
-                      ]
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      SizedBox(
-                        width: 102.w,
-                        height: 154.h,
-                        child: InkWell(
-                          onTap: () {
-                            imagePickermethod(2);
-                          },
-                          child: _image1 == null || clearPic1 == false
-                              ? Image.asset(addpic)
-                              : Image.file(_image1!),
-                        ),
-                      ),
-                      if (clearPic1 == true) ...[
-                        Positioned(
-                          left: 65,
-                          child: InkWell(
-                            onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  _image1 = null;
-                                  clearPic1 = false;
-                                });
-                              }
-                            },
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Image.asset(
-                                deletePic,
-                                width: 30.w,
-                                height: 30.h,
-                              ),
-                            ),
-                          ),
-                        )
-                      ]
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      SizedBox(
-                        width: 102.w,
-                        height: 154.h,
-                        child: InkWell(
-                          onTap: () {
-                            imagePickermethod(3);
-                          },
-                          child: _image2 == null || clearPic2 == false
-                              ? Image.asset(addpic)
-                              : Image.file(_image2!),
-                        ),
-                      ),
-                      if (clearPic2 == true) ...[
-                        Positioned(
-                          left: 65,
-                          child: InkWell(
-                            onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  _image2 = null;
-                                  clearPic2 = false;
-                                });
-                              }
-                            },
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Image.asset(
-                                deletePic,
-                                width: 30.w,
-                                height: 30.h,
-                              ),
-                            ),
-                          ),
-                        )
-                      ]
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              text(context, "About Me", 16.sp,
-                  color: const Color(0xff191919),
-                  boldText: FontWeight.w500,
-                  fontFamily: "Roboto-Medium"),
-              SizedBox(
-                height: 10.h,
-              ),
-              Container(
-                // height: 136.h,
-                // margin: const EdgeInsets.only(left: 20, right: 20),
-                decoration: BoxDecoration(
-                  color: const Color(0xffF5F5F5),
-                  borderRadius: BorderRadius.circular(12),
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+          },
+          child: SingleChildScrollView(
+              child: Padding(
+            padding: const EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                text(context, "Profile Images", 16.sp,
+                    color: AppColors.black,
+                    boldText: FontWeight.w500,
+                    fontFamily: "Roboto-Medium"),
+                SizedBox(
+                  height: 10.h,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: TextFormField(
-                    onSaved: (String? value) {
-                      textController.text = value!;
-                    },
-                    style: const TextStyle(
-                        fontFamily: "Poppins-Regular",
-                        fontSize: 14,
-                        color: Color(0xff636363)),
-                    minLines: 1,
-                    maxLines: 5,
-                    keyboardType: TextInputType.multiline,
-                    controller: textController,
-                    autocorrect: true,
-                    maxLength: 100,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter Some Text',
-                      hintStyle: TextStyle(
-                          fontFamily: "Poppins-Regular", fontSize: 14),
-                      border: InputBorder.none,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: 102.w,
+                          height: 154.h,
+                          child: InkWell(
+                            onTap: () {
+                              imagePickermethod(1);
+                            },
+                            child: _image == null || clearPic == false
+                                ? Image.asset(addpic)
+                                : Image.file(_image!),
+                          ),
+                        ),
+                        if (clearPic == true) ...[
+                          Positioned(
+                            left: 65,
+                            child: InkWell(
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    _image = null;
+                                    clearPic = false;
+                                  });
+                                }
+                              },
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: Image.asset(
+                                  deletePic,
+                                  width: 30.w,
+                                  height: 30.h,
+                                ),
+                              ),
+                            ),
+                          )
+                        ]
+                      ],
+                    ),
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: 102.w,
+                          height: 154.h,
+                          child: InkWell(
+                            onTap: () {
+                              imagePickermethod(2);
+                            },
+                            child: _image1 == null || clearPic1 == false
+                                ? Image.asset(addpic)
+                                : Image.file(_image1!),
+                          ),
+                        ),
+                        if (clearPic1 == true) ...[
+                          Positioned(
+                            left: 65,
+                            child: InkWell(
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    _image1 = null;
+                                    clearPic1 = false;
+                                  });
+                                }
+                              },
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: Image.asset(
+                                  deletePic,
+                                  width: 30.w,
+                                  height: 30.h,
+                                ),
+                              ),
+                            ),
+                          )
+                        ]
+                      ],
+                    ),
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: 102.w,
+                          height: 154.h,
+                          child: InkWell(
+                            onTap: () {
+                              imagePickermethod(3);
+                            },
+                            child: _image2 == null || clearPic2 == false
+                                ? Image.asset(addpic)
+                                : Image.file(_image2!),
+                          ),
+                        ),
+                        if (clearPic2 == true) ...[
+                          Positioned(
+                            left: 65,
+                            child: InkWell(
+                              onTap: () {
+                                if (mounted) {
+                                  setState(() {
+                                    _image2 = null;
+                                    clearPic2 = false;
+                                  });
+                                }
+                              },
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: Image.asset(
+                                  deletePic,
+                                  width: 30.w,
+                                  height: 30.h,
+                                ),
+                              ),
+                            ),
+                          )
+                        ]
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                text(context, "About Me", 16.sp,
+                    color: const Color(0xff191919),
+                    boldText: FontWeight.w500,
+                    fontFamily: "Roboto-Medium"),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Container(
+                  // height: 136.h,
+                  // margin: const EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xffF5F5F5),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: TextFormField(
+                      onSaved: (String? value) {
+                        textController.text = value!;
+                      },
+                      style: const TextStyle(
+                          fontFamily: "Poppins-Regular",
+                          fontSize: 14,
+                          color: Color(0xff636363)),
+                      minLines: 1,
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                      controller: textController,
+                      autocorrect: true,
+                      maxLength: 100,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter Some Text',
+                        hintStyle: TextStyle(
+                            fontFamily: "Poppins-Regular", fontSize: 14),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: text(context, "Selected  $craveCounter/3", 14.sp,
-                    color: AppColors.black,
-                    boldText: FontWeight.w400,
-                    fontFamily: "Poppins-Medium"),
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              //chipping
-              Column(
-                children: <Widget>[
-                  Wrap(
-                    children: companyWidgets.toList(),
-                  ),
-                  // Text('Selected: ${_filters.join(', ')}'),
-                  DefaultButton(
-                      text: "Confirm",
-                      press: () {
-                        if (_image == null) {
-                          ToastUtils.showCustomToast(
-                              context,
-                              "Please select at least one image.",
-                              AppColors.redcolor);
-                        } else if (textController.text.isEmpty) {
-                          ToastUtils.showCustomToast(context,
-                              "Please add your bio", AppColors.redcolor);
-                        } else if (_filters.isEmpty) {
-                          ToastUtils.showCustomToast(context,
-                              "Please select your craves", AppColors.redcolor);
-                        } else {
-                          if (mounted) {
-                            setState(() {
-                              isLoading = true;
-                            });
+                SizedBox(
+                  height: 10.h,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: text(context, "Selected  $craveCounter/3", 14.sp,
+                      color: AppColors.black,
+                      boldText: FontWeight.w400,
+                      fontFamily: "Poppins-Medium"),
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                //chipping
+                Column(
+                  children: <Widget>[
+                    Wrap(
+                      children: companyWidgets.toList(),
+                    ),
+                    // Text('Selected: ${_filters.join(', ')}'),
+                    DefaultButton(
+                        text: "Confirm",
+                        press: () {
+                          if (_image == null) {
+                            ToastUtils.showCustomToast(
+                                context,
+                                "Please select at least one image.",
+                                AppColors.redcolor);
+                          } else if (textController.text.isEmpty) {
+                            ToastUtils.showCustomToast(context,
+                                "Please add your bio", AppColors.redcolor);
+                          } else if (_filters.isEmpty) {
+                            ToastUtils.showCustomToast(
+                                context,
+                                "Please select your craves",
+                                AppColors.redcolor);
+                          } else {
+                            if (mounted) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                            }
+                            postDetailsToFirestore(context);
                           }
-                          postDetailsToFirestore(context);
-                        }
-                      }),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )),
+                        }),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )),
+        ),
       ),
     );
   }
@@ -353,9 +360,9 @@ class _CreateProfileState extends State<CreateProfile> {
       downloadURL2 = await ref2.getDownloadURL();
       picsList.add(downloadURL2!);
     }
-
-    final auth = FirebaseAuth.instance;
     SharedPreferences preferences = await SharedPreferences.getInstance();
+    final auth = FirebaseAuth.instance;
+
     User? user = auth.currentUser;
 
     await firebaseFirestore.collection("users").doc(user!.uid).update({
@@ -369,8 +376,8 @@ class _CreateProfileState extends State<CreateProfile> {
           isLoading = false;
         });
 
-        AppRoutes.push(context, PageTransitionType.rightToLeft,
-            const CreatingProfileScreen());
+        AppRoutes.push(
+            context, PageTransitionType.fade, const CreatingProfileScreen());
         preferences.setString("logStatus", "true");
         preferences.setString("uid", user.uid.toString());
       }
@@ -389,8 +396,8 @@ class _CreateProfileState extends State<CreateProfile> {
         child: FilterChip(
           showCheckmark: false,
           avatar: Container(
-            height: 20,
-            width: 20,
+            height: 40,
+            width: 40,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topRight,
@@ -414,7 +421,7 @@ class _CreateProfileState extends State<CreateProfile> {
           backgroundColor: company.status == false
               ? const Color(0xffFAFAFA)
               : AppColors.redcolor,
-          label: text(context, company.name, 12.sp,
+          label: text(context, company.name, 16.sp,
               color: company.status == false ? Colors.black : AppColors.white,
               boldText: FontWeight.w400,
               fontFamily: "Poppins-Regular"),

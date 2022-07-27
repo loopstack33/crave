@@ -53,7 +53,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
   static ChatRoomModel? chatRoom;
 
   Future<ChatRoomModel?> assignChatRoom(
-      BuildContext context, userName, targetID, userID) async {
+      BuildContext context, userName, token, targetID, userID) async {
     log('userID: $userID');
     log('targetID: $targetID');
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -107,7 +107,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
       chatRoom = newChatRoom;
       // AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
       Navigator.pop(context);
-      FCMServices.sendFCM("crave", targetID.toString(), name.toString(),
+      FCMServices.sendFCM(token, targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(
           context, "ChatRoom Assigned Success", Colors.green);
@@ -363,6 +363,8 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                             context,
                                                             name,
                                                             docs[index]
+                                                                ['deviceToken'],
+                                                            docs[index]
                                                                 ["likedId"],
                                                             id,
                                                           );
@@ -402,6 +404,8 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                                             context,
                                                             name,
                                                             docs[index]
+                                                                ['deviceToken'],
+                                                            docs[index]
                                                                 ["likedId"],
                                                             id,
                                                           );
@@ -432,6 +436,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                                   assignChatRoom(
                                     context,
                                     name,
+                                    docs[index]['deviceToken'],
                                     docs[index]["likedId"],
                                     id,
                                   );

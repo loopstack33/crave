@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       MaterialPageRoute(builder: (context) => const Welcome_Screen()),
       (Route<dynamic> route) => false,
     );
-    ToastUtils.showCustomToast(context, "Logout Successfully", Colors.green);
+    // ToastUtils.showCustomToast(context, "Logout Successfully", Colors.green);
   }
 
   @override
@@ -400,7 +400,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         .doc(_auth.currentUser!.uid)
         .delete();
 
-    AppRoutes.pushAndRemoveUntil(
-        context, PageTransitionType.fade, Welcome_Screen());
+    handleSignOut();
   }
 }

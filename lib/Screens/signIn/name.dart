@@ -5,6 +5,7 @@ import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
 import 'package:crave/widgets/custom_button.dart';
 import 'package:crave/widgets/custom_text.dart';
+import 'package:crave/widgets/uppCaseText.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -92,6 +93,7 @@ class _SigninPhoneValidState extends State<FirstName> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, bottom: 10),
                     child: TextFormField(
+                      inputFormatters: [UpperCaseTextFormatter()],
                       onChanged: (text) {
                         if (mounted) {
                           setState(() {
@@ -197,7 +199,10 @@ class _SigninPhoneValidState extends State<FirstName> {
                                     });
                                   }
                                   postDetailsToFirestore(
-                                      context, nameController.text.toString());
+                                      context,
+                                      nameController.text
+                                          .toString()
+                                          .toUpperCase());
                                 }
                               }
                             : () {}),
@@ -310,13 +315,13 @@ class _SigninPhoneValidState extends State<FirstName> {
       'steps': '1',
     }).then((text) {
       if (mounted) {
-        ToastUtils.showCustomToast(context, "Name Added", Colors.green);
+        // ToastUtils.showCustomToast(context, "Name Added", Colors.green);
         setState(() {
           loading = false;
         });
         preferences.setString("name", name.toString());
         AppRoutes.push(
-            context, PageTransitionType.rightToLeft, const BirthdayScreen());
+            context, PageTransitionType.fade, const BirthdayScreen());
       }
     }).catchError((e) {});
     if (mounted) {

@@ -31,8 +31,7 @@ class Welcome_Screen extends StatefulWidget {
 }
 
 class _Welcome_ScreenState extends State<Welcome_Screen> {
-  bool loading= false;
-
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,14 +101,14 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
                 fontFamily: "Roboto-Medium",
                 text: "Continue with Phone",
                 press: () {
-                  AppRoutes.push(
-                      context, PageTransitionType.topToBottom, const SigninPhoneValid());
+                  AppRoutes.push(context, PageTransitionType.topToBottom,
+                      const SigninPhoneValid());
                 },
                 size: 18.sp),
             SizedBox(
               height: 10.h,
             ),
-          /*  DefaultIconButton(
+            /*  DefaultIconButton(
                 iconColor: AppColors.black,
                 icon: FontAwesomeIcons.apple,
                 weight: FontWeight.w500,
@@ -126,26 +125,30 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
                 },
                 size: 18.sp),*/
             (Platform.isIOS)
-                ? loading?const Center(child: CircularProgressIndicator(color: AppColors.redcolor),):SizedBox(
-              width: 320.w,
-              height: 56.h,
-                  child: SignInWithAppleButton(
-                    borderRadius: BorderRadius.circular(10),
-              text: 'Continue with Apple',
-              onPressed: () async {
-                      if(mounted){
-                        setState((){
-                          loading = true;
-                        });
-                      }
-                signinApple(context);
-              },
-            ),
-                )
-                :  SizedBox(
-              height: 30.h,
-            ),
-
+                ? loading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.redcolor),
+                      )
+                    : SizedBox(
+                        width: 320.w,
+                        height: 56.h,
+                        child: SignInWithAppleButton(
+                          borderRadius: BorderRadius.circular(10),
+                          text: 'Continue with Apple',
+                          onPressed: () async {
+                            if (mounted) {
+                              setState(() {
+                                loading = true;
+                              });
+                            }
+                            signinApple(context);
+                          },
+                        ),
+                      )
+                : SizedBox(
+                    height: 30.h,
+                  ),
             SizedBox(height: 30.h),
             Text.rich(
               textAlign: TextAlign.center,
@@ -189,21 +192,22 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
 
   signinApple(BuildContext context) async {
     if (!await SignInWithApple.isAvailable()) {
-      ToastUtils.showCustomToast(context, "This Device is not eligible for Apple Sign in", Colors.red);
+      ToastUtils.showCustomToast(
+          context, "This Device is not eligible for Apple Sign in", Colors.red);
       return null;
     }
 
-    final res = await SignInWithApple.getAppleIDCredential(
-        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName]
-    );
+    final res = await SignInWithApple.getAppleIDCredential(scopes: [
+      AppleIDAuthorizationScopes.email,
+      AppleIDAuthorizationScopes.fullName
+    ]);
 
     final oAuthProvider = OAuthProvider('apple.com');
     final credential = oAuthProvider.credential(
-     idToken:  res.identityToken,
-     accessToken: res.authorizationCode
-    );
+        idToken: res.identityToken, accessToken: res.authorizationCode);
     bool check = await userExists(AppleIDAuthorizationScopes.email.toString());
-    Future.delayed(const Duration(seconds: 2),()=>signInWithPhoneAuthCredential(credential,check));
+    Future.delayed(const Duration(seconds: 2),
+        () => signInWithPhoneAuthCredential(credential, check));
 
     print(res.state);
     if (mounted) {
@@ -211,17 +215,21 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
         loading = false;
       });
     }
-
-
   }
+
   var instance = FirebaseFirestore.instance;
 
-  Future<bool> userExists(String email) async =>
-      (await instance.collection("users").where("email", isEqualTo: email).get()).docs.isNotEmpty;
+  Future<bool> userExists(String email) async => (await instance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .get())
+      .docs
+      .isNotEmpty;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void signInWithPhoneAuthCredential(OAuthCredential phoneAuthCredential,bool email) async {
+  void signInWithPhoneAuthCredential(
+      OAuthCredential phoneAuthCredential, bool email) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
@@ -230,25 +238,23 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
     }
     try {
       final authCredential =
-      await _auth.signInWithCredential(phoneAuthCredential);
+          await _auth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
-        if(email == true){
+        if (email == true) {
           if (mounted) {
-            ToastUtils.showCustomToast(
-                context, "Login Success", Colors.green);
+            ToastUtils.showCustomToast(context, "Login Success", Colors.green);
             updateDeviceToken(_auth.currentUser!.uid, 'users');
             preferences.setString("logStatus", "true");
-            preferences.setString("uid",_auth.currentUser!.uid.toString());
+            preferences.setString("uid", _auth.currentUser!.uid.toString());
             setState(() {
               loading = false;
             });
-            AppRoutes.pushAndRemoveUntil(context, PageTransitionType.fade,const HomeScreen());
+            AppRoutes.pushAndRemoveUntil(
+                context, PageTransitionType.fade, const HomeScreen());
           }
-        }
-        else{
+        } else {
           postDetailsToFirestore(context, email);
         }
-
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -259,6 +265,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       ToastUtils.showCustomToast(context, e.message.toString(), Colors.red);
     }
   }
+
   var deviceToken;
 
   updateDeviceToken(id, collection) async {
@@ -270,7 +277,6 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       'deviceToken': deviceT,
     });
   }
-
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   void postDetailsToFirestore(BuildContext context, email) async {
@@ -286,32 +292,32 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
       'phone': "",
       'name': '',
       'showName': '',
-      'email':AppleIDAuthorizationScopes.email.toString(),
+      'email': AppleIDAuthorizationScopes.email.toString(),
       'deviceToken': deviceT.toString(),
-      'craves':[],
-      'blocked_By':[],
-      'chat_with':[],
-      'imageUrl':[],
-      'country':'',
+      'craves': [],
+      'blocked_By': [],
+      'chat_with': [],
+      'imageUrl': [],
+      'country': '',
       'status': '',
       'age': '',
-      'package':'',
+      'package': '',
       'gender': '',
       'birthday': '',
       'genes': '',
       'bio': '',
-      'likedBy':[],
-      'steps':'0'
+      'likedBy': [],
+      'steps': '0'
     }).then((value) {
       if (mounted) {
-        ToastUtils.showCustomToast(
-            context, "Registration Success", Colors.green);
+        // ToastUtils.showCustomToast(
+        //     context, "Registration Success", Colors.green);
         setState(() {
           loading = false;
         });
         AppRoutes.push(context, PageTransitionType.fade, const FirstName());
       }
-      preferences.setString("uid",user.uid.toString());
+      preferences.setString("uid", user.uid.toString());
     }).catchError((e) {});
     if (mounted) {
       setState(() {

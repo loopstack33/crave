@@ -480,8 +480,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
         if (exists == true) {
           if (step == "0") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -490,8 +490,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "1") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -500,8 +500,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "2") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -510,8 +510,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "3") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -520,8 +520,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "4") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -530,8 +530,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "5") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Complete your registration", Colors.red);
+              // ToastUtils.showCustomToast(
+              //     context, "Complete your registration", Colors.red);
               setState(() {
                 loading = false;
               });
@@ -540,8 +540,8 @@ class _SigninPhoneValidState extends State<CodeSignin> {
             }
           } else if (step == "6") {
             if (mounted) {
-              ToastUtils.showCustomToast(
-                  context, "Login Success", Colors.green);
+              // ToastUtils.showCustomToast(
+              //     context, "Login Success", Colors.green);
               updateDeviceToken(_auth.currentUser!.uid, 'users');
               preferences.setString("logStatus", "true");
               preferences.setString("uid", _auth.currentUser!.uid.toString());
@@ -681,13 +681,12 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'steps': '0'
     }).then((value) {
       if (mounted) {
-        ToastUtils.showCustomToast(
-            context, "Registration Success", Colors.green);
+        // ToastUtils.showCustomToast(
+        //     context, "Registration Success", Colors.green);
         setState(() {
           loading = false;
         });
-        AppRoutes.push(
-            context, PageTransitionType.rightToLeft, const FirstName());
+        AppRoutes.push(context, PageTransitionType.fade, const FirstName());
       }
       preferences.setString("uid", user.uid.toString());
     }).catchError((e) {});

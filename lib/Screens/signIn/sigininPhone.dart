@@ -23,7 +23,8 @@ class SigninPhoneValid extends StatefulWidget {
 
 class _SigninPhoneValidState extends State<SigninPhoneValid> {
   ///VARIABLES AND DECLARATION
-  CountryCode countryCode = CountryCode.fromDialCode('+92');
+  CountryCode countryCode = CountryCode.fromDialCode('+1');
+
   bool loading = false;
   bool isEnabled = false;
   TextEditingController phone = TextEditingController();
@@ -95,7 +96,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                           });
                         }
                       },
-                      initialSelection: countryCode.toString(),
+                      initialSelection: 'US',
                       showCountryOnly: false,
                       showOnlyCountryWhenClosed: false,
                     ),
@@ -254,8 +255,8 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                                     },
                                     codeSent: (String verificationId,
                                         int? resendToken) {
-                                      ToastUtils.showCustomToast(
-                                          context, "Code Sent", Colors.green);
+                                      // ToastUtils.showCustomToast(
+                                      //     context, "Code Sent", Colors.green);
                                       if (mounted) {
                                         setState(() {
                                           loading = false;
@@ -263,7 +264,7 @@ class _SigninPhoneValidState extends State<SigninPhoneValid> {
                                       }
                                       AppRoutes.push(
                                           context,
-                                          PageTransitionType.leftToRight,
+                                          PageTransitionType.fade,
                                           CodeSignin(
                                               isTimeOut2: false,
                                               phone: countryCode.toString() +

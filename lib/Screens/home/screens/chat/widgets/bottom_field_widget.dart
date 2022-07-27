@@ -26,7 +26,12 @@ class BottomField extends StatefulWidget {
   final ChatRoomModel chatRoom;
   final UsersModel targetUser;
 
-  const BottomField({Key? key,required this.usersModel,required this.chatRoom,required this.targetUser}) : super(key: key);
+  const BottomField(
+      {Key? key,
+      required this.usersModel,
+      required this.chatRoom,
+      required this.targetUser})
+      : super(key: key);
 
   @override
   State<BottomField> createState() => _BottomFieldState();
@@ -37,8 +42,10 @@ class _BottomFieldState extends State<BottomField> {
   bool isShowSendButton = false;
   FlutterSoundRecorder? _soundRecorder;
   bool isRecorderInit = false;
+  ChatRoomModel temp = ChatRoomModel();
   bool isRecording = false;
   FocusNode focusNode = FocusNode();
+  int ordermsg = 0;
 
   @override
   void initState() {
@@ -47,6 +54,7 @@ class _BottomFieldState extends State<BottomField> {
     _soundRecorder = FlutterSoundRecorder();
     openAudio();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -63,37 +71,40 @@ class _BottomFieldState extends State<BottomField> {
     isRecorderInit = true;
   }
 
-  void sendTextMessage() async{
-    if(isShowSendButton){
+  void sendTextMessage() async {
+    if (isShowSendButton) {
       if (_formKey.currentState!.validate()) {
+        setState(() {
+          ordermsg++;
+        });
         sendMsg("text", msgController.text.trim().toString());
       }
-      if(mounted){
-        setState((){
+      if (mounted) {
+        setState(() {
           msgController.text = '';
         });
       }
-    }
-    else{
+    } else {
       var tempDir = await getTemporaryDirectory();
       var path = '${tempDir.path}/crave_sound.aac';
-      if(!isRecorderInit){
+      if (!isRecorderInit) {
         return;
       }
-      if(isRecording){
+      if (isRecording) {
+        setState(() {
+          ordermsg++;
+        });
         await _soundRecorder!.stopRecorder();
-        sendAudioMessage(File(path),"Audio");
-      }
-      else{
+        sendAudioMessage(File(path), "Audio");
+      } else {
         await _soundRecorder!.startRecorder(toFile: path);
       }
-      if(mounted){
-        setState((){
+      if (mounted) {
+        setState(() {
           isRecording = !isRecording;
         });
       }
     }
-
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -103,40 +114,46 @@ class _BottomFieldState extends State<BottomField> {
     return Form(
       key: _formKey,
       child: Container(
-        padding:const EdgeInsets.only(left: 20,bottom: 10,top: 10,right: 20),
+        padding:
+            const EdgeInsets.only(left: 20, bottom: 10, top: 10, right: 20),
         height: 60,
         width: double.infinity,
         color: Colors.white,
         child: Row(
           children: <Widget>[
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 FocusScope.of(context).unfocus();
                 showModalBottomSheet(
                     backgroundColor: Colors.transparent,
                     context: context,
                     builder: (builder) => bottomSheet());
               },
-              child: Image.asset(camera,width: 26.w,height: 26.h,),
+              child: Image.asset(
+                camera,
+                width: 26.w,
+                height: 26.h,
+              ),
             ),
-            const SizedBox(width: 15,),
+            const SizedBox(
+              width: 15,
+            ),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: AppColors.redcolor,width: 1.w)
-                ),
+                    border: Border.all(color: AppColors.redcolor, width: 1.w)),
                 child: TextFormField(
                   controller: msgController,
                   onChanged: (val) {
                     if (val.isNotEmpty) {
-                      if(mounted) {
+                      if (mounted) {
                         setState(() {
                           isShowSendButton = true;
                         });
                       }
                     } else {
-                      if(mounted) {
+                      if (mounted) {
                         setState(() {
                           isShowSendButton = false;
                         });
@@ -145,35 +162,42 @@ class _BottomFieldState extends State<BottomField> {
                   },
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
-                      suffixIcon:isShowSendButton?GestureDetector(
-                        onTap: (){
-                          sendTextMessage();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(FontAwesomeIcons.paperPlane,size: 25.sp,color: AppColors.redcolor,),
-                        ),
-                      )
-                          :Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                            onTap: (){
-                              sendTextMessage();
-                            },
-                            child: Image.asset(isRecording?cross:mic)),
-                      )
-                      ,
-                      contentPadding: const EdgeInsets.only(left: 10,bottom: 10),
+                      suffixIcon: isShowSendButton
+                          ? GestureDetector(
+                              onTap: () {
+                                log(ordermsg.toString());
+                                sendTextMessage();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(
+                                  FontAwesomeIcons.paperPlane,
+                                  size: 25.sp,
+                                  color: AppColors.redcolor,
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    sendTextMessage();
+                                  },
+                                  child:
+                                      Image.asset(isRecording ? cross : mic)),
+                            ),
+                      contentPadding:
+                          const EdgeInsets.only(left: 10, bottom: 10),
                       hintText: "Message...",
-                      hintStyle: TextStyle(color:const Color(0xFF636363),fontFamily: 'Poppins-Regular',fontSize: 16.sp),
-                      border: InputBorder.none
-                  ),
+                      hintStyle: TextStyle(
+                          color: const Color(0xFF636363),
+                          fontFamily: 'Poppins-Regular',
+                          fontSize: 16.sp),
+                      border: InputBorder.none),
                 ),
               ),
             ),
-
           ],
-
         ),
       ),
     );
@@ -186,7 +210,7 @@ class _BottomFieldState extends State<BottomField> {
       child: Card(
         margin: const EdgeInsets.all(18.0),
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           child: Row(
@@ -197,8 +221,8 @@ class _BottomFieldState extends State<BottomField> {
               SizedBox(
                 width: 40.w,
               ),
-              iconCreation(
-                  FontAwesomeIcons.camera, Colors.pink, "Camera", getCameraImage),
+              iconCreation(FontAwesomeIcons.camera, Colors.pink, "Camera",
+                  getCameraImage),
               SizedBox(
                 width: 40.w,
               ),
@@ -211,7 +235,8 @@ class _BottomFieldState extends State<BottomField> {
     );
   }
 
-  Widget iconCreation(IconData icons, Color color, String text, GestureTapCallback tap) {
+  Widget iconCreation(
+      IconData icons, Color color, String text, GestureTapCallback tap) {
     return InkWell(
       onTap: tap,
       child: Column(
@@ -278,6 +303,16 @@ class _BottomFieldState extends State<BottomField> {
   }
 
   Future uploadImage2() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('chatrooms')
+        .where('chatroomid', isEqualTo: widget.chatRoom.chatroomid)
+        .get()
+        .then((value) {
+      setState(() {
+        ordermsg = value.docs[0]["order"];
+      });
+    });
     String fileName = const Uuid().v1();
     int status = 1;
     MessageModel newMessage = MessageModel(
@@ -285,6 +320,7 @@ class _BottomFieldState extends State<BottomField> {
       sender: widget.usersModel.userId.toString(),
       text: "",
       seen: false,
+      odermsg: ordermsg + 1,
       type: "image",
       createdon: DateTime.now(),
       timer: "0",
@@ -323,9 +359,11 @@ class _BottomFieldState extends State<BottomField> {
             ? 0
             : widget.chatRoom.count! + msgcount;
         widget.chatRoom.read = false;
+        widget.chatRoom.order = ordermsg + 1;
         widget.chatRoom.idFrom = widget.usersModel.userId;
         widget.chatRoom.idTo = widget.targetUser.userId;
-        widget.chatRoom.timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+        widget.chatRoom.timeStamp =
+            DateTime.now().millisecondsSinceEpoch.toString();
         widget.chatRoom.lastMessage = "Image File";
         FirebaseFirestore.instance
             .collection('chatrooms')
@@ -333,10 +371,9 @@ class _BottomFieldState extends State<BottomField> {
             .set(widget.chatRoom.toMap());
 
         FCMServices.sendFCM(
-            'crave',
-           // widget.targetUser.userToken,
+            widget.targetUser.userToken,
             widget.targetUser.userId.toString(),
-            widget.targetUser.userName.toString(),
+            widget.usersModel.userName.toString(),
             "📷 New Image Message");
 
         if (mounted) {
@@ -360,36 +397,51 @@ class _BottomFieldState extends State<BottomField> {
     }
   }
 
-  Future<File?> pickVideoFromGallery(BuildContext context) async{
+  Future<File?> pickVideoFromGallery(BuildContext context) async {
     File? video;
-    try{
-      final pickVideo = await ImagePicker().pickVideo(source: ImageSource.gallery);
-      if(pickVideo !=null){
+    try {
+      final pickVideo =
+          await ImagePicker().pickVideo(source: ImageSource.gallery);
+      if (pickVideo != null) {
         video = File(pickVideo.path);
       }
-    }
-    catch(e){
+    } catch (e) {
       log("Error");
     }
     return video;
   }
 
-  void selectVideo() async{
+  void selectVideo() async {
     Navigator.pop(context);
     File? video = await pickVideoFromGallery(context);
-    if(video!=null){
-      sendVideoMessage(video,"video");
+    if (video != null) {
+      setState(() {
+        ordermsg++;
+      });
+      sendVideoMessage(video, "video");
     }
   }
 
-  sendVideoMessage(File videoPath,String type) async{
+  sendVideoMessage(File videoPath, String type) async {
     String fileName = const Uuid().v1();
     int status = 1;
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('chatrooms')
+        .where('chatroomid', isEqualTo: widget.chatRoom.chatroomid)
+        .get()
+        .then((value) {
+      setState(() {
+        ordermsg = value.docs[0]["order"];
+      });
+    });
+
     MessageModel newMessage = MessageModel(
       messageid: fileName,
       sender: widget.usersModel.userId.toString(),
       text: "",
       seen: false,
+      odermsg: ordermsg + 1,
       type: type,
       createdon: DateTime.now(),
       timer: "0",
@@ -427,16 +479,23 @@ class _BottomFieldState extends State<BottomField> {
             ? 0
             : widget.chatRoom.count! + msgcount;
         widget.chatRoom.read = false;
+
+        widget.chatRoom.order = ordermsg + 1;
         widget.chatRoom.idFrom = widget.usersModel.userId;
         widget.chatRoom.idTo = widget.targetUser.userId;
-        widget.chatRoom.timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+        widget.chatRoom.timeStamp =
+            DateTime.now().millisecondsSinceEpoch.toString();
         widget.chatRoom.lastMessage = "Video";
         FirebaseFirestore.instance
             .collection('chatrooms')
             .doc(widget.chatRoom.chatroomid)
             .set(widget.chatRoom.toMap());
 
-        FCMServices.sendFCM( 'crave', widget.targetUser.userId.toString(), widget.targetUser.userName.toString(), "📸 New Video Message");
+        FCMServices.sendFCM(
+            widget.targetUser.userToken,
+            widget.targetUser.userId.toString(),
+            widget.usersModel.userName.toString(),
+            "📸 New Video Message");
 
         if (mounted) {
           setState(() {
@@ -453,18 +512,31 @@ class _BottomFieldState extends State<BottomField> {
             uploadTask2 = null;
           });
         }
-        ToastUtils.showCustomToast(context, e.message ?? e.toString(), AppColors.redcolor);
+        ToastUtils.showCustomToast(
+            context, e.message ?? e.toString(), AppColors.redcolor);
       }
     }
   }
 
-  sendAudioMessage(File audioPath,String type) async{
+  sendAudioMessage(File audioPath, String type) async {
     String fileName = const Uuid().v1();
     int status = 1;
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('chatrooms')
+        .where('chatroomid', isEqualTo: widget.chatRoom.chatroomid)
+        .get()
+        .then((value) {
+      setState(() {
+        ordermsg = value.docs[0]["order"];
+      });
+    });
+
     MessageModel newMessage = MessageModel(
       messageid: fileName,
       sender: widget.usersModel.userId.toString(),
       text: "",
+      odermsg: ordermsg + 1,
       seen: false,
       type: type,
       createdon: DateTime.now(),
@@ -503,9 +575,11 @@ class _BottomFieldState extends State<BottomField> {
             ? 0
             : widget.chatRoom.count! + msgcount;
         widget.chatRoom.read = false;
+        widget.chatRoom.order = ordermsg + 1;
         widget.chatRoom.idFrom = widget.usersModel.userId;
         widget.chatRoom.idTo = widget.targetUser.userId;
-        widget.chatRoom.timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
+        widget.chatRoom.timeStamp =
+            DateTime.now().millisecondsSinceEpoch.toString();
         widget.chatRoom.lastMessage = "Audio";
         FirebaseFirestore.instance
             .collection('chatrooms')
@@ -513,9 +587,9 @@ class _BottomFieldState extends State<BottomField> {
             .set(widget.chatRoom.toMap());
 
         FCMServices.sendFCM(
-            'crave',
+            widget.targetUser.userToken,
             widget.targetUser.userId.toString(),
-            widget.targetUser.userName.toString(),
+            widget.usersModel.userName.toString(),
             "🎵 New Audio Message");
         if (mounted) {
           setState(() {
@@ -532,17 +606,33 @@ class _BottomFieldState extends State<BottomField> {
             uploadTask2 = null;
           });
         }
-        ToastUtils.showCustomToast(context, e.message ?? e.toString(), AppColors.redcolor);
+        ToastUtils.showCustomToast(
+            context, e.message ?? e.toString(), AppColors.redcolor);
       }
     }
   }
 
   var uuid = const Uuid();
   sendMsg(String mType, String mText) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection('chatrooms')
+        .where('chatroomid', isEqualTo: widget.chatRoom.chatroomid)
+        .get()
+        .then((value) {
+      setState(() {
+        ordermsg = value.docs[0]["order"];
+      });
+      addmessage(mType, mText);
+    });
+  }
+
+  addmessage(String mType, String mText) {
     MessageModel newMessage = MessageModel(
       messageid: uuid.v1(),
       sender: widget.usersModel.userId.toString(),
       text: mText,
+      odermsg: ordermsg + 1,
       seen: false,
       type: mType,
       createdon: DateTime.now(),
@@ -559,6 +649,7 @@ class _BottomFieldState extends State<BottomField> {
     widget.chatRoom.read = false;
     widget.chatRoom.idFrom = widget.usersModel.userId;
     widget.chatRoom.idTo = widget.targetUser.userId;
+    widget.chatRoom.order = ordermsg + 1;
     widget.chatRoom.count = widget.chatRoom.count.toString() == "null"
         ? 0
         : widget.chatRoom.count! + msgcount1;
@@ -570,25 +661,29 @@ class _BottomFieldState extends State<BottomField> {
         .doc(widget.chatRoom.chatroomid)
         .set(widget.chatRoom.toMap());
     updateStatus();
+
     FCMServices.sendFCM(
-      //  'crave',
-       widget.targetUser.userToken.toString(),
+        widget.targetUser.userToken.toString(),
         widget.targetUser.userId.toString(),
-        widget.targetUser.userName.toString(),
+        widget.usersModel.userName.toString(),
         widget.chatRoom.lastMessage.toString());
     msgController.clear();
-
   }
 
   FirebaseAuth auth = FirebaseAuth.instance;
   void updateStatus() async {
     if (widget.chatRoom.idFrom != auth.currentUser!.uid) {
       final DocumentReference documentReference =
-      _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid);
+          _firestore.collection('chatrooms').doc(widget.chatRoom.chatroomid);
       documentReference.update(<String, dynamic>{'read': true, 'count': 0});
       widget.chatRoom.count = 0;
 
-      FirebaseFirestore.instance.collection('chatrooms').doc(widget.chatRoom.chatroomid).collection("messages").get().then((snapshot) {
+      FirebaseFirestore.instance
+          .collection('chatrooms')
+          .doc(widget.chatRoom.chatroomid)
+          .collection("messages")
+          .get()
+          .then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           ds.reference.update({
             'seen': true,
