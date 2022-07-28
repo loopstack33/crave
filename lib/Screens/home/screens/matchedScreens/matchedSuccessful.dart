@@ -106,11 +106,8 @@ class _MatchScreenState extends State<MatchedSuccessed> {
         idFrom: "",
         idTo: "",
         order: 0,
-<<<<<<< HEAD
         targetId: targetID,
         roomcreator: _auth.currentUser!.uid,
-=======
->>>>>>> 237d690176d6530e9ff4547b0ed629cc6612e88b
         count: 0,
         dateTime: DateTime.now().toString(),
         timeStamp: DateTime.now().millisecondsSinceEpoch.toString(),
