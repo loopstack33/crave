@@ -630,7 +630,11 @@ class _BottomFieldState extends State<BottomField> {
   }
 
   addmessage(String mType, String mText) {
+<<<<<<< HEAD
     log("in");
+=======
+    log(mText);
+>>>>>>> 237d690176d6530e9ff4547b0ed629cc6612e88b
     MessageModel newMessage = MessageModel(
       messageid: uuid.v1(),
       sender: widget.usersModel.userId.toString(),
