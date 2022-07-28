@@ -802,7 +802,8 @@ class _SigninPhoneValidState extends State<PackageScreen> {
           loading = false;
         });
         preferences.setString("package", package);
-        AppRoutes.push(context, PageTransitionType.fade, const CreateProfile());
+        AppRoutes.pushAndRemoveUntil(
+            context, PageTransitionType.fade, const CreateProfile());
       }
     }).catchError((e) {});
     if (mounted) {

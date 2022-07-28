@@ -623,11 +623,14 @@ class _BottomFieldState extends State<BottomField> {
       setState(() {
         ordermsg = value.docs[0]["order"];
       });
+      log("ordermsg.toString()");
+      log(ordermsg.toString());
       addmessage(mType, mText);
     });
   }
 
   addmessage(String mType, String mText) {
+    log("in");
     MessageModel newMessage = MessageModel(
       messageid: uuid.v1(),
       sender: widget.usersModel.userId.toString(),
@@ -644,8 +647,9 @@ class _BottomFieldState extends State<BottomField> {
         .collection('messages')
         .doc(newMessage.messageid)
         .set(newMessage.toMap());
+    log(msgController.text);
     var msgcount1 = 1;
-    widget.chatRoom.lastMessage = msgController.text;
+    widget.chatRoom.lastMessage = mText.toString();
     widget.chatRoom.read = false;
     widget.chatRoom.idFrom = widget.usersModel.userId;
     widget.chatRoom.idTo = widget.targetUser.userId;

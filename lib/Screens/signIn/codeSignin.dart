@@ -670,8 +670,6 @@ class _SigninPhoneValidState extends State<CodeSignin> {
       'status': '',
       'age': '',
       'package': '',
-      'blocked_By': [],
-      'chat_with': [],
       'email': '',
       'gender': '',
       'birthday': '',

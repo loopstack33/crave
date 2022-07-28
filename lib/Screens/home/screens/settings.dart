@@ -26,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> handleSignOut() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString("logStatus", "null");
+
     await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const Welcome_Screen()),
@@ -59,18 +60,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(40),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                text(context, "Notifications", 18.sp,
-                    color: AppColors.black,
-                    boldText: FontWeight.w500,
-                    fontFamily: "Poppins-Medium"),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xffBABABA),
-                ),
-              ],
+            InkWell(
+              onTap: () async {
+                // log("on tap");
+                // final FirebaseAuth _auth = FirebaseAuth.instance;
+                // QuerySnapshot likes = await FirebaseFirestore.instance
+                //     .collection("users")
+                //     .doc()
+                //     .collection("likes")
+                //     .where("likedId", isEqualTo: _auth.currentUser!.uid)
+                //     .get();
+                // log(likes.docs.length.toString());
+
+                // if (likes.docs.isNotEmpty) {
+                //   for (int i = 0; i < likes.docs.length; i++) {
+                //     likes.docs[i].reference.delete();
+                //   }
+                //   log("deleted likes");
+                // }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  text(context, "Notifications", 18.sp,
+                      color: AppColors.black,
+                      boldText: FontWeight.w500,
+                      fontFamily: "Poppins-Medium"),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Color(0xffBABABA),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 10.h,
@@ -130,12 +151,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 handleSignOut();
               },
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   text(context, "Log Out", 18.sp,
                       color: AppColors.black,
                       boldText: FontWeight.w500,
                       fontFamily: "Poppins-Medium"),
+                  const Icon(
+                    Icons.logout,
+                    color: Color(0xffBABABA),
+                  ),
                 ],
               ),
             ),
@@ -326,20 +351,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    QuerySnapshot messages = await FirebaseFirestore.instance
-        .collection("chatrooms")
-        .where(
-          "idFrom",
-          isEqualTo: _auth.currentUser!.uid,
-        )
-        .get();
+    // QuerySnapshot messages = await FirebaseFirestore.instance
+    //     .collection("chatrooms")
+    //     .where(
+    //       "idFrom",
+    //       isEqualTo: _auth.currentUser!.uid,
+    //     )
+    //     .get();
 
-    if (messages.docs.isNotEmpty) {
-      for (int i = 0; i < messages.docs.length; i++) {
-        messages.docs[i].reference.delete();
-      }
-      log("deleted");
-    }
+    // if (messages.docs.isNotEmpty) {
+    //   for (int i = 0; i < messages.docs.length; i++) {
+    //     messages.docs[i].reference.delete();
+    //   }
+    //   log("deleted");
+    // }
 
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("chatrooms")
@@ -352,7 +377,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       for (int i = 0; i < snapshot.docs.length; i++) {
         snapshot.docs[i].reference.delete();
       }
-      log("deleted");
+      log("deleted idfrom chat");
     }
 
     QuerySnapshot snapshotchatto = await FirebaseFirestore.instance
@@ -366,7 +391,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       for (int i = 0; i < snapshotchatto.docs.length; i++) {
         snapshotchatto.docs[i].reference.delete();
       }
-      log("deleted");
+      log("deleted idto chat");
     }
     QuerySnapshot snapshotchatreportto = await FirebaseFirestore.instance
         .collection("reports")
@@ -379,7 +404,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       for (int i = 0; i < snapshotchatreportto.docs.length; i++) {
         snapshotchatreportto.docs[i].reference.delete();
       }
-      log("deleted");
+      log("deleted reportedid");
     }
     QuerySnapshot snapshotchatreportby = await FirebaseFirestore.instance
         .collection("reports")
@@ -392,7 +417,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       for (int i = 0; i < snapshotchatreportby.docs.length; i++) {
         snapshotchatreportby.docs[i].reference.delete();
       }
-      log("deleted");
+      log("deleted reportedby");
     }
 
     await FirebaseFirestore.instance

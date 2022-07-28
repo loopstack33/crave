@@ -101,7 +101,7 @@ class _Welcome_ScreenState extends State<Welcome_Screen> {
                 fontFamily: "Roboto-Medium",
                 text: "Continue with Phone",
                 press: () {
-                  AppRoutes.push(context, PageTransitionType.topToBottom,
+                  AppRoutes.push(context, PageTransitionType.fade,
                       const SigninPhoneValid());
                 },
                 size: 18.sp),

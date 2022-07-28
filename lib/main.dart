@@ -28,8 +28,8 @@ Future main() async {
 }
 
 Future<void> _messageHandler(RemoteMessage event) async {
-  if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
-
+  if (event.data['id'].toString() ==
+      FirebaseAuth.instance.currentUser?.uid.toString()) {
     log('target: ${event.data['id']}');
     log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
     LocalNotificationsService.instance.showNotification(
@@ -45,8 +45,8 @@ fcmListen() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage event) {
     log('target: ${event.data['id']}');
     log('userId: ${FirebaseAuth.instance.currentUser?.uid}');
-    if (event.data['id'].toString() == FirebaseAuth.instance.currentUser?.uid.toString()) {
-
+    if (event.data['id'].toString() ==
+        FirebaseAuth.instance.currentUser?.uid.toString()) {
       LocalNotificationsService.instance.showNotification(
           title: '${event.notification?.title}',
           body: '${event.notification?.body}');
@@ -69,15 +69,12 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, _) {
           return MaterialApp(
             theme: ThemeData(
-                pageTransitionsTheme:const PageTransitionsTheme(
-                    builders: {
-                      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-                    }
-                )
-            ),
+                pageTransitionsTheme: const PageTransitionsTheme(builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            })),
             debugShowCheckedModeBanner: false,
-            home:const Splash(),
+            home: const Splash(),
           );
         });
   }

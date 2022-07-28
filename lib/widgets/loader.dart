@@ -1,20 +1,19 @@
 import 'package:crave/utils/color_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class ProgressHUD extends StatelessWidget {
-
   final Widget child;
   final bool inAsyncCall;
   final double opacity;
   final Color color;
-
 
   const ProgressHUD({
     Key? key,
     required this.child,
     required this.inAsyncCall,
     this.opacity = 0.3,
-    this.color = AppColors.redcolor,
+    this.color = AppColors.white,
   }) : super(key: key);
 
   @override
@@ -24,12 +23,13 @@ class ProgressHUD extends StatelessWidget {
     if (inAsyncCall) {
       final modal = Stack(
         children: [
-          Opacity(
-            opacity: opacity,
-            child: ModalBarrier(dismissible: false, color: color),
-          ),
-          const  Center(
-            child:  CircularProgressIndicator(color: AppColors.redcolor,),
+          Center(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white,
+              child: Lottie.asset("assets/raw/doubleheart.json"),
+            ),
           )
         ],
       );

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_build_context_synchronously
+// ignore_for_file: file_names, use_build_context_synchronously, import_of_legacy_library_into_null_safe
 import 'dart:developer';
 import 'dart:ui';
 import 'dart:math' as math;
@@ -16,9 +16,13 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pay/pay.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../../../model/chat_room_model.dart';
 import '../../../services/fcm_services.dart';
@@ -38,7 +42,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   bool alreadyLiked = false;
   bool isLoad = false;
+
   bool loading = false;
+  String country = "";
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   int selectedIndex = 0;
@@ -52,11 +58,54 @@ class _DashboardState extends State<Dashboard> {
   List<UsersModel> allUserexceptblockedChat = [];
   List<UsersModel> temp = [];
   String? currentGender;
+  // Location location = new Location();
+
+  // bool? _serviceEnabled;
+  // PermissionStatus? _permissionGranted;
+  // LocationData? _locationData;
   @override
   void initState() {
     super.initState();
+
     getData();
+    getPermissions();
     getDataalluserexcepcurrent();
+  }
+
+  Map<Permission, PermissionStatus>? statuses;
+  getPermissions() async {
+    statuses = await [
+      Permission.location,
+    ].request();
+
+    getUserLoc();
+  }
+
+  Position? position;
+  getUserLoc() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      await _getAddress(position.latitude, position.longitude);
+    }).catchError((e) {
+      log(e.toString());
+    });
+  }
+
+  var addr;
+  // Method for retrieving the address
+  _getAddress(var ulat, var ulng) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(ulat, ulng);
+      Placemark place = placemarks[0];
+      addr =
+          '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+      log(place.country.toString());
+      preferences.setString("country", place.country.toString());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   String id = '';
@@ -156,6 +205,8 @@ class _DashboardState extends State<Dashboard> {
         read: false,
         idFrom: "",
         order: 0,
+        targetId: targetID,
+        roomcreator: _auth.currentUser!.uid,
         paid: false,
         idTo: "",
         dateTime: DateTime.now().toString(),

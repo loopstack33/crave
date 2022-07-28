@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crave/Screens/splash/creatingProfile.dart';
+import 'package:crave/Screens/splash/welcome_screen.dart';
 import 'package:crave/utils/app_routes.dart';
 import 'package:crave/utils/color_constant.dart';
 import 'package:crave/utils/images.dart';
@@ -69,270 +70,447 @@ class _CreateProfileState extends State<CreateProfile> {
     ];
   }
 
+  Future<bool> showExitPopup() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Exit App'),
+            content: Text('Do you want to Exit?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                //return false when click on "NO"
+                child: Text('No'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                //return true when click on "Yes"
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false; //if showDialouge had returned null, then return false
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        leading: GestureDetector(
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColors.redcolor,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: AppColors.white,
-        title: text(context, "Create Profile", 24.sp,
-            color: AppColors.black,
-            boldText: FontWeight.w500,
-            fontFamily: "Poppins-Medium"),
-        centerTitle: true,
-      ),
-      body: ProgressHUD(
-        inAsyncCall: isLoading,
-        opacity: 0.1,
-        child: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-          },
-          child: SingleChildScrollView(
-              child: Padding(
-            padding: const EdgeInsets.only(
-              top: 20,
-              left: 20,
-              right: 20,
+    return WillPopScope(
+      onWillPop: showExitPopup,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          leading: GestureDetector(
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.redcolor,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                text(context, "Profile Images", 16.sp,
-                    color: AppColors.black,
-                    boldText: FontWeight.w500,
-                    fontFamily: "Roboto-Medium"),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Stack(
-                      children: [
-                        SizedBox(
-                          width: 102.w,
-                          height: 154.h,
-                          child: InkWell(
-                            onTap: () {
-                              imagePickermethod(1);
-                            },
-                            child: _image == null || clearPic == false
-                                ? Image.asset(addpic)
-                                : Image.file(_image!),
-                          ),
-                        ),
-                        if (clearPic == true) ...[
-                          Positioned(
-                            left: 65,
-                            child: InkWell(
-                              onTap: () {
-                                if (mounted) {
-                                  setState(() {
-                                    _image = null;
-                                    clearPic = false;
-                                  });
-                                }
-                              },
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Image.asset(
-                                  deletePic,
-                                  width: 30.w,
-                                  height: 30.h,
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      insetPadding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.r)),
+                      elevation: 10,
+                      backgroundColor: AppColors.white,
+                      child: SingleChildScrollView(
+                        child: StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setter) {
+                            return Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20.r),
+                                        topRight: Radius.circular(20.r)),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        AppColors.redcolor.withOpacity(0.35),
+                                        AppColors.redcolor
+                                      ],
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.all(8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Delete Account",
+                                        style: TextStyle(
+                                            fontSize: 22.sp,
+                                            color: AppColors.white,
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        ]
-                      ],
-                    ),
-                    Stack(
-                      children: [
-                        SizedBox(
-                          width: 102.w,
-                          height: 154.h,
-                          child: InkWell(
-                            onTap: () {
-                              imagePickermethod(2);
-                            },
-                            child: _image1 == null || clearPic1 == false
-                                ? Image.asset(addpic)
-                                : Image.file(_image1!),
-                          ),
-                        ),
-                        if (clearPic1 == true) ...[
-                          Positioned(
-                            left: 65,
-                            child: InkWell(
-                              onTap: () {
-                                if (mounted) {
-                                  setState(() {
-                                    _image1 = null;
-                                    clearPic1 = false;
-                                  });
-                                }
-                              },
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Image.asset(
-                                  deletePic,
-                                  width: 30.w,
-                                  height: 30.h,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Are you sure you want to exit?",
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: AppColors.black,
+                                            fontFamily: 'Poppins-Regular',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        ]
-                      ],
-                    ),
-                    Stack(
-                      children: [
-                        SizedBox(
-                          width: 102.w,
-                          height: 154.h,
-                          child: InkWell(
-                            onTap: () {
-                              imagePickermethod(3);
-                            },
-                            child: _image2 == null || clearPic2 == false
-                                ? Image.asset(addpic)
-                                : Image.file(_image2!),
-                          ),
-                        ),
-                        if (clearPic2 == true) ...[
-                          Positioned(
-                            left: 65,
-                            child: InkWell(
-                              onTap: () {
-                                if (mounted) {
-                                  setState(() {
-                                    _image2 = null;
-                                    clearPic2 = false;
-                                  });
-                                }
-                              },
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Image.asset(
-                                  deletePic,
-                                  width: 30.w,
-                                  height: 30.h,
+                                SizedBox(
+                                  height: 10.h,
                                 ),
-                              ),
-                            ),
-                          )
-                        ]
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                text(context, "About Me", 16.sp,
-                    color: const Color(0xff191919),
-                    boldText: FontWeight.w500,
-                    fontFamily: "Roboto-Medium"),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Container(
-                  // height: 136.h,
-                  // margin: const EdgeInsets.only(left: 20, right: 20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffF5F5F5),
-                    borderRadius: BorderRadius.circular(12),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        //here
+                                        AppRoutes.pushAndRemoveUntil(
+                                            context,
+                                            PageTransitionType.fade,
+                                            Welcome_Screen());
+                                      },
+                                      child: Container(
+                                        width: 150.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              AppColors.redcolor
+                                                  .withOpacity(0.35),
+                                              AppColors.redcolor
+                                            ],
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(5.r),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text("Yes",
+                                                style: TextStyle(
+                                                    fontSize: 20.sp,
+                                                    color: AppColors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Poppins')),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        width: 150.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              AppColors.redcolor
+                                                  .withOpacity(0.35),
+                                              AppColors.redcolor
+                                            ],
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(5.r),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text("No",
+                                                style: TextStyle(
+                                                    fontSize: 20.sp,
+                                                    color: AppColors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Poppins')),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  });
+            },
+          ),
+          backgroundColor: AppColors.white,
+          title: text(context, "Create Profile", 24.sp,
+              color: AppColors.black,
+              boldText: FontWeight.w500,
+              fontFamily: "Poppins-Medium"),
+          centerTitle: true,
+        ),
+        body: ProgressHUD(
+          inAsyncCall: isLoading,
+          opacity: 0.1,
+          child: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              currentFocus.unfocus();
+            },
+            child: SingleChildScrollView(
+                child: Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  text(context, "Profile Images", 16.sp,
+                      color: AppColors.black,
+                      boldText: FontWeight.w500,
+                      fontFamily: "Roboto-Medium"),
+                  SizedBox(
+                    height: 10.h,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: TextFormField(
-                      onSaved: (String? value) {
-                        textController.text = value!;
-                      },
-                      style: const TextStyle(
-                          fontFamily: "Poppins-Regular",
-                          fontSize: 14,
-                          color: Color(0xff636363)),
-                      minLines: 1,
-                      maxLines: 5,
-                      keyboardType: TextInputType.multiline,
-                      controller: textController,
-                      autocorrect: true,
-                      maxLength: 100,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter Some Text',
-                        hintStyle: TextStyle(
-                            fontFamily: "Poppins-Regular", fontSize: 14),
-                        border: InputBorder.none,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 102.w,
+                            height: 154.h,
+                            child: InkWell(
+                              onTap: () {
+                                imagePickermethod(1);
+                              },
+                              child: _image == null || clearPic == false
+                                  ? Image.asset(addpic)
+                                  : Image.file(_image!),
+                            ),
+                          ),
+                          if (clearPic == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      _image = null;
+                                      clearPic = false;
+                                    });
+                                  }
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 102.w,
+                            height: 154.h,
+                            child: InkWell(
+                              onTap: () {
+                                imagePickermethod(2);
+                              },
+                              child: _image1 == null || clearPic1 == false
+                                  ? Image.asset(addpic)
+                                  : Image.file(_image1!),
+                            ),
+                          ),
+                          if (clearPic1 == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      _image1 = null;
+                                      clearPic1 = false;
+                                    });
+                                  }
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                      Stack(
+                        children: [
+                          SizedBox(
+                            width: 102.w,
+                            height: 154.h,
+                            child: InkWell(
+                              onTap: () {
+                                imagePickermethod(3);
+                              },
+                              child: _image2 == null || clearPic2 == false
+                                  ? Image.asset(addpic)
+                                  : Image.file(_image2!),
+                            ),
+                          ),
+                          if (clearPic2 == true) ...[
+                            Positioned(
+                              left: 65,
+                              child: InkWell(
+                                onTap: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      _image2 = null;
+                                      clearPic2 = false;
+                                    });
+                                  }
+                                },
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Image.asset(
+                                    deletePic,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  text(context, "About Me", 16.sp,
+                      color: const Color(0xff191919),
+                      boldText: FontWeight.w500,
+                      fontFamily: "Roboto-Medium"),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Container(
+                    // height: 136.h,
+                    // margin: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xffF5F5F5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: TextFormField(
+                        onSaved: (String? value) {
+                          textController.text = value!;
+                        },
+                        style: const TextStyle(
+                            fontFamily: "Poppins-Regular",
+                            fontSize: 14,
+                            color: Color(0xff636363)),
+                        minLines: 1,
+                        maxLines: 5,
+                        keyboardType: TextInputType.multiline,
+                        controller: textController,
+                        autocorrect: true,
+                        maxLength: 100,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter Some Text',
+                          hintStyle: TextStyle(
+                              fontFamily: "Poppins-Regular", fontSize: 14),
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: text(context, "Selected  $craveCounter/3", 14.sp,
-                      color: AppColors.black,
-                      boldText: FontWeight.w400,
-                      fontFamily: "Poppins-Medium"),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                //chipping
-                Column(
-                  children: <Widget>[
-                    Wrap(
-                      children: companyWidgets.toList(),
-                    ),
-                    // Text('Selected: ${_filters.join(', ')}'),
-                    DefaultButton(
-                        text: "Confirm",
-                        press: () {
-                          if (_image == null) {
-                            ToastUtils.showCustomToast(
-                                context,
-                                "Please select at least one image.",
-                                AppColors.redcolor);
-                          } else if (textController.text.isEmpty) {
-                            ToastUtils.showCustomToast(context,
-                                "Please add your bio", AppColors.redcolor);
-                          } else if (_filters.isEmpty) {
-                            ToastUtils.showCustomToast(
-                                context,
-                                "Please select your craves",
-                                AppColors.redcolor);
-                          } else {
-                            if (mounted) {
-                              setState(() {
-                                isLoading = true;
-                              });
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: text(context, "Selected  $craveCounter/3", 14.sp,
+                        color: AppColors.black,
+                        boldText: FontWeight.w400,
+                        fontFamily: "Poppins-Medium"),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  //chipping
+                  Column(
+                    children: <Widget>[
+                      Wrap(
+                        children: companyWidgets.toList(),
+                      ),
+                      // Text('Selected: ${_filters.join(', ')}'),
+                      DefaultButton(
+                          text: "Confirm",
+                          press: () {
+                            if (_image == null) {
+                              ToastUtils.showCustomToast(
+                                  context,
+                                  "Please select at least one image.",
+                                  AppColors.redcolor);
+                            } else if (textController.text.isEmpty) {
+                              ToastUtils.showCustomToast(context,
+                                  "Please add your bio", AppColors.redcolor);
+                            } else if (_filters.isEmpty) {
+                              ToastUtils.showCustomToast(
+                                  context,
+                                  "Please select your craves",
+                                  AppColors.redcolor);
+                            } else {
+                              if (mounted) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                              }
+                              postDetailsToFirestore(context);
                             }
-                            postDetailsToFirestore(context);
-                          }
-                        }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
+                          }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )),
+          ),
         ),
       ),
     );
