@@ -109,7 +109,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
           .set(newChatRoom.toMap());
       chatRoom = newChatRoom;
       // AppRoutes.push(context, PageTransitionType.fade,  UserChatList(isDash: true,));
-      Navigator.pop(context);
+      // Navigator.pop(context);
       FCMServices.sendFCM(token, targetID.toString(), name.toString(),
           "Want's to chat with you.");
       ToastUtils.showCustomToast(
@@ -226,6 +226,7 @@ class _FavoriteContactsState extends State<FavoriteContacts> {
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
+                              log("$name + ${docs[index]['deviceToken']} +${docs[index]["likedId"]} + $id");
                               if (currentGender == "Man") {
                                 const paymentItems = [
                                   PaymentItem(

@@ -210,12 +210,12 @@ class _ChatDetailPageState extends State<ChatDetailPage>
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                                color: AppColors.redcolor,
-                                blurRadius: 2.r,
-                                offset: const Offset(0, 1.5))
-                          ],
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //       color: AppColors.redcolor,
+                          //       blurRadius: 2.r,
+                          //       offset: const Offset(0, 1.5))
+                          // ],
                         ),
                         width: 60.w,
                         height: 60.h,
